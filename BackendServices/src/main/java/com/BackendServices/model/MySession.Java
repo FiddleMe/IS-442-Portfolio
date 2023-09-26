@@ -1,8 +1,14 @@
-import javax.persistence.*;
+package com.BackendServices.model;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Session")
-public class Session {
+public class MySession {
     @Id
     @Column(name = "SessionID", length = 36, nullable = false)
     private String sessionId;
