@@ -8,11 +8,11 @@
 		<version>3.1.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>oop</groupId>
-	<artifactId>oop</artifactId>
+	<groupId>com.BackendServices</groupId>
+	<artifactId>BackendServices</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>portfolioApp</name>
-	<description>project for IS442 investment portfolio</description>
+	<name>BackendServices</name>
+	<description>BackendServices for IS442 project</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
