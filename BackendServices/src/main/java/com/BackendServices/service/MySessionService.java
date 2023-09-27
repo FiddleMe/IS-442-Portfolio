@@ -3,7 +3,7 @@ package com.BackendServices.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.BackendServices.model.MySession;
+import com.BackendServices.entity.MySession;
 import com.BackendServices.repository.MySessionRepository;
 
 import java.util.List;

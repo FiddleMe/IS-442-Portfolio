@@ -1,11 +1,11 @@
-package com.BackendServices.Controller;
+package com.BackendServices.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.BackendServices.model.User;
+import com.BackendServices.entity.User;
 import com.BackendServices.service.UserService;
 
 import java.util.Optional;

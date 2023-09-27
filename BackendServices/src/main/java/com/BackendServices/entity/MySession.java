@@ -1,4 +1,4 @@
-package com.BackendServices.model;
+package com.BackendServices.entity;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;

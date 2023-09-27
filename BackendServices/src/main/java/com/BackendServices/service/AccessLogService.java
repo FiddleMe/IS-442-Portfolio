@@ -3,7 +3,7 @@ package com.BackendServices.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.BackendServices.model.AccessLog;
+import com.BackendServices.entity.AccessLog;
 import com.BackendServices.repository.AccessLogRepository;
 
 import java.util.List;
