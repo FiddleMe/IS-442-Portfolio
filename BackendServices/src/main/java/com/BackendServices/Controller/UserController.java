@@ -1,3 +1,15 @@
+package com.BackendServices.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.BackendServices.model.User;
+import com.BackendServices.service.UserService;
+
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -11,13 +23,14 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable String userId) {
-        User user = userService.getUserById(userId);
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+      Optional<User> userOptional = userService.getUserById(userId);
+      if (userOptional.isPresent()) {
+          User user = userOptional.get();
+          return ResponseEntity.ok(user);
+      } else {
+          return ResponseEntity.notFound().build();
+      }
+  }
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
