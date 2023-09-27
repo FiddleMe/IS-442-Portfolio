@@ -31,4 +31,52 @@ public class Stock {
     private String industrySector;
 
     // Getters and setters
+    public String getStockId() {
+      return stockId;
+    }
+
+    public void setStockId(String stockId) {
+      this.stockId = stockId;
+    }
+
+    public LocalDateTime getDateTime() {
+      return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+      this.dateTime = dateTime;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public BigDecimal getPrice() {
+      return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+      this.price = price;
+    }
+
+    public String getGeographicalRegion() {
+      return geographicalRegion;
+    }
+
+    public void setGeographicalRegion(String geographicalRegion) {
+      this.geographicalRegion = geographicalRegion;
+    }
+
+    public String getIndustrySector() {
+      return industrySector;
+    }
+
+    public void setIndustrySector(String industrySector) {
+      this.industrySector = industrySector;
+    }
+
 }

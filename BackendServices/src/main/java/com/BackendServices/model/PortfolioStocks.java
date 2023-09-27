@@ -25,4 +25,45 @@ public class PortfolioStocks {
     private Integer quantity;
 
     // Getters and setters
+    public String getPortfolioStockId() {
+      return portfolioStockId;
+    }
+
+    public void setPortfolioStockId(String portfolioStockId) {
+      this.portfolioStockId = portfolioStockId;
+    }
+
+    public String getPortfolioId() {
+      return portfolioId;
+    }
+
+    public void setPortfolioId(String portfolioId) {
+      this.portfolioId = portfolioId;
+    }
+
+    public String getStockId() {
+      return stockId;
+    }
+
+    public void setStockId(String stockId) {
+      this.stockId = stockId;
+    }
+
+    public LocalDateTime getDateTime() {
+      return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+      this.dateTime = dateTime;
+    }
+
+    public Integer getQuantity() {
+      return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+      this.quantity = quantity;
+    }
+
+    
 }

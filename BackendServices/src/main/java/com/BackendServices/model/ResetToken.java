@@ -19,4 +19,27 @@ public class ResetToken {
     private LocalDateTime expiryDatetime;
 
     // Getters and setters
+    public String getTokenId() {
+      return tokenId;
+    }
+
+    public void setTokenId(String tokenId) {
+      this.tokenId = tokenId;
+    }
+
+    public String getUserId() {
+      return userId;
+    }
+
+    public void setUserId(String userId) {
+      this.userId = userId;
+    }
+
+    public LocalDateTime getExpiryDatetime() {
+      return expiryDatetime;
+    }
+
+    public void setExpiryDatetime(LocalDateTime expiryDatetime) {
+      this.expiryDatetime = expiryDatetime;
+    }
 }

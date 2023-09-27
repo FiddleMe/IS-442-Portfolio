@@ -23,4 +23,36 @@ public class MySession {
     private LocalDateTime logoutDatetime;
 
     // Getters and setters
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public LocalDateTime getLoginDatetime() {
+        return loginDatetime;
+    }
+
+    public void setLoginDatetime(LocalDateTime loginDatetime) {
+        this.loginDatetime = loginDatetime;
+    }
+
+    public LocalDateTime getLogoutDatetime() {
+        return logoutDatetime;
+    }
+
+    public void setLogoutDatetime(LocalDateTime logoutDatetime) {
+        this.logoutDatetime = logoutDatetime;
+    }
 }

@@ -26,5 +26,39 @@ public class AccessLog {
     private LocalDateTime timestamp;
 
     // Getters and setters
+    public Long getLogId() {
+      return logId;
+    }
+
+    public void setLogId(Long logId) {
+      this.logId = logId;
+    }
+
+    public String getUserId() {
+      return userId;
+    }
+
+    public void setUserId(String userId) {
+      this.userId = userId;
+    }
+
+    public String getAction() {
+      return action;
+    }
+
+    public void setAction(String action) {
+      this.action = action;
+    }
+
+    public LocalDateTime getTimestamp() {
+      return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+      this.timestamp = timestamp;
+    }
+
+    
+    
 }
 
