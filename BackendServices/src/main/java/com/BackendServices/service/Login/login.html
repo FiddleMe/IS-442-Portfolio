@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #101729; /* Your background color */
+        }
+        .rounded-input {
+            border-radius: 25px; /* Rounded corners */
+        }
+        .login-form {
+            background-color: #101729; /* Match background color */
+            padding: 20px;
+            border-radius: 25px;
+        }
+        .card-header {
+            text-align: center;
+            position: relative; /* Position the pseudo-element relative to this container */
+        }
+        .person-icon {
+            width: 80px; /* Adjust the size of the person icon */
+            border-radius: 50%; /* Make it circular */
+            margin-bottom: 10px; /* Add some spacing between the icon and text */
+            background-color: #E1E5F8;
+            z-index: 1; /* Place the image above other elements */
+        }
+        .header1 {
+            color: #899CF8;
+        }
+        .header2 {
+            color: #FFFFFF;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card rounded-input login-form">
+                    <div class="card-header">
+                        <img src="pngegg.png" alt="Person Icon" class="person-icon">
+                        <h3 class="header1">Welcome back!</h3>
+                        <h6 class="header2">Sign in to your account</h6>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control rounded-input" id="email" placeholder="Enter your email">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control rounded-input" id="password" placeholder="Enter your password">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block rounded-input">Login</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center">
+                        <small class="text-muted">
+                            Don't have an account? <a href="#" class="text-primary">Sign Up</a>
+                        </small>
+                        <br>
+                        <small><a href="#" class="text-primary">Forgot Password?</a></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
