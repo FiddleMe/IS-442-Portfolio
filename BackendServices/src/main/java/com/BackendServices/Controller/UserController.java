@@ -32,11 +32,18 @@ public class UserController {
       }
   }
 
-    @PostMapping
+    @PostMapping 
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
+    //Test: POST http://localhost:8082/api/users, body:  {
+    //     "userId": "new_user_id",
+    //     "email": "newuser@example.com",
+    //     "password": "asfasfasf",
+    //     "firstName": "John",
+    //     "lastName": "Doe"
+    // }
 
     @PutMapping("/{userId}")
     public ResponseEntity<User> updateUser(@PathVariable String userId, @RequestBody User updatedUser) {
