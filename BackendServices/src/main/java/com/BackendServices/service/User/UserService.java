@@ -1,4 +1,4 @@
-package com.BackendServices.service;
+package com.BackendServices.service.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,10 @@ public class UserService {
 
     public Optional<User> getUserById(String userId) {
         return userRepository.findById(userId);
+    }
+    public Optional<User> getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        return Optional.ofNullable(user);
     }
 
     public User createUser(User user) {

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.BackendServices.entity.User;
-import com.BackendServices.service.UserService;
+import com.BackendServices.service.User.UserService;
 
 import java.util.Optional;
 
