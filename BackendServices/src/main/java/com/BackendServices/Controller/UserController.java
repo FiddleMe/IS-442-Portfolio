@@ -1,4 +1,4 @@
-package com.BackendServices.controller;
+package com.BackendServices.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
