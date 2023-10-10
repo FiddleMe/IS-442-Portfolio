@@ -2,6 +2,8 @@ package com.BackendServices.service.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.*;
@@ -20,33 +22,24 @@ public class LoginOrRegistration {
 
     public boolean validateLogin(String email, String password) {
         // Get all users from the UserService
-        List<User> users = userService.getAllUsers();
+        Optional<User> userOptional = userService.getUserByEmail(email);
 
-        // Check if the provided email exists in the list of users
-        boolean emailExists = users.stream()
-                .anyMatch(user -> user.getEmail().equals(email));
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
 
-        if (!emailExists) {
-            // Email doesn't exist, return false with an error message
-            System.out.println("Wrong Email or Password Entered");
-            return false;
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+            // Compare the hashed entered password with the stored hashed password
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return true; // Passwords match, login successful
+            }
+            else
+                return false;
         }
 
-        // Email exists, now check if the provided password matches
-        User matchingUser = users.stream()
-                .filter(user -> user.getEmail().equals(email))
-                .findFirst()
-                .orElse(null);
-
-        if (matchingUser != null && matchingUser.getPassword().equals(password)) {
-            // Password matches, return true
-            return true;
-        } else {
-            // Password doesn't match, return false with an error message
-            System.out.println("Wrong Email or Password Entered");
-            return false;
-        }
+        return false; // Email is not associated with a user or passwords do not match
     }
+
 
     public User registerUser(String firstName, String lastName, String email, String password) {
         // Check if the email is valid
@@ -101,7 +94,7 @@ public class LoginOrRegistration {
             return false;
         }
     }
-    
+
     private boolean isValidEmail(String email) {
         EmailValidator validator = EmailValidator.getInstance();
         return validator.isValid(email);
