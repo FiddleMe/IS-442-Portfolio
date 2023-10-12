@@ -25,8 +25,9 @@ public class StockController {
         List<Stock> stocks = stockService.getAllStocks();
         return new ResponseEntity<>(stocks, HttpStatus.OK);
     }
+
     @GetMapping("/{stockId}")
-    public ResponseEntity<Stock> getStockById(@PathVariable Long stockId) {
+    public ResponseEntity<Stock> getStockById(@PathVariable String stockId) {
         Stock stock = stockService.getStockById(stockId);
         if (stock == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -35,8 +36,9 @@ public class StockController {
     }
 
     @PostMapping
-    public ResponseEntity<Stock> createStock(@RequestBody Stock stock) {
-        Stock createdStock = stockService.createStock(stock);
-        return new ResponseEntity<>(createdStock, HttpStatus.CREATED);
+    public ResponseEntity<List<Stock>> createStocks(@RequestBody List<Stock> stocks) {
+        List<Stock> createdStocks = stockService.createStocks(stocks);
+        return new ResponseEntity<>(createdStocks, HttpStatus.CREATED);
     }
+    
 }

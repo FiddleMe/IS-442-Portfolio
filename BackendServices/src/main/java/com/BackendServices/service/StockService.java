@@ -18,9 +18,12 @@ public class StockService {
         return stockRepository.findAll();
     }
 
-    public Stock createStock(Stock stock) {
-        return stockRepository.save(stock);
+    public Stock getStockById(String stockId) {
+        return stockRepository.findById(stockId).orElse(null);
     }
 
-    // Implement other stock-related methods as needed
+    public List<Stock> createStocks(List<Stock> stocks) {
+        return stockRepository.saveAll(stocks);
+    }
+
 }

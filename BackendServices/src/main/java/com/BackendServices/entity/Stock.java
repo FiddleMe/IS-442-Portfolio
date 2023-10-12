@@ -1,82 +1,92 @@
 package com.BackendServices.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Stock")
+@IdClass(Stock.StockKey.class)
 public class Stock {
-    @Id
-    @Column(name = "StockID", length = 36, nullable = false)
-    private String stockId;
+  @Id
+  @Column(name = "StockID", length = 36, nullable = false)
+  private String stockId;
 
-    @Column(name = "DateTime", nullable = false)
+  @Column(name = "DateTime", nullable = false)
+  private LocalDateTime dateTime;
+
+  @Column(name = "Name")
+  private String name;
+
+  @Column(name = "Price", precision = 10, scale = 4)
+  private BigDecimal price;
+
+  @Column(name = "GeographicalRegion")
+  private String geographicalRegion;
+
+  @Column(name = "IndustrySector")
+  private String industrySector;
+
+  public static class StockKey implements Serializable {
+    private String stockId;
     private LocalDateTime dateTime;
 
-    @Column(name = "Name")
-    private String name;
+    // Implement equals() and hashCode() methods (required for composite keys)
+  }
 
-    @Column(name = "Price", precision = 10, scale = 4)
-    private BigDecimal price;
+  // Getters and setters
+  public String getStockId() {
+    return stockId;
+  }
 
-    @Column(name = "GeographicalRegion")
-    private String geographicalRegion;
+  public void setStockId(String stockId) {
+    this.stockId = stockId;
+  }
 
-    @Column(name = "IndustrySector")
-    private String industrySector;
+  public LocalDateTime getDateTime() {
+    return dateTime;
+  }
 
-    // Getters and setters
-    public String getStockId() {
-      return stockId;
-    }
+  public void setDateTime(LocalDateTime dateTime) {
+    this.dateTime = dateTime;
+  }
 
-    public void setStockId(String stockId) {
-      this.stockId = stockId;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public LocalDateTime getDateTime() {
-      return dateTime;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setDateTime(LocalDateTime dateTime) {
-      this.dateTime = dateTime;
-    }
+  public BigDecimal getPrice() {
+    return price;
+  }
 
-    public String getName() {
-      return name;
-    }
+  public void setPrice(BigDecimal price) {
+    this.price = price;
+  }
 
-    public void setName(String name) {
-      this.name = name;
-    }
+  public String getGeographicalRegion() {
+    return geographicalRegion;
+  }
 
-    public BigDecimal getPrice() {
-      return price;
-    }
+  public void setGeographicalRegion(String geographicalRegion) {
+    this.geographicalRegion = geographicalRegion;
+  }
 
-    public void setPrice(BigDecimal price) {
-      this.price = price;
-    }
+  public String getIndustrySector() {
+    return industrySector;
+  }
 
-    public String getGeographicalRegion() {
-      return geographicalRegion;
-    }
-
-    public void setGeographicalRegion(String geographicalRegion) {
-      this.geographicalRegion = geographicalRegion;
-    }
-
-    public String getIndustrySector() {
-      return industrySector;
-    }
-
-    public void setIndustrySector(String industrySector) {
-      this.industrySector = industrySector;
-    }
+  public void setIndustrySector(String industrySector) {
+    this.industrySector = industrySector;
+  }
 
 }
