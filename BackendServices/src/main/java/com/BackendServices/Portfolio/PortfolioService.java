@@ -28,27 +28,19 @@ public class PortfolioService {
     
             return portfolioDTOs;
         } catch (Exception e) {
-            // Handle exceptions and log them
             throw new PortfolioServiceException("Error retrieving all Portfolios", e);
         }
     }
 
     public PortfolioDTO getPortfolioById(String portfolioId) {
         try {
-            // Convert the portfolioId to a UUID if needed
-           
-
-            // Retrieve the Portfolio entity from the database
             Portfolio portfolio = portfolioRepository.findById(portfolioId).orElse(null);
 
             if (portfolio == null) {
-                return null; // Handle not found case
+                return null;
             }
-
-            // Map the entity to PortfolioDTO and return it
             return PortfolioMapper.mapEntityToDTO(portfolio);
         } catch (Exception e) {
-            // Handle exceptions and log them
             throw new PortfolioServiceException("Error retrieving Portfolio by ID", e);
         }
     }
@@ -63,22 +55,47 @@ public class PortfolioService {
             portfolio.setUserId(PortfolioDTO.getUserId());
             Portfolio savedPortfolio = portfolioRepository.save(portfolio);
     
-            // Map the saved entity back to PortfolioDTO and return it
+           
             return PortfolioMapper.mapEntityToDTO(savedPortfolio);
         } catch (Exception e) {
-            // Handle exceptions and log them
             throw new PortfolioServiceException("Error creating a new Portfolio", e);
         }
        
     }
 
+    public PortfolioDTO updatePortfolio(String portfolioId, UpdatePortfolioDTO updatedPortfolioDTO) {
+        try {
+            if (!portfolioRepository.existsById(portfolioId)) {
+                return null;
+            }
+            Portfolio existingPortfolio = portfolioRepository.findById(portfolioId).orElse(null);
+            if (existingPortfolio == null) {
+                return null;
+            }
+            if (updatedPortfolioDTO.getName() != null) {
+                existingPortfolio.setName(updatedPortfolioDTO.getName());
+            }
+            if (updatedPortfolioDTO.getDescription() != null) {
+                existingPortfolio.setDescription(updatedPortfolioDTO.getDescription());
+            }
+            if (updatedPortfolioDTO.getCapitalAmount() != null) {
+                existingPortfolio.setCapitalAmount(updatedPortfolioDTO.getCapitalAmount());
+            }
+            Portfolio updatedPortfolio = portfolioRepository.save(existingPortfolio);
+    
+            return PortfolioMapper.mapEntityToDTO(updatedPortfolio);
+        } catch (Exception e) {
+            throw new PortfolioServiceException("Error updating Portfolio", e);
+        }
+    }
+    
+    
+
     public boolean deletePortfolio(String portfolioId) {
-     
         if (portfolioRepository.existsById(portfolioId)) {
             portfolioRepository.deleteById(portfolioId);
             return true;
         }
-        return false; // User not found
+        return false; 
     }
-    // Implement other portfolio-related methods as needed
 }

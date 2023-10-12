@@ -1,7 +1,6 @@
 package com.BackendServices.Portfolio.dto;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import com.BackendServices.Portfolio.Portfolio;
 
@@ -12,10 +11,8 @@ public class PortfolioDTO {
     private BigDecimal capitalAmount;
     private String userId;
 
-    // Constructors, getters, and setters
-
     public PortfolioDTO() {
-        // Default constructor
+        
     }
     public PortfolioDTO(String name, String description, BigDecimal capitalAmount, String userId) {
         this.name = name;
@@ -34,12 +31,6 @@ public class PortfolioDTO {
         this.capitalAmount = portfolio.getCapitalAmount();
         this.userId = portfolio.getUserId();
     }
-
-
-    
-    
-
-    // Getters and setters for all fields
 
     public String getPortfolioId() {
         return portfolioId;

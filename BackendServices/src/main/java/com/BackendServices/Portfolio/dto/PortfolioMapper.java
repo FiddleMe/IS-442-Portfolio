@@ -7,14 +7,11 @@ public class PortfolioMapper {
 
     public static PortfolioDTO mapEntityToDTO(Portfolio portfolio) {
         PortfolioDTO dto = new PortfolioDTO();
-        dto.setPortfolioId(portfolio.getPortfolioId()); // Map the ID if needed
+        dto.setPortfolioId(portfolio.getPortfolioId()); 
         dto.setName(portfolio.getName());
         dto.setDescription(portfolio.getDescription());
         dto.setCapitalAmount(portfolio.getCapitalAmount());
         dto.setUserId(portfolio.getUserId());
- 
-        // You can map other fields as needed
- 
         return dto;
     }
   

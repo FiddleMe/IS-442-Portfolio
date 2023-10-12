@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.BackendServices.Portfolio.dto.PortfolioDTO;
+import com.BackendServices.Portfolio.dto.UpdatePortfolioDTO;
 import com.BackendServices.common.ApiResponse;
 import java.util.Collections;
 import java.util.List;
@@ -29,13 +30,6 @@ public class PortfolioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "Portfolio not found"));
         }
     }
-    //Test: POST http://localhost:8082/api/users, body:  {
-    //     "userId": "new_user_id",
-    //     "email": "newuser@example.com",
-    //     "password": "asfasfasf",
-    //     "firstName": "John",
-    //     "lastName": "Doe"
-    // }
 
     @GetMapping
     public ResponseEntity<?> getAllPortfolios() {
@@ -53,15 +47,21 @@ public class PortfolioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(HttpStatus.OK.value(), createdPortfolio, "Portfolio created"));
     }
 
-    // @PutMapping("/{portfolioId}")
-    // public ResponseEntity<PortfolioDTO> updatePortfolio(@PathVariable UUID portfolioId, @RequestBody PortfolioDTO updatedPortfolio) {
-    //     PortfolioDTO portfolio = portfolioService.updatePortfolio(portfolioId, updatedPortfolio);
-    //     if (portfolio != null) {
-    //         return ResponseEntity.ok(portfolio);
-    //     } else {
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
+    @PutMapping("/{portfolioId}")
+    public ResponseEntity<?> updatePortfolio(@PathVariable String portfolioId, @RequestBody UpdatePortfolioDTO updatedPortfolioDTO) {
+        if (updatedPortfolioDTO.getPortfolioId() != null || updatedPortfolioDTO.getUserId() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, "Invalid request: 'portfolioId' and 'userId' cannot be updated in the request body."));
+        }
+    
+        PortfolioDTO updatedPortfolio = portfolioService.updatePortfolio(portfolioId, updatedPortfolioDTO);
+    
+        if (updatedPortfolio != null) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), updatedPortfolio, "Portfolio updated successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "Portfolio not found"));
+        }
+    }
+    
 
     @DeleteMapping("/{portfolioId}")
     public ResponseEntity<?> deletePortfolio(@PathVariable String portfolioId) {
