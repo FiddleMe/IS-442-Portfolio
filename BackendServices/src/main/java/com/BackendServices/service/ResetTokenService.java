@@ -1,6 +1,5 @@
 package com.BackendServices.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.BackendServices.entity.ResetToken;
@@ -12,7 +11,6 @@ import java.util.List;
 public class ResetTokenService {
     private final ResetTokenRepository resetTokenRepository;
 
-    @Autowired
     public ResetTokenService(ResetTokenRepository resetTokenRepository) {
         this.resetTokenRepository = resetTokenRepository;
     }

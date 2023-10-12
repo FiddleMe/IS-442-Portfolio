@@ -1,6 +1,4 @@
 package com.BackendServices.service;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.BackendServices.entity.Stock;
@@ -12,7 +10,6 @@ import java.util.List;
 public class StockService {
     private final StockRepository stockRepository;
 
-    @Autowired
     public StockService(StockRepository stockRepository) {
         this.stockRepository = stockRepository;
     }

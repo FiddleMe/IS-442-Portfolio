@@ -1,19 +1,31 @@
-package com.BackendServices.entity;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+package com.BackendServices.Portfolio;
 
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+
+import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 
 @Entity
 @Table(name = "Portfolio")
 public class Portfolio {
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "PortfolioID", length = 36, nullable = false)
-    private String portfolioId;
+    private UUID portfolioId;
+
 
     @Column(name = "Name")
     private String name;
@@ -27,18 +39,13 @@ public class Portfolio {
     @Column(name = "UserID", length = 36)
     private String userId;
 
-    @Column(name = "StockID", length = 36)
-    private String stockId;
-
-    @Column(name = "DateTime")
-    private LocalDateTime dateTime;
 
     // Getters and setters
-    public String getPortfolioId() {
+    public UUID getPortfolioId() {
       return portfolioId;
     }
 
-    public void setPortfolioId(String portfolioId) {
+    public void setPortfolioId(UUID portfolioId) {
       this.portfolioId = portfolioId;
     }
 
@@ -74,20 +81,5 @@ public class Portfolio {
       this.userId = userId;
     }
 
-    public String getStockId() {
-      return stockId;
-    }
-
-    public void setStockId(String stockId) {
-      this.stockId = stockId;
-    }
-
-    public LocalDateTime getDateTime() {
-      return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-      this.dateTime = dateTime;
-    }
     
 }
