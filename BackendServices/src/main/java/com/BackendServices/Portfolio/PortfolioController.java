@@ -4,8 +4,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.BackendServices.Portfolio.dto.PortfolioDTO;
+import com.BackendServices.common.ApiResponse;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+
+
 
 @RestController
 @RequestMapping("/api/portfolio")
@@ -18,15 +21,14 @@ public class PortfolioController {
     }
 
     @GetMapping("/{portfolioId}")
-    public ResponseEntity<PortfolioDTO> getPortfolioById(@PathVariable UUID portfolioId) {
+    public ResponseEntity<?> getPortfolioById(@PathVariable String portfolioId) {
         PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
         if (portfolio != null) {
-            return ResponseEntity.ok(portfolio);
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), portfolio, "Portfolio found"));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "Portfolio not found"));
         }
     }
-
     //Test: POST http://localhost:8082/api/users, body:  {
     //     "userId": "new_user_id",
     //     "email": "newuser@example.com",
@@ -36,15 +38,19 @@ public class PortfolioController {
     // }
 
     @GetMapping
-    public ResponseEntity<List<PortfolioDTO>> getAllPortfolios() {
+    public ResponseEntity<?> getAllPortfolios() {
         List<PortfolioDTO> portfolios = portfolioService.getAllPortfolios();
-        return ResponseEntity.ok(portfolios);
+        if (portfolios.isEmpty()) {
+            ApiResponse response = new ApiResponse(HttpStatus.NOT_FOUND.value(), Collections.emptyList(), "No portfolios found");
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), portfolios, "Portfolios found"));
+        }
     }
-
     @PostMapping
-    public ResponseEntity<PortfolioDTO> createPortfolio(@RequestBody PortfolioDTO portfolioDTO) {
+    public ResponseEntity<ApiResponse> createPortfolio(@RequestBody PortfolioDTO portfolioDTO) {
         PortfolioDTO createdPortfolio = portfolioService.createPortfolio(portfolioDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPortfolio);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(HttpStatus.OK.value(), createdPortfolio, "Portfolio created"));
     }
 
     // @PutMapping("/{portfolioId}")
@@ -58,12 +64,12 @@ public class PortfolioController {
     // }
 
     @DeleteMapping("/{portfolioId}")
-    public ResponseEntity<Boolean> deletePortfolio(@PathVariable UUID portfolioId) {
+    public ResponseEntity<?> deletePortfolio(@PathVariable String portfolioId) {
         boolean deleted = portfolioService.deletePortfolio(portfolioId);
         if (deleted) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), null, "Portfolio deleted"));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.OK.value(), null, "Portfolio not found"));
         }
     }
 }

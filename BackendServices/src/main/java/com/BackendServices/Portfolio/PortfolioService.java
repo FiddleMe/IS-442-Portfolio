@@ -33,13 +33,13 @@ public class PortfolioService {
         }
     }
 
-    public PortfolioDTO getPortfolioById(UUID portfolioId) {
+    public PortfolioDTO getPortfolioById(String portfolioId) {
         try {
             // Convert the portfolioId to a UUID if needed
-            String uuid = portfolioId.toString();
+           
 
             // Retrieve the Portfolio entity from the database
-            Portfolio portfolio = portfolioRepository.findById(uuid).orElse(null);
+            Portfolio portfolio = portfolioRepository.findById(portfolioId).orElse(null);
 
             if (portfolio == null) {
                 return null; // Handle not found case
@@ -72,10 +72,10 @@ public class PortfolioService {
        
     }
 
-    public boolean deletePortfolio(UUID portfolioId) {
-        String uuid = portfolioId.toString();
-        if (portfolioRepository.existsById(uuid)) {
-            portfolioRepository.deleteById(uuid);
+    public boolean deletePortfolio(String portfolioId) {
+     
+        if (portfolioRepository.existsById(portfolioId)) {
+            portfolioRepository.deleteById(portfolioId);
             return true;
         }
         return false; // User not found

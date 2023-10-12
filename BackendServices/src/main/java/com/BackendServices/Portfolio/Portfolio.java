@@ -24,7 +24,7 @@ public class Portfolio {
         strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "PortfolioID", length = 36, nullable = false)
-    private UUID portfolioId;
+    private String portfolioId;
 
 
     @Column(name = "Name")
@@ -41,11 +41,11 @@ public class Portfolio {
 
 
     // Getters and setters
-    public UUID getPortfolioId() {
+    public String getPortfolioId() {
       return portfolioId;
     }
 
-    public void setPortfolioId(UUID portfolioId) {
+    public void setPortfolioId(String portfolioId) {
       this.portfolioId = portfolioId;
     }
 

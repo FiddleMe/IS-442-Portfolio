@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.BackendServices.Portfolio.Portfolio;
 
 public class PortfolioDTO {
-    private UUID portfolioId;
+    private String portfolioId;
     private String name;
     private String description;
     private BigDecimal capitalAmount;
@@ -21,9 +21,10 @@ public class PortfolioDTO {
         this.name = name;
         this.description = description;
         this.capitalAmount = capitalAmount;
-        this.userId = userId;
+        this.userId = userId;   
     }
-    public PortfolioDTO(UUID id) {
+    public PortfolioDTO(String id) {
+        
         this.portfolioId = id;
     }
 
@@ -40,11 +41,11 @@ public class PortfolioDTO {
 
     // Getters and setters for all fields
 
-    public UUID getPortfolioId() {
+    public String getPortfolioId() {
         return portfolioId;
     }
 
-    public void setPortfolioId(UUID portfolioId) {
+    public void setPortfolioId(String portfolioId) {
         this.portfolioId = portfolioId;
     }
 
