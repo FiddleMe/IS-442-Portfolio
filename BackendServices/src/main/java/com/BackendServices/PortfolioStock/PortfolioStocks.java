@@ -1,4 +1,4 @@
-package com.BackendServices.entity;
+package com.BackendServices.PortfolioStock;
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

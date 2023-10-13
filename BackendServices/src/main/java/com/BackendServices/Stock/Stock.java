@@ -1,4 +1,4 @@
-package com.BackendServices.entity;
+package com.BackendServices.Stock;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

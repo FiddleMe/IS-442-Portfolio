@@ -1,9 +1,6 @@
-package com.BackendServices.service;
+package com.BackendServices.PortfolioStock;
 
 import org.springframework.stereotype.Service;
-
-import com.BackendServices.entity.PortfolioStocks;
-import com.BackendServices.repository.PortfolioStocksRepository;
 
 import java.util.List;
 
@@ -19,8 +16,21 @@ public class PortfolioStocksService {
         return portfolioStocksRepository.findAll();
     }
 
+    public List<PortfolioStocks> getPortfolioStocksById(String portfolioId) {
+        return portfolioStocksRepository.findAllByPortfolioId(portfolioId);
+    }
+
     public PortfolioStocks createPortfolioStocks(PortfolioStocks portfolioStocks) {
         return portfolioStocksRepository.save(portfolioStocks);
+    }
+
+    public boolean deletePortfolioStockById(String portfolioStockId) {
+        try {
+            portfolioStocksRepository.deleteById(portfolioStockId);
+            return true; // Deletion successful
+        } catch (Exception e) {
+            return false; // Deletion failed
+        }
     }
 
     // Implement other portfolio stocks-related methods as needed
