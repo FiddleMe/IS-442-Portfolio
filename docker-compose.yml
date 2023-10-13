@@ -1,10 +1,10 @@
 version: "3.8"
 
 services:
-  mysqldb:
+  OOP-mysqldb:
     image: mysql:5.7
     platform: linux/x86_64
-    container_name: mysqldb
+    container_name: OOP-mysqldb
     restart: always
     healthcheck:
       test: "mysqladmin ping -h localhost -proot"
@@ -17,14 +17,14 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: oopPortfolio
 
-  phpmyadmin:
+  OOP-phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
+    container_name: OOP-phpmyadmin
     ports:
       - 8080:80
     environment:
-      PMA_HOST: mysqldb
+      PMA_HOST: OOP-mysqldb
       PMA_PORT: 3306
     depends_on:
-      mysqldb:
+      OOP-mysqldb:
         condition: service_healthy

@@ -1,18 +1,14 @@
-package com.BackendServices.service;
+package com.BackendServices.Stock;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.BackendServices.entity.Stock;
-import com.BackendServices.repository.StockRepository;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class StockService {
     private final StockRepository stockRepository;
 
-    @Autowired
     public StockService(StockRepository stockRepository) {
         this.stockRepository = stockRepository;
     }
@@ -21,9 +17,12 @@ public class StockService {
         return stockRepository.findAll();
     }
 
-    public Stock createStock(Stock stock) {
-        return stockRepository.save(stock);
+    public Stock getStockById(String stockId, LocalDateTime dateTime) {
+        return stockRepository.findByStockIdAndDateTime(stockId, dateTime);
     }
 
-    // Implement other stock-related methods as needed
+    public List<Stock> createStocks(List<Stock> stocks) {
+        return stockRepository.saveAll(stocks);
+    }
+
 }

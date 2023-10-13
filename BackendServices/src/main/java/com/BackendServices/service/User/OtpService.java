@@ -1,6 +1,5 @@
 package com.BackendServices.service.User;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.RandomStringUtils;
 import com.BackendServices.entity.User;
@@ -19,7 +18,6 @@ public class OtpService {
     private final Map<String, String> otpStore = new ConcurrentHashMap<>();
     private final UserService userService;
 
-    @Autowired
     public OtpService(UserService userService) {
         this.userService = userService;
     }
