@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import com.BackendServices.Stock.dto.StockDTO;
 import com.BackendServices.common.ApiResponse;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -30,10 +30,10 @@ public class StockController {
         return new ResponseEntity<>(stocks, HttpStatus.OK);
     }
 
-    @GetMapping("/{stockId}/{dateTime}")
-    public ResponseEntity<Stock> getStockById(@PathVariable String stockId, @PathVariable String dateTime) {
-        LocalDateTime dateTimeValue = LocalDateTime.parse(dateTime);
-        Stock stock = stockService.getStockById(stockId, dateTimeValue);
+    @GetMapping("/{stockId}/{date}")
+    public ResponseEntity<Stock> getStockById(@PathVariable String stockId, @PathVariable String date) {
+        LocalDate dateValue = LocalDate.parse(date);
+        Stock stock = stockService.getStockById(stockId, dateValue);
         if (stock == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

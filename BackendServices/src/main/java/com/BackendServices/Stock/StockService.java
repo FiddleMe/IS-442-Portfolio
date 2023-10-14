@@ -2,7 +2,7 @@ package com.BackendServices.Stock;
 
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -17,8 +17,8 @@ public class StockService {
         return stockRepository.findAll();
     }
 
-    public Stock getStockById(String stockId, LocalDateTime dateTime) {
-        return stockRepository.findByStockIdAndDateTime(stockId, dateTime);
+    public Stock getStockById(String stockId, LocalDate date) {
+        return stockRepository.findByStockIdAndDate(stockId, date);
     }
 
     public List<Stock> createStocks(List<Stock> stocks) {

@@ -18,8 +18,8 @@ public class Stock {
   @Column(name = "StockID", length = 36, nullable = false)
   private String stockId;
 
-  @Column(name = "DateTime", nullable = false)
-  private LocalDate dateTime;
+  @Column(name = "Date", nullable = false)
+  private LocalDate date;
 
   @Column(name = "Name")
   private String name;
@@ -35,7 +35,7 @@ public class Stock {
 
   public static class StockKey implements Serializable {
     private String stockId;
-    private LocalDate dateTime;
+    private LocalDate date;
 
     // Implement equals() and hashCode() methods (required for composite keys)
   }
@@ -49,12 +49,12 @@ public class Stock {
     this.stockId = stockId;
   }
 
-  public LocalDate getDateTime() {
-    return dateTime;
+  public LocalDate getDate() {
+    return date;
   }
 
-  public void setDateTime(LocalDate dateTime) {
-    this.dateTime = dateTime;
+  public void setDateTime(LocalDate date) {
+    this.date = date;
   }
 
   public String getName() {
