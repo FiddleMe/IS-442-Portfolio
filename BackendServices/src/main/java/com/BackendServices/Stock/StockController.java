@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import com.BackendServices.Stock.dto.StockDTO;
+import com.BackendServices.common.ApiResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,7 +48,7 @@ public class StockController {
     // }
 
     @PostMapping
-    public ResponseEntity<List<Stock>> createStocks(@RequestBody Map<String, Object> timeSeriesDaily) {
+    public ResponseEntity<?> createStocks(@RequestBody Map<String, Object> timeSeriesDaily) {
         Map<String, String> metaData = (Map<String, String>) timeSeriesDaily.get("Meta Data");
         String symbol = (String) metaData.get("2. Symbol");
 
@@ -56,12 +57,14 @@ public class StockController {
         String apiUrl = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + symbol + "&apikey=" + apiKey;
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> companyOverviewData = restTemplate.getForObject(apiUrl, Map.class);
-
+        if (companyOverviewData.isEmpty()){
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.NO_CONTENT.value(), null, String.format("Could not get %s company overview data. Update unsuccessful.", symbol)));
+        }
         //pass to mapping
         List<Stock> stockDTOList = StockDTO.mapJsonToStockDTO(timeSeriesDaily, companyOverviewData);
-        List<Stock> createdStocks = stockService.createStocks(stockDTOList);
+        stockService.createStocks(stockDTOList);
 
-        return new ResponseEntity<>(createdStocks, HttpStatus.CREATED);
+         return ResponseEntity.ok(new ApiResponse(HttpStatus.CREATED.value(), stockDTOList, String.format("Update for stock (%s) successful.", symbol)));
     }
 
 }
