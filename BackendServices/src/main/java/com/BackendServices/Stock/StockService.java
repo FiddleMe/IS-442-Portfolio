@@ -25,4 +25,8 @@ public class StockService {
         return stockRepository.saveAll(stocks);
     }
 
+    public LocalDate getLatestDate() { //find latest date record in table
+        return stockRepository.findLatestDate();
+    }
+
 }

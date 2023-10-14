@@ -40,12 +40,6 @@ public class StockController {
         return new ResponseEntity<>(stock, HttpStatus.OK);
     }
 
-    // @PostMapping
-    // public ResponseEntity<List<Stock>> createStocks(@RequestBody List<Stock>
-    // stocks) {
-    // List<Stock> createdStocks = stockService.createStocks(stocks);
-    // return new ResponseEntity<>(createdStocks, HttpStatus.CREATED);
-    // }
 
     @PostMapping
     public ResponseEntity<?> createStocks(@RequestBody Map<String, Object> timeSeriesDaily) {

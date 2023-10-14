@@ -31,8 +31,8 @@ public class StockDTO {
             Map<String, String> dailyData = entry.getValue();
     
             Stock stockDTO = new Stock();
-            stockDTO.setStockId(symbol); // Assuming "Symbol" is used as stockId
-            stockDTO.setDateTime(LocalDate.parse(date)); // Convert date string to LocalDateTime if necessary
+            stockDTO.setStockId(symbol); // 
+            stockDTO.setDateTime(LocalDate.parse(date)); 
             stockDTO.setName(companyOverviewData.get("Name"));
             stockDTO.setPrice(new BigDecimal(dailyData.get("5. adjusted close")));
             stockDTO.setGeographicalRegion(country);
