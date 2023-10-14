@@ -2,7 +2,7 @@ package com.BackendServices.Stock;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +19,7 @@ public class Stock {
   private String stockId;
 
   @Column(name = "DateTime", nullable = false)
-  private LocalDateTime dateTime;
+  private LocalDate dateTime;
 
   @Column(name = "Name")
   private String name;
@@ -35,7 +35,7 @@ public class Stock {
 
   public static class StockKey implements Serializable {
     private String stockId;
-    private LocalDateTime dateTime;
+    private LocalDate dateTime;
 
     // Implement equals() and hashCode() methods (required for composite keys)
   }
@@ -49,11 +49,11 @@ public class Stock {
     this.stockId = stockId;
   }
 
-  public LocalDateTime getDateTime() {
+  public LocalDate getDateTime() {
     return dateTime;
   }
 
-  public void setDateTime(LocalDateTime dateTime) {
+  public void setDateTime(LocalDate dateTime) {
     this.dateTime = dateTime;
   }
 
