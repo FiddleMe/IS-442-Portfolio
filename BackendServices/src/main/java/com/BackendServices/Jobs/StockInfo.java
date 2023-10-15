@@ -1,4 +1,4 @@
-package com.BackendServices.Jobs.config;
+package com.BackendServices.Jobs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -15,8 +15,18 @@ public class StockInfo {
     @JsonProperty("4. close")
     private String close;
 
-    @JsonProperty("5. volume")
+    @JsonProperty("5. adjusted close")
+    private String adjustedClose;
+
+    @JsonProperty("6. volume")
     private String volume;
+
+    @JsonProperty("7. dividend amount")
+    private String dividendAmount;
+
+    @JsonProperty("8. split coefficient")
+    private String splitCoefficient;
+
 
     public String getOpen() {
         return open;
@@ -57,6 +67,6 @@ public class StockInfo {
     public void setVolume(String volume) {
         this.volume = volume;
     }
-
+    
     // getters and setters
 }

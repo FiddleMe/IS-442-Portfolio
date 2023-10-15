@@ -2,14 +2,18 @@ package com.BackendServices.Jobs.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.BackendServices.Jobs.StockCronData;
 import com.BackendServices.Jobs.StockCronService;
+import com.BackendServices.Jobs.StockData;
+import com.BackendServices.Jobs.StockInfo;
+import com.BackendServices.Jobs.StockTimeSeries;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 @Configuration
 @EnableScheduling
@@ -22,23 +26,39 @@ public class StockCronConfiguration {
         this.stockCronService = stockCronService;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?") // Runs at 12 AM every day
+    @Scheduled(cron = "0/10 * * * * *")
     public void getStockData() {
-        String[] stockSymbols = {"AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "FB", "JPM", "V", "JNJ", "BRK.B", "WMT", "BAC", "PG", "INTC", "VZ", "DIS", "T", "CSCO", "HD", "PFE"};
-        List<StockCronData> stockDataList = new ArrayList<>();
-        if (runCount < 3) { // Run for 3 times            
+        // Define the stock symbols you want to fetch
+        String[] stockSymbols = {"AAPL", "MSFT", "GOOGL"};
+        List<StockData> stockDataList = new ArrayList<>();
+
+        if (runCount < 1) { // Run for 1 time
             for (String symbol : stockSymbols) {
-                StockCronData stockData = stockCronService.getStockData(symbol);
+                StockData stockData = stockCronService.getStockData(symbol);
                 stockDataList.add(stockData);
             }
-        // Process the stock data as needed
-        for (StockCronData stockData : stockDataList) {
-            // Process each stock's data
-            System.out.println(stockData.getTimeSeries());
-        }
 
-        runCount++;
-    }
+            // Process the stock data as needed
+            for (StockData stockData : stockDataList) {
+                // StockMetaData metaData = stockData.getMetaData();
+                StockTimeSeries timeSeriesDaily = stockData.getTimeSeriesDaily();
+
+                if (timeSeriesDaily != null) {
+                    Map<String, StockInfo> timeSeries = timeSeriesDaily.getTimeSeries();
+                    for (Map.Entry<String, StockInfo> entry : timeSeries.entrySet()) {
+                        String date = entry.getKey();
+                        StockInfo dailyData = entry.getValue();
+                        System.out.println("Date: " + date);
+                        System.out.println("Open: " + dailyData.getOpen());
+                        System.out.println("High: " + dailyData.getHigh());
+                        System.out.println("Low: " + dailyData.getLow());
+                        System.out.println("Close: " + dailyData.getClose());
+                        System.out.println("Volume: " + dailyData.getVolume());
+                        // Process daily data as needed
+                    }
+                }
+            }
+            runCount++;
+        }
     }
 }
-
