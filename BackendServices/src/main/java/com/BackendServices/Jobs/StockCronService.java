@@ -11,19 +11,20 @@ import org.springframework.web.client.HttpClientErrorException;
 public class StockCronService {
     @Value("${alphavantage.api.key}")
     private String apiKey;
-
-    public StockData getStockData(String symbol) {
-        String apiUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=" + symbol + "&apikey=" + apiKey;
+    
+    public String getStockDataJson(String symbol) {
+        String apiUrl = "https://www.alphavantage.co/query?symbol=" + symbol + "&function=TIME_SERIES_DAILY_ADJUSTED&apikey=" + apiKey;
+        System.out.println(apiUrl);
         RestTemplate restTemplate = new RestTemplate();
 
         try {
-            ResponseEntity<StockData> response = restTemplate.getForEntity(apiUrl, StockData.class);
+            ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                StockData stockData = response.getBody();
+                String jsonData = response.getBody();
                 // Log or debug the response
-                System.out.println("API Response: " + stockData);
-                return stockData;
+                System.out.println("API Response: " + jsonData);
+                return jsonData;
             } else {
                 // Log the HTTP status code if it's not OK
                 System.err.println("API Response Error - HTTP Status Code: " + response.getStatusCode());
