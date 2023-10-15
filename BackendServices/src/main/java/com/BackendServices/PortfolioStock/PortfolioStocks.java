@@ -1,5 +1,5 @@
 package com.BackendServices.PortfolioStock;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -18,8 +18,8 @@ public class PortfolioStocks {
     @Column(name = "StockID", length = 36)
     private String stockId;
 
-    @Column(name = "DateTime")
-    private LocalDateTime dateTime;
+    @Column(name = "date")
+    private LocalDate date;
 
     @Column(name = "Quantity")
     private Integer quantity;
@@ -49,12 +49,12 @@ public class PortfolioStocks {
       this.stockId = stockId;
     }
 
-    public LocalDateTime getDateTime() {
-      return dateTime;
+    public LocalDate getdate() {
+      return date;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-      this.dateTime = dateTime;
+    public void setdate(LocalDate date) {
+      this.date = date;
     }
 
     public Integer getQuantity() {
