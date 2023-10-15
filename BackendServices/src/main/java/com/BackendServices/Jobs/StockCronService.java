@@ -22,7 +22,6 @@ public class StockCronService {
             if (response.getStatusCode() == HttpStatus.OK) {
                 String jsonData = response.getBody();
                 // Log or debug the response
-                System.out.println("API Response: " + jsonData);
                 return jsonData;
             } else {
                 // Log the HTTP status code if it's not OK

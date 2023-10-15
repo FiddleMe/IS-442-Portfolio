@@ -10,7 +10,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.BackendServices.Jobs.StockCronData;
 import com.BackendServices.Jobs.StockCronService;
-
+import com.BackendServices.Stock.StockService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,26 +22,46 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 @ConditionalOnProperty(name = "scheduler.enabled", matchIfMissing = true)
 public class StockCronConfiguration {
     private final StockCronService stockCronService;
+    private final StockService stockService;
     private int runCount = 0;
 
-    public StockCronConfiguration(StockCronService stockCronService) {
+    public StockCronConfiguration(StockCronService stockCronService, StockService stockService) {
         this.stockCronService = stockCronService;
+        this.stockService = stockService;
     }
 
 
 // ...
 
+
+
+    public Map<String, Object> jsonStringToMap(String jsonString) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {});
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle the exception appropriately
+            return null;
+        }
+    }
+
+
     @Scheduled(cron = "0/10 * * * * *")
     public void getStockData() {
         // Define the stock symbols you want to fetch
-        String[] stockSymbols = {"AAPL", "MSFT", "GOOGL"};
-        Map<String, String> stockDataMap = new HashMap<>();
+        String[] stockSymbols = {"AAPL"};
+      
 
         if (runCount < 1) { // Run for 1 time
             for (String symbol : stockSymbols) {
                 String jsonString = stockCronService.getStockDataJson(symbol); // Replace with your method to fetch JSON response
                 if (jsonString != null) { // Check if JSON response is not null
-                    stockDataMap.put(symbol, jsonString);
+                    //call stock service
+                    System.out.println(jsonString);
+                    Map<String,Object> inputData = jsonStringToMap(jsonString);
+                    stockService.createStocks(inputData);
+                    System.out.println("done");
+                    
                 }
             }
         }
@@ -66,12 +88,12 @@ public class StockCronConfiguration {
             //     }
             // }
             runCount++;
-            for (Map.Entry<String, String> entry : stockDataMap.entrySet()) {
-                String symbol = entry.getKey();
-                String jsonString = entry.getValue();
-                System.out.println("Stock Symbol: " + symbol);
-                System.out.println("JSON Response: " + jsonString);
-            }
+            // for (Map.Entry<String, String> entry : stockDataMap.entrySet()) {
+            //     String symbol = entry.getKey();
+            //     String jsonString = entry.getValue();
+            //     System.out.println("Stock Symbol: " + symbol);
+            //     System.out.println("JSON Response: " + jsonString);
+            // }
     
     }
 }
