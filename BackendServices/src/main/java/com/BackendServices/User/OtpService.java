@@ -58,14 +58,15 @@ public class OtpService {
         // Configure email sending properties
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
 
         // Set up a Session with your email credentials
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("gigsterjob@gmail.com", "your-email-password");
+                return new PasswordAuthentication("gigsterjob@gmail.com", "towlwhajswsrmubo");
             }
         });
 
@@ -74,7 +75,7 @@ public class OtpService {
             Message message = new MimeMessage(session);
 
             // Set the sender and recipient email addresses
-            message.setFrom(new InternetAddress("your-email@gmail.com"));
+            message.setFrom(new InternetAddress("gigsterjob@gmail.com.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
 
             // Set the email subject and content

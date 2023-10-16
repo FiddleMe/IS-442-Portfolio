@@ -12,10 +12,12 @@ public class UserController {
 
     private final UserService userService;
     private final LoginOrRegistration loginOrRegistration;
+    private final OtpService otpService;
 
-    public UserController(UserService userService, LoginOrRegistration loginOrRegistration) {
+    public UserController(UserService userService, LoginOrRegistration loginOrRegistration, OtpService otpService) {
         this.userService = userService;
         this.loginOrRegistration = loginOrRegistration;
+        this.otpService = otpService;
     }
 
     @GetMapping("/{userId}")
@@ -59,7 +61,6 @@ public class UserController {
         }
     }
     // Test: POST http://localhost:8082/api/users, body: {
-    // "userId": "new_user_id",
     // "email": "newuser@example.com",
     // "password": "asfasfasf",
     // "firstName": "John",
@@ -74,6 +75,26 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body("Password updated successfully");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email is not associated with a user or failed to update password");
+        }
+    }
+
+    @PostMapping("/generateOTP")
+    public ResponseEntity<String> generateOTP(@RequestParam String email) {
+        // Call the generateOTP method in OtpService
+        otpService.generateOTP(email);
+
+        return ResponseEntity.status(HttpStatus.OK).body("OTP generated and sent to your email");
+    }
+
+    @PostMapping("/validateOTP")
+    public ResponseEntity<String> validateOTP(@RequestParam String email, @RequestParam String otp) {
+        // Call the validateOTP method in OtpService
+        boolean isOTPValid = otpService.validateOTP(email, otp);
+
+        if (isOTPValid) {
+            return ResponseEntity.status(HttpStatus.OK).body("OTP is valid");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("OTP is invalid or has expired");
         }
     }
 
