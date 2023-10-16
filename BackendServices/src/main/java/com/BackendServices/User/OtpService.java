@@ -1,8 +1,7 @@
-package com.BackendServices.service.User;
+package com.BackendServices.User;
 
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.RandomStringUtils;
-import com.BackendServices.entity.User;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -58,15 +57,15 @@ public class OtpService {
     private void sendOTPByEmail(String email, String otp) {
         // Configure email sending properties
         Properties props = new Properties();
-        props.put("mail.smtp.host", "your-smtp-host");
-        props.put("mail.smtp.port", "your-smtp-port");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "465");
         props.put("mail.smtp.auth", "true");
 
         // Set up a Session with your email credentials
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("your-email@gmail.com", "your-email-password");
+                return new PasswordAuthentication("gigsterjob@gmail.com", "your-email-password");
             }
         });
 

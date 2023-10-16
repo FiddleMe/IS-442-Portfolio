@@ -1,12 +1,10 @@
-package com.BackendServices.service.User;
+package com.BackendServices.User;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.*;
-
-import com.BackendServices.entity.User;
 
 @Service
 public class LoginOrRegistration {

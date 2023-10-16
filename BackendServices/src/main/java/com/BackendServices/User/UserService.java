@@ -1,10 +1,7 @@
-package com.BackendServices.service.User;
+package com.BackendServices.User;
 
 
 import org.springframework.stereotype.Service;
-
-import com.BackendServices.entity.User;
-import com.BackendServices.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
