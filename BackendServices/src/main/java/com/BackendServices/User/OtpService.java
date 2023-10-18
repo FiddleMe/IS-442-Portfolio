@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.BackendServices.User.exception.UserException;
+
 @Service
 public class OtpService {
 
@@ -26,15 +28,19 @@ public class OtpService {
         Optional<User> userOptional = userService.getUserByEmail(email);
 
         if (userOptional.isPresent()) {
+            try {
+                // Generate a random OTP (6 characters in this example)
+                String otp = RandomStringUtils.randomNumeric(6);
 
-            // Generate a random OTP (6 characters in this example)
-            String otp = RandomStringUtils.randomNumeric(6);
+                // Store the OTP temporarily
+                otpStore.put(email, otp);
 
-            // Store the OTP temporarily
-            otpStore.put(email, otp);
-
-            // Send the OTP to the user's email
-            sendOTPByEmail(email, otp);
+                // Send the OTP to the user's email
+                sendOTPByEmail(email, otp);
+            } catch (Exception e) {
+                // Handle the exception with your custom UserException
+                throw new UserException("Failed to generate OTP or send email.", e);
+            }
         } else {
             // Email is not associated with a user; you can handle this case accordingly
             System.out.println("Email is not associated with any user.");
