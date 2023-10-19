@@ -23,10 +23,12 @@ function SignUp() {
     axios
       .post("http://localhost:8082/api/users", user)
       .then((response) => {
-        console.log(response.data);
+        console.log(response.data.message);
+        var message = response.data.message;
         if (response.data != null) {
-          alert("User created successfully!");
+          alert(message);
           // Redirect to the login page or perform any other action
+
         } else {
           alert("Failed to create user. Please try again.");
         }
@@ -127,7 +129,9 @@ function SignUp() {
                   type="submit"
                   className="btn btn-primary btn-block rounded-input"
                 >
-                  Create Account
+                  <Link to="/login" className="text-white">
+                    Create Account
+                  </Link>
                 </button>
               </form>
             </div>
