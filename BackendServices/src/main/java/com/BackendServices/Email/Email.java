@@ -1,16 +1,12 @@
 package com.BackendServices.Email;
 
 public class Email {
-    private String sender;
     private String recipient;
     private String subject;
     private String msg;
     
     
 
-    public String getSender() {
-        return sender;
-    }
 
     public String getRecipient() {
         return recipient;
@@ -24,9 +20,6 @@ public class Email {
         return msg;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
 
     public void setRecipient(String recipient) {
         this.recipient = recipient;

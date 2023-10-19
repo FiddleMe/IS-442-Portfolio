@@ -8,7 +8,6 @@ public class EmailMapper {
     
     public Email convertToEntity (EmailDTO emailDto){
         Email email = new Email();
-        email.setSender(emailDto.getSender());
         email.setRecipient(emailDto.getRecipient());
         email.setSubject(emailDto.getSubject());
         email.setMsg(emailDto.getMsg());
@@ -18,7 +17,6 @@ public class EmailMapper {
     }
     public EmailDTO convertToDTO (Email email){
         EmailDTO emailDto = new EmailDTO();
-        emailDto.setSender(email.getSender());
         emailDto.setRecipient(email.getRecipient());
         emailDto.setSubject(email.getSubject());
         emailDto.setMsg(email.getMsg());

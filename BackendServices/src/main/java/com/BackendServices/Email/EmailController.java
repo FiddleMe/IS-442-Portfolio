@@ -23,7 +23,6 @@ public class EmailController {
             Email email = emailMapper.convertToEntity(emailDto);
             emailService.sendEmail(email);
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), email, "Email sent successfully"));
-            // return ResponseEntity.ok("Email sent successfully");
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), emailDto, "Failed to sent Email"));
         }
