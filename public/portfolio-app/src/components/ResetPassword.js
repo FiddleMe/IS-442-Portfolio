@@ -3,14 +3,18 @@ import { Link } from "react-router-dom";
 import "../App.css";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function ResetPassword() {
   const location = useLocation();
+  const navigate = useNavigate();
   const email = new URLSearchParams(location.search).get("email");
+  console.log(email);
   const [newPassword, setNewPassword] = useState(""); // Define and initialize 'newPassword'
   const [confirmPassword, setConfirmPassword] = useState(""); // Define and initialize 'confirmPassword'
 
-  const handleResetPassword = async () => {
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
     if (newPassword === confirmPassword) {
       axios
         .put("http://localhost:8082/api/users/updatePassword", {
@@ -18,8 +22,10 @@ function ResetPassword() {
           password: newPassword,
         })
         .then((response) => {
+            console.log(response.data);
           if (response.data.message != null) {
             alert(response.data.message);
+            navigate("/login");
           } else {
             alert("Failed to reset the password. Please try again.");
           }
@@ -33,37 +39,61 @@ function ResetPassword() {
     }
   };
   return (
-    <form>
-      <div className="form-group">
-        <label htmlFor="newPassword">New Password</label>
-        <input
-          type="password"
-          className="form-control rounded-input"
-          id="newPassword"
-          placeholder="Enter new password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card rounded-input login-form">
+            <div className="card-header">
+              <h3 className="header1">Forgot Password</h3>
+              <h6 className="header2">
+                Enter new password for account
+              </h6>
+            </div>
+            <div className="card-body">
+              <form>
+                <div className="form-group">
+                  <label htmlFor="newPassword">New Password</label>
+                  <input
+                    type="password"
+                    className="form-control rounded-input"
+                    id="newPassword"
+                    placeholder="Enter new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="confirmPassword">Confirm Password</label>
+                  <input
+                    type="password"
+                    className="form-control rounded-input"
+                    id="confirmPassword"
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-block rounded-input"
+                  onClick={handleResetPassword}
+                >
+                  Reset Password
+                </button>
+              </form>
+            </div>
+            <div className="card-footer text-center">
+              <small className="text-muted">
+                Remember your password?{" "}
+                <Link to="/login" className="text-primary">
+                  Login
+                </Link>
+              </small>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="form-group">
-        <label htmlFor="confirmPassword">Confirm Password</label>
-        <input
-          type="password"
-          className="form-control rounded-input"
-          id="confirmPassword"
-          placeholder="Confirm new password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-      </div>
-      <button
-        type="submit"
-        className="btn btn-primary btn-block rounded-input"
-        onClick={handleResetPassword}
-      >
-        Reset Password
-      </button>
-    </form>
+    </div>
   );
 }
 

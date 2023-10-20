@@ -3,8 +3,12 @@ import "../App.css";
 import { Link } from "react-router-dom";
 import personIcon from "./pngegg.png";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     First_Name: "",
     Last_Name: "",
@@ -28,7 +32,7 @@ function SignUp() {
         if (response.data != null) {
           alert(message);
           // Redirect to the login page or perform any other action
-
+          navigate("/login");
         } else {
           alert("Failed to create user. Please try again.");
         }
@@ -129,9 +133,7 @@ function SignUp() {
                   type="submit"
                   className="btn btn-primary btn-block rounded-input"
                 >
-                  <Link to="/login" className="text-white">
                     Create Account
-                  </Link>
                 </button>
               </form>
             </div>
