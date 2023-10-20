@@ -66,7 +66,7 @@ function Sidebar(props) {
 
     return (
         // <div className={`col-md-2 ${isSidebarOpen && !isMobile ? 'web_sidebar' : 'mobile_sidebar'}`}>
-        <div className={`col-md-2 ${isSidebarOpen && !isMobile ? 'web_sidebar' : isSidebarOpen && isMobile ? 'mobile_sidebar pb-3': ''}`}>
+        <div className={`col-md-2 ${isSidebarOpen && !isMobile ? 'web_sidebar' : isSidebarOpen && isMobile ? 'mobile_sidebar pb-3': 'menu_closed'}`}>
             {isMobile ? 
                 <div className="sidebar-header mt-3">
                     <button className={`hamburger-icon btn bg-transparent  mb-3 ${isSidebarOpen? 'btn-outline-light': 'btn-outline-dark'}`} onClick={() => toggleSidebar()}>
