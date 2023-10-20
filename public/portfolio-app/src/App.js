@@ -6,6 +6,7 @@ import SignUp from './components/SignUp';
 import ForgotPassword from './components/ForgetPassword';
 import ResetPassword from './components/ResetPassword';
 import ValidateOTP from './components/ValidateOTP';
+import Home from './components/Home';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword/>} />
         <Route path="/validate-otp" element={<ValidateOTP/>} />
         <Route path="/reset-password" element={<ResetPassword/>} />
+        <Route path="/home" element={<Home/>} />
       </Routes>
     </Router>
   );

@@ -35,12 +35,13 @@ function Login() {
                     placeholder="Enter your password"
                   />
                 </div>
-                <button
+                {/* <button
                   type="submit"
                   className="btn btn-primary btn-block rounded-input"
                 >
                   Login
-                </button>
+                </button> */}
+                <Link to="/home" type="submit" className="btn btn-primary btn-block rounded-input">Login</Link>
               </form>
             </div>
             <div className="card-footer text-center">
