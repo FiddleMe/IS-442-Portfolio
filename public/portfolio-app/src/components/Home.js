@@ -6,10 +6,10 @@ import { FaBookOpen} from 'react-icons/fa';
 const Home = () => {
     const subPages = [
         { icon: FaBookOpen, title: 'Portfolio 1'},
-        { icon: FaBookOpen, title:  'Portfolio 1' },
+        { icon: FaBookOpen, title:  'Portfolio 2' },
     ];
   
-    const currentPage = 'Home'; 
+    const currentPage = 'Portfolio 1'; 
   
     return (
       <div className="container-fluid">

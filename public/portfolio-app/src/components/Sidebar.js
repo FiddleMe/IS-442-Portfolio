@@ -17,6 +17,19 @@ function Sidebar(props) {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
+    const printPortfolio = (page) =>{
+        console.log(page)
+    }
+
+    const isSubPage = (page) => {
+        for (let i = 0; i < pages.length; i++) {
+          if (pages[i].subpages.find(subpage => subpage.title === page)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
     const pages = [
         { icon: FaHome, title: 'Home', subpages: [] },
         { icon: GoStack, title: 'Portfolios', subpages: subPages },
@@ -47,12 +60,17 @@ function Sidebar(props) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    useEffect(() => {
+        setIsDropdownOpen(isSubPage(currentPage));
+      }, [currentPage]);
+
     return (
-        <div className={`col-md-2 pt-5 ${isSidebarOpen && !isMobile ? 'web_sidebar' : 'mobile_sidebar'}`}>
+        // <div className={`col-md-2 ${isSidebarOpen && !isMobile ? 'web_sidebar' : 'mobile_sidebar'}`}>
+        <div className={`col-md-2 ${isSidebarOpen && !isMobile ? 'web_sidebar' : isSidebarOpen && isMobile ? 'mobile_sidebar pb-3': ''}`}>
             {isMobile ? 
-                <div className="sidebar-header">
-                    <button className="hamburger-icon btn bg-transparent btn-outline-light mb-3" onClick={toggleSidebar}>
-                        <FaBars color="#FFFFFF" />
+                <div className="sidebar-header mt-3">
+                    <button className={`hamburger-icon btn bg-transparent  mb-3 ${isSidebarOpen? 'btn-outline-light': 'btn-outline-dark'}`} onClick={() => toggleSidebar()}>
+                        <FaBars color={isSidebarOpen? '#FFFFFF': '#4C506B'} />
                     </button>
                 </div>
                 :
@@ -67,16 +85,16 @@ function Sidebar(props) {
                                     {page.subpages && page.subpages.length > 0 ? (
                                         <div>
                                             <NavLink
-                                                onClick={toggleDropdown}
+                                                onClick={() => toggleDropdown()}
                                                 className={`tab displayDropdown ${page.title === currentPage ? 'bold' : ''}`}
                                             >
-                                                {page.icon()} {page.title}
+                                                {page.icon()} {page.title} 
                                                 {isDropdownOpen ? <FaChevronUp /> : <FaChevronDown />}
                                             </NavLink>
                                             <Collapse isOpen={isDropdownOpen}>
-                                                <div className={`pl-3 tab ${page.title === currentPage ? 'bold' : ''}`}>
+                                                <div className={`pl-3 ${page.title === currentPage ? 'bold' : ''}`}>
                                                     {page.subpages.map((subpage, idx) => (
-                                                        <p key={idx}>{subpage.icon()} {subpage.title}</p>
+                                                        <div key={idx} onClick={() => printPortfolio(subpage.title)} className={`tab ${subpage.title === currentPage ? 'bold' : ''}`}>{subpage.icon()} {subpage.title}</div>
                                                     ))}
                                                 </div>
                                             </Collapse>
