@@ -37,15 +37,31 @@ function ValidateOTP() {
         console.log(error);
       });
   };
+  const componentStyles = {
+    backgroundColor: "#101729", // Background color
+    borderRadius: "25px", // Border radius
+    padding: "20px", // Padding
+    textAlign: "center", // Text alignment
+    position: "relative", // Position
+  };
+
+
+  const header1Styles = {
+    color: "#899CF8",
+  };
+
+  const header2Styles = {
+    color: "#FFFFFF",
+  };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" style={componentStyles}>
       <div className="row justify-content-center">
         <div className="col-md-6">
-          <div className="card rounded-input login-form">
+          <div className="card rounded-input login-form" style={componentStyles}>
             <div className="card-header">
-              <h3 className="header1">Forgot Password</h3>
-              <h6 className="header2">Enter OTP sent to your email</h6>
+              <h3 style={header1Styles}>Forgot Password</h3>
+              <h6 style={header2Styles}>Enter OTP sent to your email</h6>
             </div>
             <div className="card-body">
               <form>
@@ -70,7 +86,7 @@ function ValidateOTP() {
               </form>
             </div>
             <div className="card-footer text-center">
-              <small className="text-muted">
+              <small className="header2">
                 Remember your password?{" "}
                 <Link to="/login" className="text-primary">
                   Login
@@ -82,6 +98,7 @@ function ValidateOTP() {
       </div>
     </div>
   );
+  
 }
 
 export default ValidateOTP;

@@ -42,19 +42,42 @@ function SignUp() {
         console.error(error);
       });
   };
+  const componentStyles = {
+    backgroundColor: "#101729", // Background color
+    borderRadius: "25px", // Border radius
+    padding: "20px", // Padding
+    textAlign: "center", // Text alignment
+    position: "relative", // Position
+  };
+
+  const personIconStyles = {
+    width: "80px",
+    borderRadius: "50%",
+    marginBottom: "10px",
+    backgroundColor: "#E1E5F8",
+    zIndex: 1,
+  };
+
+  const header1Styles = {
+    color: "#899CF8",
+  };
+
+  const header2Styles = {
+    color: "#FFFFFF",
+  };
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" style={componentStyles}>
       <div className="row justify-content-center">
         <div className="col-md-6">
-          <div className="card rounded-input login-form">
-            <div className="card-header">
+          <div className="card rounded-input login-form" style={componentStyles}>
+            <div className="card-header" style={componentStyles}>
               <img
                 src={personIcon}
                 alt="Person Icon"
-                className="person-icon"
-              ></img>
-              <h3 className="header1">Create Account</h3>
-              <h6 className="header2">Sign up for a new account</h6>
+                style={personIconStyles}
+              />
+              <h3 style={header1Styles}>Create Account</h3>
+              <h6 style={header2Styles}>Sign up for a new account</h6>
             </div>
             <div className="card-body">
               <form
@@ -74,6 +97,7 @@ function SignUp() {
                     onChange={(e) =>
                       setUser({ ...user, firstName: e.target.value })
                     }
+                  
                   />
                 </div>
                 <div className="form-group">
@@ -87,6 +111,7 @@ function SignUp() {
                     onChange={(e) =>
                       setUser({ ...user, lastName: e.target.value })
                     }
+                  
                   />
                 </div>
                 <div className="form-group">
@@ -100,6 +125,7 @@ function SignUp() {
                     onChange={(e) =>
                       setUser({ ...user, email: e.target.value })
                     }
+                  
                   />
                 </div>
                 <div className="form-group">
@@ -113,6 +139,7 @@ function SignUp() {
                     onChange={(e) =>
                       setUser({ ...user, password: e.target.value })
                     }
+                  
                   />
                 </div>
 
@@ -127,18 +154,19 @@ function SignUp() {
                     onChange={(e) =>
                       setUser({ ...user, confirmPassword: e.target.value })
                     }
+                  
                   />
                 </div>
                 <button
                   type="submit"
                   className="btn btn-primary btn-block rounded-input"
                 >
-                    Create Account
+                  Create Account
                 </button>
               </form>
             </div>
             <div className="card-footer text-center">
-              <small className="text-muted">
+              <small className="header2">
                 Already have an account?{" "}
                 <Link to="/login" className="text-primary">
                   Login
