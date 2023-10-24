@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../App.css";
+import "./Login.css";
 import { Link } from "react-router-dom";
 import personIcon from "./pngegg.png";
 import axios from "axios";
