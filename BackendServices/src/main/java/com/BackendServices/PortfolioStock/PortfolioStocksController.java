@@ -59,7 +59,7 @@ public class PortfolioStocksController {
         return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), response,
                 String.format(
                         "Price retrival for stock (%s) is successful.Result is latest price subtract purchase price.",
-                        response.get("stockId"))));
+                        stockid)));
     }
 
     @PostMapping
