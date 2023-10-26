@@ -49,7 +49,7 @@ public class StockCronConfiguration {
     @Scheduled(cron = "0/10 * * * * *")
     public void getStockData() {
         // Define the stock symbols you want to fetch
-        String[] stockSymbols = {"AAPL"};
+        String[] stockSymbols = {"AAPL","MSFT", "RLX"};
       
 
         if (runCount < 1) { // Run for 1 time

@@ -58,7 +58,8 @@ public class StockService {
         }
         // pass to mapping
 
-        LocalDate latestDate = this.getLatestDate();
+        LocalDate latestDate = this.getLatestDateByStockSymbol(symbol);
+        System.out.println(latestDate);
         List<Stock> stockDTOList = StockDTO.mapJsonToStockDTO(timeSeriesDaily, companyOverviewData, latestDate);
         return stockRepository.saveAll(stockDTOList);
     }
@@ -66,5 +67,10 @@ public class StockService {
     public LocalDate getLatestDate() { // find latest date record in table
         return stockRepository.findLatestDate();
     }
+
+    public LocalDate getLatestDateByStockSymbol(String stockSymbol) {
+        return stockRepository.findLatestDateByStockSymbol(stockSymbol);
+    }
+    
 
 }
