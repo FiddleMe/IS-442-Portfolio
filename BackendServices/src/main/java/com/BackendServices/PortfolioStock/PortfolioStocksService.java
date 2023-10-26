@@ -64,8 +64,7 @@ public class PortfolioStocksService {
                 BigDecimal inputPrice = inputStock.getPrice();
                 BigDecimal priceDifference = latestPrice.subtract(inputPrice);
                 response.put("priceDifference", priceDifference);
-                response.put("stockId", stockId);
-                response.put("purchaseDate", date.toString());
+                response.put("stock", inputStock);
                 return response;
             }
         }

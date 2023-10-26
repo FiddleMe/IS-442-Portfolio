@@ -3,7 +3,7 @@ import { PieChart } from '@mui/x-charts/PieChart';
 
 function DonutChart({ title, data }) {
   return (
-    <div className="bg-white d-inline-block rounded-3 text-center">
+    <div className="bg-white rounded-3 text-center">
       <PieChart
         series={[
           {
