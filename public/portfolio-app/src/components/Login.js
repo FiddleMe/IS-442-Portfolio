@@ -21,6 +21,7 @@ function Login() {
       password: password,
     })
     .then((response) => {
+      sessionStorage.setItem('userData', JSON.stringify(response.data.data));
       console.log(response.data);
     if (response.data.message != null) {
       alert(response.data.message);

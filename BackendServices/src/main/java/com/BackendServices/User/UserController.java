@@ -40,9 +40,15 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@RequestBody EmailPasswordRequest loginRequest) {
         // Call the validateLogin method in LoginOrRegistration
-        boolean loginSuccess = loginOrRegistration.validateLogin(loginRequest.getEmail(), loginRequest.getPassword());
-        if (loginSuccess) {
-            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), "Login successful", "Login successful"));
+        Optional<User> loginSuccess = loginOrRegistration.validateLogin(loginRequest.getEmail(), loginRequest.getPassword());
+        User userToShow = new User();
+        User originalUser = loginSuccess.get();
+        userToShow.setUserId(originalUser.getUserId());
+        userToShow.setEmail(originalUser.getEmail());
+        userToShow.setFirstName(originalUser.getFirstName());
+        userToShow.setLastName(originalUser.getLastName());
+        if (loginSuccess.isPresent()) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), userToShow, "Login successful"));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(HttpStatus.UNAUTHORIZED.value(), null, "Login failed"));
         }

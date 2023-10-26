@@ -17,11 +17,11 @@ public class LoginOrRegistration {
         this.userService = userService;
     }
 
-    public boolean validateLogin(String email, String password) {
+    public Optional<User> validateLogin(String email, String password) {
         try {
             // Get all users from the UserService
             Optional<User> userOptional = userService.getUserByEmail(email);
-
+            
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
 
@@ -29,13 +29,13 @@ public class LoginOrRegistration {
 
                 // Compare the hashed entered password with the stored hashed password
                 if (passwordEncoder.matches(password, user.getPassword())) {
-                    return true; // Passwords match, login successful
+                    return userOptional; // Passwords match, login successful
                 } else {
-                    return false;
+                    return Optional.empty();
                 }
             }
 
-            return false; // Email is not associated with a user or passwords do not match
+            return Optional.empty(); // Email is not associated with a user or passwords do not match
         } catch (Exception e) {
             // Handle the exception with your custom exception
             throw new UserException("Login failed", e);

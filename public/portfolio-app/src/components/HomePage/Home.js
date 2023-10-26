@@ -49,8 +49,9 @@ function Home() {
     { icon: FaBookOpen, title: 'Portfolio 1' },
     { icon: FaBookOpen, title: 'Portfolio 2' },
   ];
-  const name = 'John Tan';
-  const email = 'john_tan@gmail.com';
+  const userDetails = JSON.parse(sessionStorage.getItem('userData'));
+  const name = userDetails.firstName + ' ' + userDetails.lastName;
+  const email = userDetails.email;
 
   const currentPage = 'Portfolio 1';
 
