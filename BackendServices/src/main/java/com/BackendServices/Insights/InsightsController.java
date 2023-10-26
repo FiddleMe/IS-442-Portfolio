@@ -71,6 +71,17 @@ public class InsightsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "industry distribution not found"));
         }
     }
+    //Name, Starting value, current value, p&L, %PL
+    @GetMapping("/profit-loss/{portfolioId}")
+    public ResponseEntity<?> getProfitLoss(@PathVariable String portfolioId) {
+        List<Object> profitLoss = insightsService.getProfitLoss(portfolioId);
+        
+        if (profitLoss != null) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), profitLoss, "success"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "industry distribution not found"));
+        }
+    }
 
     // @GetMapping("/portfolio-stocks")
     // public ResponseEntity<List<PortfolioStocks>> getPortfolioStocks(@PathVariable String portfolioId) {
@@ -78,35 +89,11 @@ public class InsightsController {
     //     return ResponseEntity.ok(portfolioStocks);
     // }
 
-    // @GetMapping("/geographical-distribution")
-    // public ResponseEntity<Map<String, BigDecimal>> getGeographicalDistribution(@PathVariable String portfolioId) {
-    //     Map<String, BigDecimal> geographicalDistribution = insightsService.getGeographicalDistribution(portfolioId);
-    //     return ResponseEntity.ok(geographicalDistribution);
-    // }
-
-    // @GetMapping("/industry-distribution")
-    // public ResponseEntity<Map<String, BigDecimal>> getIndustryDistribution(@PathVariable String portfolioId) {
-    //     Map<String, BigDecimal> industryDistribution = insightsService.getIndustryDistribution(portfolioId);
-    //     return ResponseEntity.ok(industryDistribution);
-    // }
-
-    // @GetMapping("/profit-loss")
-    // public ResponseEntity<Map<String, BigDecimal>> getProfitLoss(@PathVariable String portfolioId) {
-    //     Map<String, BigDecimal> profitLoss = insightsService.getProfitLoss(portfolioId);
-    //     return ResponseEntity.ok(profitLoss);
-    // }
-
-    // @GetMapping("/profit-loss-percentage")
-    // public ResponseEntity<Map<String, BigDecimal>> getProfitLossPercentage(@PathVariable String portfolioId) {
-    //     Map<String, BigDecimal> profitLossPercentage = insightsService.getProfitLossPercentage(portfolioId);
-    //     return ResponseEntity.ok(profitLossPercentage);
-    // }
-
-    // @GetMapping("/historical-returns/{interval}")
-    // public ResponseEntity<Map<String, BigDecimal>> getHistoricalReturns(@PathVariable String portfolioId, @PathVariable String interval) {
-    //     Map<String, BigDecimal> historicalReturns = insightsService.getHistoricalReturns(portfolioId, interval);
-    //     return ResponseEntity.ok(historicalReturns);
-    // }
+    @GetMapping("/historical-returns/{interval}/{portfolioId}")
+    public ResponseEntity<?> getHistoricalReturns(@PathVariable String portfolioId, @PathVariable String interval) {
+        Map<LocalDate, BigDecimal> historicalReturns = insightsService.getHistoricalReturns(portfolioId, interval);
+        return ResponseEntity.ok(historicalReturns);
+    }
 
     // Add additional endpoints for other insights-related methods as needed.
 }
