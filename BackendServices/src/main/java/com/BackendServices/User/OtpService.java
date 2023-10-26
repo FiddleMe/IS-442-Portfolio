@@ -1,8 +1,7 @@
-package com.BackendServices.service.User;
+package com.BackendServices.User;
 
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.RandomStringUtils;
-import com.BackendServices.entity.User;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -11,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.BackendServices.User.exception.UserException;
 
 @Service
 public class OtpService {
@@ -27,15 +28,19 @@ public class OtpService {
         Optional<User> userOptional = userService.getUserByEmail(email);
 
         if (userOptional.isPresent()) {
+            try {
+                // Generate a random OTP (6 characters in this example)
+                String otp = RandomStringUtils.randomNumeric(6);
 
-            // Generate a random OTP (6 characters in this example)
-            String otp = RandomStringUtils.randomNumeric(6);
+                // Store the OTP temporarily
+                otpStore.put(email, otp);
 
-            // Store the OTP temporarily
-            otpStore.put(email, otp);
-
-            // Send the OTP to the user's email
-            sendOTPByEmail(email, otp);
+                // Send the OTP to the user's email
+                sendOTPByEmail(email, otp);
+            } catch (Exception e) {
+                // Handle the exception with your custom UserException
+                throw new UserException("Failed to generate OTP or send email.", e);
+            }
         } else {
             // Email is not associated with a user; you can handle this case accordingly
             System.out.println("Email is not associated with any user.");
@@ -58,15 +63,16 @@ public class OtpService {
     private void sendOTPByEmail(String email, String otp) {
         // Configure email sending properties
         Properties props = new Properties();
-        props.put("mail.smtp.host", "your-smtp-host");
-        props.put("mail.smtp.port", "your-smtp-port");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
 
         // Set up a Session with your email credentials
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("your-email@gmail.com", "your-email-password");
+                return new PasswordAuthentication("gigsterjob@gmail.com", "towlwhajswsrmubo");
             }
         });
 
@@ -75,7 +81,7 @@ public class OtpService {
             Message message = new MimeMessage(session);
 
             // Set the sender and recipient email addresses
-            message.setFrom(new InternetAddress("your-email@gmail.com"));
+            message.setFrom(new InternetAddress("gigsterjob@gmail.com.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
 
             // Set the email subject and content

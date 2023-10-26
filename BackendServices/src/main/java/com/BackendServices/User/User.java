@@ -1,4 +1,4 @@
-package com.BackendServices.entity;
+package com.BackendServices.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +15,7 @@ public class User {
     @Column(name = "Email", length = 36, nullable = false)
     private String email;
 
-    @Column(name = "Password", length = 36, nullable = false)
+    @Column(name = "Password", length = 72, nullable = false)
     private String password;
 
     @Column(name = "First_Name", length = 50, nullable = false)

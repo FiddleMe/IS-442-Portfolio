@@ -1,0 +1,26 @@
+.web_sidebar {
+    background-color: #4C506B; 
+    min-height: 100vh;
+    border-top-right-radius: 10px ;
+    border-bottom-right-radius: 10px;
+    padding-top: 50px;
+  }
+.mobile_sidebar {
+    background-color: #4C506B; 
+}
+.tab{
+    color: #FFFFFF;
+}
+.tab:hover {
+    color: #a4a4a4;
+}
+.displayDropdown {
+    display: 'flex'; 
+    align-items: center;
+}
+.bold {
+    font-weight: 700;
+}
+.menu_closed {
+    background-color: #FFFFFF;
+}
