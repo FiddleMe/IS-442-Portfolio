@@ -71,6 +71,38 @@ public class PortfolioStocksService {
         }
         return response;
     }
+    // public BigDecimal getStockPriceChange(String stockId, LocalDate date){
+    //     return getLatestPrice(stockId).subtract(getPurchasePrice(stockId, date));
+    // }
+    public BigDecimal getLatestPrice(String stockId){
+        LocalDate latestDate = stockService.getLatestDate();
+        Stock stock = stockService.getStockById(stockId, latestDate);
+        System.out.println(latestDate + " " + stock);
+        return stock.getPrice();
+    }
+    public BigDecimal getPurchasePrice(String stockId, LocalDate date){
+        Stock stock = stockService.getStockById(stockId, date);
+        return stock.getPrice();
+    }
+
+    public String getName(String stockId){
+        LocalDate latestDate = stockService.getLatestDate();
+        Stock stock = stockService.getStockById(stockId, latestDate);
+        return stock.getName();
+    }
+    public String getGeographicalRegion(String stockId){
+        LocalDate latestDate = stockService.getLatestDate();
+        Stock stock = stockService.getStockById(stockId, latestDate);
+        return stock.getGeographicalRegion();
+    }
+    public String getIndustrySector(String stockId){
+        LocalDate latestDate = stockService.getLatestDate();
+        Stock stock = stockService.getStockById(stockId, latestDate);
+        return stock.getIndustrySector();
+    }
+    // public LocalDate getLatestDate(){
+    //     return stockService.getLatestDate();
+    // }
 
     // Implement other portfolio stocks-related methods as needed
 }
