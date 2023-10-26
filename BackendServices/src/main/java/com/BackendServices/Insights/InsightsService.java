@@ -169,21 +169,21 @@ public class InsightsService {
   }
   
   
-  public Map<String, BigDecimal> getProfitLoss() {
-      // Profit loss of the ArrayList of stocks
-      Map<String, BigDecimal> profitLossMap = new HashMap<>();
+//   public Map<String, BigDecimal> getProfitLoss() {
+//       // Profit loss of the ArrayList of stocks
+//       Map<String, BigDecimal> profitLossMap = new HashMap<>();
   
-      for (PortfolioStocks portfolioStock : portfolioStocks) {
-          String stockId = portfolioStock.getStockId();
-          LocalDate date = portfolioStock.getdate();
+//       for (PortfolioStocks portfolioStock : portfolioStocks) {
+//           String stockId = portfolioStock.getStockId();
+//           LocalDate date = portfolioStock.getdate();
           
-          Object priceDifferenceObj = portfolioStocksService.getStockPriceChange(stockId, date).get("priceDifference");
-          double priceDifference = ((Number) priceDifferenceObj).doubleValue();
-          String name = portfolioStocksService.getName(stockId);
-          profitLossMap.put(name, profitLoss);
-      }
-      return profitLossMap;
-  }
+//           Object priceDifferenceObj = portfolioStocksService.getStockPriceChange(stockId, date).get("priceDifference");
+//           double priceDifference = ((Number) priceDifferenceObj).doubleValue();
+//           String name = portfolioStocksService.getName(stockId);
+//           profitLossMap.put(name, profitLoss);
+//       }
+//       return profitLossMap;
+//   }
   
 //   public Map<String, BigDecimal> getProfitLossPercentage() {
 //       // Profit loss percentage of the ArrayList of stocks
