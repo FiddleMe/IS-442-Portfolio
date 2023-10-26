@@ -27,18 +27,25 @@ public class PortfolioStocksController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PortfolioStocks>> getAllPortfolioStocks() {
+    public ResponseEntity<?> getAllPortfolioStocks() {
         List<PortfolioStocks> portfolioStocks = portfolioStocksService.getAllPortfolioStocks();
-        return new ResponseEntity<>(portfolioStocks, HttpStatus.OK);
+        if (portfolioStocks.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.NOT_FOUND.value(),
+                    "Failed to fetch portfolio stocks."));
+        }
+        return ResponseEntity
+                .ok(new ApiResponse(HttpStatus.OK.value(), portfolioStocks, "All Portfolio Stocks Retrieved"));
     }
 
     @GetMapping("/{portfolioId}")
-    public ResponseEntity<List<PortfolioStocks>> getPortfolioStocksById(@PathVariable String portfolioId) {
+    public ResponseEntity<?> getPortfolioStocksById(@PathVariable String portfolioId) {
         List<PortfolioStocks> portfolioStocks = portfolioStocksService.getPortfolioStocksById(portfolioId);
         if (portfolioStocks.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.NOT_FOUND.value(),
+                    String.format("No portfolio found with ID (%s).", portfolioId)));
         }
-        return new ResponseEntity<>(portfolioStocks, HttpStatus.OK);
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), portfolioStocks,
+                String.format("Portfolio found with ID (%s).", portfolioId)));
     }
 
     @GetMapping("getStockPriceChange/{stockid}/{date}")
@@ -56,20 +63,21 @@ public class PortfolioStocksController {
     }
 
     @PostMapping
-    public ResponseEntity<PortfolioStocks> createPortfolioStock(@RequestBody PortfolioStocks portfolioStock) {
+    public ResponseEntity<?> createPortfolioStock(@RequestBody PortfolioStocks portfolioStock) {
         PortfolioStocks createdPortfolioStock = portfolioStocksService.createPortfolioStocks(portfolioStock);
-        return new ResponseEntity<>(createdPortfolioStock, HttpStatus.CREATED);
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.CREATED.value(), createdPortfolioStock,
+                "Posting of portfolio stock successful."));
     }
 
     @DeleteMapping("/{portfolioStockId}")
-    public ResponseEntity<Void> deletePortfolioStockById(@PathVariable String portfolioStockId) {
+    public ResponseEntity<?> deletePortfolioStockById(@PathVariable String portfolioStockId) {
         boolean deletionSuccessful = portfolioStocksService.deletePortfolioStockById(portfolioStockId);
         if (deletionSuccessful) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Success
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.NO_CONTENT.value(),
+                    String.format("Deletion for portfolio stock (%s) successful.", portfolioStockId)));
         } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Failure
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    String.format("Deletion for portfolio stock (%s) unsuccessful or does not exist.", portfolioStockId)));
         }
     }
-
-    // Add other endpoints as needed
 }

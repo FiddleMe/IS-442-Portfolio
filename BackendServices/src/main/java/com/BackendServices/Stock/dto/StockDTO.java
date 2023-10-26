@@ -17,35 +17,36 @@ public class StockDTO {
     private String geographicalRegion;
     private String industrySector;
 
-    public static List<Stock> mapJsonToStockDTO(Map<String, Object> timeSeriesData, Map<String, String> companyOverviewData) {
+    public static List<Stock> mapJsonToStockDTO(Map<String, Object> timeSeriesData,
+            Map<String, String> companyOverviewData, LocalDate latestDate) {
         List<Stock> stockDTOList = new ArrayList<>();
-    
-        Map<String, Map<String, String>> timeSeriesDaily = (Map<String, Map<String, String>>) timeSeriesData.get("Time Series (Daily)");
-    
+
+        Map<String, Map<String, String>> timeSeriesDaily = (Map<String, Map<String, String>>) timeSeriesData
+                .get("Time Series (Daily)");
+
         String symbol = companyOverviewData.get("Symbol");
         String country = companyOverviewData.get("Country");
         String sector = companyOverviewData.get("Sector");
-    
+
         for (Map.Entry<String, Map<String, String>> entry : timeSeriesDaily.entrySet()) {
-            String date = entry.getKey();
-            Map<String, String> dailyData = entry.getValue();
-    
-            Stock stockDTO = new Stock();
-            stockDTO.setStockId(symbol); // 
-            stockDTO.setDateTime(LocalDate.parse(date)); 
-            stockDTO.setName(companyOverviewData.get("Name"));
-            stockDTO.setPrice(new BigDecimal(dailyData.get("5. adjusted close")));
-            stockDTO.setGeographicalRegion(country);
-            stockDTO.setIndustrySector(sector);
-    
-            stockDTOList.add(stockDTO);
+            LocalDate date = LocalDate.parse(entry.getKey());
+            if (latestDate == null || !date.isBefore(latestDate)) {
+                Map<String, String> dailyData = entry.getValue();
+
+                Stock stockDTO = new Stock();
+                stockDTO.setStockId(symbol); //
+                stockDTO.setDateTime(date);
+                stockDTO.setName(companyOverviewData.get("Name"));
+                stockDTO.setPrice(new BigDecimal(dailyData.get("5. adjusted close")));
+                stockDTO.setGeographicalRegion(country);
+                stockDTO.setIndustrySector(sector);
+
+                stockDTOList.add(stockDTO);
+            }
         }
-    
+
         return stockDTOList;
     }
-    
-    
-
 
     // Getters and setters
 
@@ -98,4 +99,3 @@ public class StockDTO {
     }
 
 }
-
