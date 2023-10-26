@@ -51,32 +51,33 @@ public class PortfolioStocksService {
         }
       }
 
-    // public Map<String, Object> getStockPriceChange(String stockId, LocalDate date) {
-    //     Stock inputStock = stockService.getStockById(stockId, date);
-    //     LocalDate latestDate = stockService.getLatestDate();
-    //     Map<String, Object> response = new HashMap<>();
+    public Map<String, Object> getStockPriceChange(String stockId, LocalDate date) {
+        Stock inputStock = stockService.getStockById(stockId, date);
+        LocalDate latestDate = stockService.getLatestDate();
+        Map<String, Object> response = new HashMap<>();
 
-    //     if (inputStock != null) {
-    //         Stock latestStock = stockService.getStockById(stockId, latestDate);
+        if (inputStock != null) {
+            Stock latestStock = stockService.getStockById(stockId, latestDate);
 
-    //         if (latestStock != null) {
-    //             BigDecimal latestPrice = latestStock.getPrice();
-    //             BigDecimal inputPrice = inputStock.getPrice();
-    //             BigDecimal priceDifference = latestPrice.subtract(inputPrice);
-    //             response.put("priceDifference", priceDifference);
-    //             response.put("stockId", stockId);
-    //             response.put("purchaseDate", date.toString());
-    //             return response;
-    //         }
-    //     }
-    //     return response;
-    // }
-    public BigDecimal getStockPriceChange(String stockId, LocalDate date){
-        return getLatestPrice(stockId).subtract(getPurchasePrice(stockId, date));
+            if (latestStock != null) {
+                BigDecimal latestPrice = latestStock.getPrice();
+                BigDecimal inputPrice = inputStock.getPrice();
+                BigDecimal priceDifference = latestPrice.subtract(inputPrice);
+                response.put("priceDifference", priceDifference);
+                response.put("stockId", stockId);
+                response.put("purchaseDate", date.toString());
+                return response;
+            }
+        }
+        return response;
     }
+    // public BigDecimal getStockPriceChange(String stockId, LocalDate date){
+    //     return getLatestPrice(stockId).subtract(getPurchasePrice(stockId, date));
+    // }
     public BigDecimal getLatestPrice(String stockId){
         LocalDate latestDate = stockService.getLatestDate();
         Stock stock = stockService.getStockById(stockId, latestDate);
+        System.out.println(latestDate + " " + stock);
         return stock.getPrice();
     }
     public BigDecimal getPurchasePrice(String stockId, LocalDate date){

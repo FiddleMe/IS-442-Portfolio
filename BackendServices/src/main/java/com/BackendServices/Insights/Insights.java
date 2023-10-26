@@ -1,3 +1,4 @@
+package com.BackendServices.Insights;
 import com.BackendServices.PortfolioStock.PortfolioStocks;
 import com.BackendServices.PortfolioStock.PortfolioStocksService;
 import com.BackendServices.Portfolio.Portfolio;
@@ -12,30 +13,37 @@ import java.util.HashMap;
 import java.math.MathContext;
 
 public class Insights extends Portfolio {
+    private Portfolio portfolio;
     private PortfolioStocksService portfolioStocksService;
     private PortfolioService portfolioService;
     public List<PortfolioStocks> portfolioStocks;
-    public Insights(){
 
-    }
-    public Insights(PortfolioStocksService portfolioStocksService, PortfolioService portfolioService) {
-        super();
+    public Insights(
+        PortfolioStocksService portfolioStocksService, 
+        PortfolioService portfolioService,
+        String portfolioId, 
+        String name, 
+        String description, 
+        BigDecimal capitalAmount, 
+        String userId
+    ) {
         this.portfolioStocksService = portfolioStocksService;
         this.portfolioService = portfolioService;
+        
+        // Create a new Portfolio object and initialize it
+        this.portfolio = new Portfolio();
+        this.portfolio.setName(name);
+        this.portfolio.setDescription(description);
+        this.portfolio.setCapitalAmount(capitalAmount);
+        this.portfolio.setUserId(userId);
+        
+        // Get and set portfolioStocks for the portfolio
+        this.portfolioStocks = portfolioStocksService.getPortfolioStocksById(portfolioId);
     }
-//get portfolioId from somewhere
-public void initialize(String portfolioId, String name, String description, BigDecimal capitalAmount, String userId) {
-    setName(name);
-    setDescription(description);
-    List<PortfolioStocks> portfolioStocks = portfolioStocksService.getPortfolioStocksById(portfolioId);
-    setPortfolioStocks(portfolioStocks);
-    setCapitalAmount(capitalAmount);
-    setUserId(userId);
-}
 
-public List<PortfolioStocks> getPortfolioStocks(String portfolioId) {
-    return portfolioStocksService.getPortfolioStocksById(portfolioId);
-}
+// public List<PortfolioStocks> getPortfolioStocks(String portfolioId) {
+//     return portfolioStocksService.getPortfolioStocksById(portfolioId);
+// }
 
 public Map<String, BigDecimal> getPriceDistribution() {
     // Price distribution of the ArrayList of stocks
@@ -117,36 +125,36 @@ public Map<String, BigDecimal> getIndustryDistribution() {
 }
 
 
-public Map<String, BigDecimal> getProfitLoss() {
-    // Profit loss of the ArrayList of stocks
-    Map<String, BigDecimal> profitLossMap = new HashMap<>();
+// public Map<String, BigDecimal> getProfitLoss() {
+//     // Profit loss of the ArrayList of stocks
+//     Map<String, BigDecimal> profitLossMap = new HashMap<>();
 
-    for (PortfolioStocks portfolioStock : portfolioStocks) {
-        String stockId = portfolioStock.getStockId();
-        LocalDate date = portfolioStock.getdate();
-        BigDecimal profitLoss = portfolioStocksService.getStockPriceChange(stockId, date);
-        String name = portfolioStocksService.getName(stockId);
-        profitLossMap.put(name, profitLoss);
-    }
-    return profitLossMap;
-}
+//     for (PortfolioStocks portfolioStock : portfolioStocks) {
+//         String stockId = portfolioStock.getStockId();
+//         LocalDate date = portfolioStock.getdate();
+//         BigDecimal profitLoss = portfolioStocksService.getStockPriceChange(stockId, date);//incompatible types: java.util.Map<java.lang.String,java.lang.Object> cannot be converted to java.math.BigDecimal
+//         String name = portfolioStocksService.getName(stockId);
+//         profitLossMap.put(name, profitLoss);
+//     }
+//     return profitLossMap;
+// }
 
-public Map<String, BigDecimal> getProfitLossPercentage() {
-    // Profit loss percentage of the ArrayList of stocks
-    Map<String, BigDecimal> profitLossPercentageMap = new HashMap<>();
+// public Map<String, BigDecimal> getProfitLossPercentage() {
+//     // Profit loss percentage of the ArrayList of stocks
+//     Map<String, BigDecimal> profitLossPercentageMap = new HashMap<>();
     
-    for (PortfolioStocks portfolioStock : portfolioStocks) {
-        String stockId = portfolioStock.getStockId();
-        LocalDate date = portfolioStock.getdate();
-        BigDecimal purchasePrice = portfolioStocksService.getPurchasePrice(stockId, date);
-        BigDecimal profitLoss = portfolioStocksService.getStockPriceChange(stockId, date);
-        String name = portfolioStocksService.getName(stockId);
-        BigDecimal profitLossPercentage = profitLoss.divide(purchasePrice, new MathContext(4));
-        profitLossPercentageMap.put(name, profitLossPercentage);
+//     for (PortfolioStocks portfolioStock : portfolioStocks) {
+//         String stockId = portfolioStock.getStockId();
+//         LocalDate date = portfolioStock.getdate();
+//         BigDecimal purchasePrice = portfolioStocksService.getPurchasePrice(stockId, date);
+//         BigDecimal profitLoss = portfolioStocksService.getStockPriceChange(stockId, date);
+//         String name = portfolioStocksService.getName(stockId);
+//         BigDecimal profitLossPercentage = profitLoss.divide(purchasePrice, new MathContext(4));
+//         profitLossPercentageMap.put(name, profitLossPercentage);
 
-    }
-    return profitLossPercentageMap;
-}
+//     }
+//     return profitLossPercentageMap;
+// }
 
 public Map<LocalDate, BigDecimal> getHistoricalReturns(String interval) {
     Map<LocalDate, BigDecimal> historicalReturns = new HashMap<>();
