@@ -10,6 +10,7 @@ import com.BackendServices.Stock.dto.StockDTO;
 import com.BackendServices.common.ApiResponse;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -41,24 +42,35 @@ public class StockController {
     }
 
 
+    // @PostMapping
+    // public ResponseEntity<?> createStocks(@RequestBody Map<String, Object> timeSeriesDaily) {
+    //     Map<String, String> metaData = (Map<String, String>) timeSeriesDaily.get("Meta Data");
+    //     String symbol = (String) metaData.get("2. Symbol");
+
+    //     // getting company overview data
+    //     String apiKey = System.getenv("ALPHAVANTAGE_API_KEY"); //stored in environment variable windows command setx ALPHAVANTAGE_API_KEY=""
+    //     String apiUrl = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + symbol + "&apikey=" + apiKey;
+    //     RestTemplate restTemplate = new RestTemplate();
+    //     Map<String, String> companyOverviewData = restTemplate.getForObject(apiUrl, Map.class);
+    //     if (companyOverviewData.isEmpty()){
+    //         return ResponseEntity.ok(new ApiResponse(HttpStatus.NO_CONTENT.value(), null, String.format("Could not get %s company overview data. Update unsuccessful.", symbol)));
+    //     }
+    //     //pass to mapping
+    //     List<Stock> stockDTOList = StockDTO.mapJsonToStockDTO(timeSeriesDaily, companyOverviewData);
+    //     stockService.createStocks(stockDTOList);
+
+    //      return ResponseEntity.ok(new ApiResponse(HttpStatus.CREATED.value(), stockDTOList, String.format("Update for stock (%s) successful.", symbol)));
+    // }
+  
     @PostMapping
-    public ResponseEntity<?> createStocks(@RequestBody Map<String, Object> timeSeriesDaily) {
-        Map<String, String> metaData = (Map<String, String>) timeSeriesDaily.get("Meta Data");
-        String symbol = (String) metaData.get("2. Symbol");
-
-        // getting company overview data
-        String apiKey = System.getenv("ALPHAVANTAGE_API_KEY"); //stored in environment variable windows command setx ALPHAVANTAGE_API_KEY=""
-        String apiUrl = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + symbol + "&apikey=" + apiKey;
-        RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> companyOverviewData = restTemplate.getForObject(apiUrl, Map.class);
-        if (companyOverviewData.isEmpty()){
-            return ResponseEntity.ok(new ApiResponse(HttpStatus.NO_CONTENT.value(), null, String.format("Could not get %s company overview data. Update unsuccessful.", symbol)));
+    public ResponseEntity<ApiResponse> createStocks(@RequestBody Map<String, Object> timeSeriesDaily) {
+        List<Stock> createdStocks = stockService.createStocks(timeSeriesDaily);
+        
+        if (createdStocks.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.NO_CONTENT.value(), Collections.emptyList(), "No stocks created"));
+        } else {
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(HttpStatus.OK.value(), createdStocks, "Stocks created successfully"));
         }
-        //pass to mapping
-        List<Stock> stockDTOList = StockDTO.mapJsonToStockDTO(timeSeriesDaily, companyOverviewData);
-        stockService.createStocks(stockDTOList);
-
-         return ResponseEntity.ok(new ApiResponse(HttpStatus.CREATED.value(), stockDTOList, String.format("Update for stock (%s) successful.", symbol)));
     }
 
 }
