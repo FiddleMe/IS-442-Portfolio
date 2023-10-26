@@ -169,73 +169,86 @@ public class InsightsService {
   }
   
   
-//   public Map<String, BigDecimal> getProfitLoss() {
-//       // Profit loss of the ArrayList of stocks
-//       Map<String, BigDecimal> profitLossMap = new HashMap<>();
+  public List<Object> getProfitLoss(String portfolioId) {
+      // Profit loss percentage of the ArrayList of stocks
+      List<Object> out = new ArrayList<>();
+
+      portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
   
-//       for (PortfolioStocks portfolioStock : portfolioStocks) {
-//           String stockId = portfolioStock.getStockId();
-//           LocalDate date = portfolioStock.getdate();
-          
-//           Object priceDifferenceObj = portfolioStocksService.getStockPriceChange(stockId, date).get("priceDifference");
-//           double priceDifference = ((Number) priceDifferenceObj).doubleValue();
-//           String name = portfolioStocksService.getName(stockId);
-//           profitLossMap.put(name, profitLoss);
-//       }
-//       return profitLossMap;
-//   }
+      for (PortfolioStocks portfolioStock : portfolioStocksList) {
+          String stockId = portfolioStock.getStockId();
+          LocalDate purchaseDate = portfolioStock.getdate();
+          // Object priceDifferenceObj = portfolioStocksService.getStockPriceChange(stockId, date).get("priceDifference");
+          BigDecimal currentPrice = portfolioStocksService.getLatestPrice(stockId);
+          BigDecimal purchasePrice = portfolioStocksService.getPurchasePrice(stockId, purchaseDate);
+          // BigDecimal priceDifference = (BigDecimal) priceDifferenceObj;
+          BigDecimal priceDifference = currentPrice.subtract(purchasePrice);
+          String name = portfolioStocksService.getName(stockId);
   
-//   public Map<String, BigDecimal> getProfitLossPercentage() {
-//       // Profit loss percentage of the ArrayList of stocks
-//       Map<String, BigDecimal> profitLossPercentageMap = new HashMap<>();
-      
-//       for (PortfolioStocks portfolioStock : portfolioStocks) {
-//           String stockId = portfolioStock.getStockId();
-//           LocalDate date = portfolioStock.getdate();
-//           BigDecimal purchasePrice = portfolioStocksService.getPurchasePrice(stockId, date);
-//           BigDecimal profitLoss = portfolioStocksService.getStockPriceChange(stockId, date);
-//           String name = portfolioStocksService.getName(stockId);
-//           BigDecimal profitLossPercentage = profitLoss.divide(purchasePrice, new MathContext(4));
-//           profitLossPercentageMap.put(name, profitLossPercentage);
+          // BigDecimal purchasePrice = portfolioStocksService.getPurchasePrice(stockId, date);
   
-//       }
-//       return profitLossPercentageMap;
-//   }
+          // Calculate profitLossPercentage
+          BigDecimal profitLossPercentage = BigDecimal.ZERO;
+          if (!purchasePrice.equals(BigDecimal.ZERO)) {
+              profitLossPercentage = priceDifference.divide(purchasePrice, new MathContext(4));
+          }
   
-//   public Map<LocalDate, BigDecimal> getHistoricalReturns(String interval) {
-//       Map<LocalDate, BigDecimal> historicalReturns = new HashMap<>();
+          // Create a map to store the values
+          Map<String, Object> stockInfo = new HashMap<>();
+          stockInfo.put("name", name);
+          stockInfo.put("currentPrice", currentPrice);
+          stockInfo.put("purchasePrice", purchasePrice);
+          stockInfo.put("priceDifference", priceDifference);
+          stockInfo.put("profitLossPercentage", profitLossPercentage);
   
-//       int numberOfIntervals = 3;
-//       int intervalCount = 0;
+          // Add the map to the list
+          out.add(stockInfo);
+      }
   
-//       if (interval.equals("daily")) {
-//           intervalCount = 1;
-//       }
-//       if (interval.equals("weekly")) {
-//           intervalCount = 7;
-//       }
-//       if (interval.equals("monthly")) {
-//           intervalCount = 30;
-//       }
-//       int totalDuration = intervalCount * numberOfIntervals;
+      return out;
+  }
   
-//       LocalDate currentDate = LocalDate.now();
+  public Map<LocalDate, BigDecimal> getHistoricalReturns(String portfolioId, String interval) {
+      Map<LocalDate, BigDecimal> historicalReturns = new HashMap<>();
+      portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
   
-//       for (int i = 0; i < totalDuration; i += intervalCount) {
-//           LocalDate date = currentDate.plusDays(i);
-//           // Get the total value at currentDate
-//           BigDecimal totalValue = BigDecimal.ZERO;
-//           for (PortfolioStocks portfolioStock : portfolioStocks) {
-//               String stockId = portfolioStock.getStockId();
-//               BigDecimal lastestPrice = portfolioStocksService.getPurchasePrice(stockId, date);
-//               Integer quantity = portfolioStock.getQuantity();
-//               BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity));
-//               totalValue = totalValue.add(totalPrice);
-//           }
+      int numberOfIntervals = 3;
+      int intervalCount = 0;
   
-//           historicalReturns.put(date, totalValue);
-//       }
-//       return historicalReturns;
-//   }
+      if (interval.equals("daily")) {
+          intervalCount = 1;
+      }
+      if (interval.equals("weekly")) {
+          intervalCount = 7;
+      }
+      if (interval.equals("monthly")) {
+          intervalCount = 28;
+      }
+      int totalDuration = intervalCount * numberOfIntervals;
+  
+      LocalDate latestDate = portfolioStocksService.getLatestDate();
+  
+      for (int i = 0; i < totalDuration; i += intervalCount) {
+          LocalDate date = latestDate.plusDays(i);
+          // Get the total value at currentDate
+          BigDecimal totalValue = BigDecimal.ZERO;
+          for (PortfolioStocks portfolioStock : portfolioStocksList) {
+            try{
+              String stockId = portfolioStock.getStockId();
+              BigDecimal lastestPrice = portfolioStocksService.getPurchasePrice(stockId, date);
+              Integer quantity = portfolioStock.getQuantity();
+              BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity));
+              totalValue = totalValue.add(totalPrice);
+            }
+            catch (Exception e) {
+              e.printStackTrace(); 
+          }
+
+          }
+  
+          historicalReturns.put(date, totalValue);
+      }
+      return historicalReturns;
+  }
   
 }

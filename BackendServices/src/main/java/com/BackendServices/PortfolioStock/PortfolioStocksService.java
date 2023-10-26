@@ -99,9 +99,9 @@ public class PortfolioStocksService {
         Stock stock = stockService.getStockById(stockId, latestDate);
         return stock.getIndustrySector();
     }
-    // public LocalDate getLatestDate(){
-    //     return stockService.getLatestDate();
-    // }
+    public LocalDate getLatestDate(){
+        return stockService.getLatestDate();
+    }
 
     // Implement other portfolio stocks-related methods as needed
 }
