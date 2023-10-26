@@ -74,7 +74,7 @@ public class InsightsService {
               priceDistribution.put(name, totalPrice);
           }
       }
-      //TODO: For price in priceDistribution, divide the price by totalCapital
+      
       for (Map.Entry<String, BigDecimal> entry : priceDistribution.entrySet()) {
         String stockName = entry.getKey();
         BigDecimal stockPrice = entry.getValue();
@@ -87,75 +87,103 @@ public class InsightsService {
       return priceDistribution;
   }
   
-//   public List<PortfolioStocks> getPortfolioStocks(String portfolioId) {
-//     return portfolioStocksService.getPortfolioStocksById(portfolioId);
-//   }
-//   public Map<String, BigDecimal> getGeographicalDistribution() {
-//       // Geographical distribution of the ArrayList of stocks
-//       Map<String, BigDecimal> geographicalDistribution = new HashMap<>();
-//       BigDecimal totalCapital = getCapitalAmount();
-//       // Assuming capitalAmount is the total amount of portfolioValue;
-//       for (PortfolioStocks portfolioStock : portfolioStocks) {
-//           String stockId = portfolioStock.getStockId();
-//           BigDecimal lastestPrice = portfolioStocksService.getLatestPrice(stockId);
-//           Integer quantity = portfolioStock.getQuantity();
-//           BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity));
-//           String region = portfolioStocksService.getGeographicalRegion(stockId);
+  // public List<PortfolioStocks> getPortfolioStocks(String portfolioId) {
+  //   return portfolioStocksService.getPortfolioStocksById(portfolioId);
+  // }
+  public Map<String, BigDecimal> getGeographicalDistribution(String portfolioId) {
+      // Geographical distribution of the ArrayList of stocks
+      Map<String, BigDecimal> geographicalDistribution = new HashMap<>();
+      // PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
+      BigDecimal totalCapital = BigDecimal.ZERO;
+      portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
+
+      for (PortfolioStocks portfolioStock : portfolioStocksList) {
+          String stockId = portfolioStock.getStockId();
+          BigDecimal lastestPrice = portfolioStocksService.getLatestPrice(stockId);
+          Integer quantity = portfolioStock.getQuantity();
+          BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity));
+          String region = portfolioStocksService.getGeographicalRegion(stockId);
+          totalCapital = totalCapital.add(totalPrice);
   
-//           if (geographicalDistribution.containsKey(region)) {
-//               // If the region is already in the map, add the totalPrice to the existing value
-//               BigDecimal currentAllocation = geographicalDistribution.get(region);
-//               currentAllocation = currentAllocation.add(totalPrice.divide(totalCapital, new MathContext(4))); // 4 decimal places, you can adjust as needed
-//               geographicalDistribution.put(region, currentAllocation);
-//           } else {
-//               // If the region is not in the map, create a new entry
-//               BigDecimal allocationPercentage = totalPrice.divide(totalCapital, new MathContext(4)); // 4 decimal places, you can adjust as needed
-//               geographicalDistribution.put(region, allocationPercentage);
-//           }
-//       }
-//       return geographicalDistribution;
-//   }
+          if (geographicalDistribution.containsKey(region)) {
+              // If the region is already in the map, add the totalPrice to the existing value
+              BigDecimal currentAllocation = geographicalDistribution.get(region);
+              currentAllocation = currentAllocation.add(totalPrice);
+              geographicalDistribution.put(region, currentAllocation);
+          } else {
+              // If the region is not in the map, create a new entry
+              geographicalDistribution.put(region, totalPrice);
+          }
+      }
+
+      for (Map.Entry<String, BigDecimal> entry : geographicalDistribution.entrySet()) {
+        String regionName = entry.getKey();
+        BigDecimal stockPrice = entry.getValue();
+        System.out.println(stockPrice);
+        System.out.println(regionName);
+        System.out.println(totalCapital);
+        BigDecimal allocationPercentage = stockPrice.divide(totalCapital, new MathContext(4)); // Adjust the scale and rounding mode as needed
+        geographicalDistribution.put(regionName, allocationPercentage);
+      }
+
+      return geographicalDistribution;
+  }
   
-//   public Map<String, BigDecimal> getIndustryDistribution() {
-//       // Industry distribution of the ArrayList of stocks
-//       Map<String, BigDecimal> industryDistribution = new HashMap<>();
-//       BigDecimal totalCapital = getCapitalAmount(); // Assuming capitalAmount is the total amount of portfolioValue;
+  public Map<String, BigDecimal> getIndustryDistribution(String portfolioId) {
+      // Industry distribution of the ArrayList of stocks
+      Map<String, BigDecimal> industryDistribution = new HashMap<>();
+      // PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
+      BigDecimal totalCapital = BigDecimal.ZERO;
+      portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
+
+      for (PortfolioStocks portfolioStock : portfolioStocksList) {
+          String stockId = portfolioStock.getStockId();
+          BigDecimal latestPrice = portfolioStocksService.getLatestPrice(stockId);
+          Integer quantity = portfolioStock.getQuantity();
+          BigDecimal totalPrice = latestPrice.multiply(BigDecimal.valueOf(quantity));
+          String industry = portfolioStocksService.getIndustrySector(stockId);
+          totalCapital = totalCapital.add(totalPrice);
   
-//       for (PortfolioStocks portfolioStock : portfolioStocks) {
-//           String stockId = portfolioStock.getStockId();
-//           BigDecimal latestPrice = portfolioStocksService.getLatestPrice(stockId);
-//           Integer quantity = portfolioStock.getQuantity();
-//           BigDecimal totalPrice = latestPrice.multiply(BigDecimal.valueOf(quantity));
-//           String industry = portfolioStocksService.getIndustrySector(stockId);
+          if (industryDistribution.containsKey(industry)) {
+              // If the industry is already in the map, add the totalPrice to the existing value
+              BigDecimal currentAllocation = industryDistribution.get(industry);
+              currentAllocation = currentAllocation.add(totalPrice);
+              industryDistribution.put(industry, currentAllocation);
+          } else {
+              // If the industry is not in the map, create a new entry
+              industryDistribution.put(industry, totalPrice);
+          }
+      }
+      for (Map.Entry<String, BigDecimal> entry : industryDistribution.entrySet()) {
+        String industryName = entry.getKey();
+        BigDecimal stockPrice = entry.getValue();
+        System.out.println(stockPrice);
+        System.out.println(industryName);
+        System.out.println(totalCapital);
+        BigDecimal allocationPercentage = stockPrice.divide(totalCapital, new MathContext(4)); // Adjust the scale and rounding mode as needed
+        industryDistribution.put(industryName, allocationPercentage);
+      }
+
+      
+      return industryDistribution;
+  }
   
-//           if (industryDistribution.containsKey(industry)) {
-//               // If the industry is already in the map, add the totalPrice to the existing value
-//               BigDecimal currentAllocation = industryDistribution.get(industry);
-//               currentAllocation = currentAllocation.add(totalPrice.divide(totalCapital, new MathContext(4))); // 4 decimal places, you can adjust as needed
-//               industryDistribution.put(industry, currentAllocation);
-//           } else {
-//               // If the industry is not in the map, create a new entry
-//               BigDecimal allocationPercentage = totalPrice.divide(totalCapital, new MathContext(4)); // 4 decimal places, you can adjust as needed
-//               industryDistribution.put(industry, allocationPercentage);
-//           }
-//       }
-//       return industryDistribution;
-//   }
   
+  public Map<String, BigDecimal> getProfitLoss() {
+      // Profit loss of the ArrayList of stocks
+      Map<String, BigDecimal> profitLossMap = new HashMap<>();
   
-//   public Map<String, BigDecimal> getProfitLoss() {
-//       // Profit loss of the ArrayList of stocks
-//       Map<String, BigDecimal> profitLossMap = new HashMap<>();
-  
-//       for (PortfolioStocks portfolioStock : portfolioStocks) {
-//           String stockId = portfolioStock.getStockId();
-//           LocalDate date = portfolioStock.getdate();
-//           BigDecimal profitLoss = portfolioStocksService.getStockPriceChange(stockId, date);
-//           String name = portfolioStocksService.getName(stockId);
-//           profitLossMap.put(name, profitLoss);
-//       }
-//       return profitLossMap;
-//   }
+      for (PortfolioStocks portfolioStock : portfolioStocks) {
+          String stockId = portfolioStock.getStockId();
+          LocalDate date = portfolioStock.getdate();
+          
+          Object priceDifferenceObj = portfolioStocksService.getStockPriceChange(stockId, date).get("priceDifference");
+          double priceDifference = ((Number) priceDifferenceObj).doubleValue();
+          String name = portfolioStocksService.getName(stockId);
+          profitLossMap.put(name, profitLoss);
+      }
+      return profitLossMap;
+  }
   
 //   public Map<String, BigDecimal> getProfitLossPercentage() {
 //       // Profit loss percentage of the ArrayList of stocks

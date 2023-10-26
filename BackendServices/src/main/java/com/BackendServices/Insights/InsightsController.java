@@ -44,9 +44,33 @@ public class InsightsController {
         if (priceDistribution != null) {
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), priceDistribution, "success"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "Portfolio not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "price distribution not found"));
         }
-}
+    }
+
+    @GetMapping("/geo-distribution/{portfolioId}")
+    public ResponseEntity<?> getGeographicalDistribution(@PathVariable String portfolioId) {
+
+        Map<String, BigDecimal> geographicalDistribution = insightsService.getGeographicalDistribution(portfolioId);
+
+        if (geographicalDistribution != null) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), geographicalDistribution, "success"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "geographical distribution not found"));
+        }
+    }
+
+    @GetMapping("/industry-distribution/{portfolioId}")
+    public ResponseEntity<?> getIndustryDistribution(@PathVariable String portfolioId) {
+
+        Map<String, BigDecimal> industryDistribution = insightsService.getIndustryDistribution(portfolioId);
+
+        if (industryDistribution != null) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), industryDistribution, "success"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "industry distribution not found"));
+        }
+    }
 
     // @GetMapping("/portfolio-stocks")
     // public ResponseEntity<List<PortfolioStocks>> getPortfolioStocks(@PathVariable String portfolioId) {
