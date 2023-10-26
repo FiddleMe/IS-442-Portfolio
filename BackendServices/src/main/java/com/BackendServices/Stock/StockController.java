@@ -32,44 +32,28 @@ public class StockController {
     }
 
     @GetMapping("/{stockId}/{date}")
-    public ResponseEntity<Stock> getStockById(@PathVariable String stockId, @PathVariable String date) {
+    public ResponseEntity<?> getStockById(@PathVariable String stockId, @PathVariable String date) {
         LocalDate dateValue = LocalDate.parse(date);
         Stock stock = stockService.getStockById(stockId, dateValue);
         if (stock == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity
+                    .ok(new ApiResponse(HttpStatus.NO_CONTENT.value(),
+                            String.format("No stocks found with ID (%s) and Date (%s)", stockId, dateValue)));
         }
-        return new ResponseEntity<>(stock, HttpStatus.OK);
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), stock,
+                String.format("Stock found with ID (%s) and Date (%s)", stockId, dateValue)));
     }
 
-
-    // @PostMapping
-    // public ResponseEntity<?> createStocks(@RequestBody Map<String, Object> timeSeriesDaily) {
-    //     Map<String, String> metaData = (Map<String, String>) timeSeriesDaily.get("Meta Data");
-    //     String symbol = (String) metaData.get("2. Symbol");
-
-    //     // getting company overview data
-    //     String apiKey = System.getenv("ALPHAVANTAGE_API_KEY"); //stored in environment variable windows command setx ALPHAVANTAGE_API_KEY=""
-    //     String apiUrl = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + symbol + "&apikey=" + apiKey;
-    //     RestTemplate restTemplate = new RestTemplate();
-    //     Map<String, String> companyOverviewData = restTemplate.getForObject(apiUrl, Map.class);
-    //     if (companyOverviewData.isEmpty()){
-    //         return ResponseEntity.ok(new ApiResponse(HttpStatus.NO_CONTENT.value(), null, String.format("Could not get %s company overview data. Update unsuccessful.", symbol)));
-    //     }
-    //     //pass to mapping
-    //     List<Stock> stockDTOList = StockDTO.mapJsonToStockDTO(timeSeriesDaily, companyOverviewData);
-    //     stockService.createStocks(stockDTOList);
-
-    //      return ResponseEntity.ok(new ApiResponse(HttpStatus.CREATED.value(), stockDTOList, String.format("Update for stock (%s) successful.", symbol)));
-    // }
-  
     @PostMapping
     public ResponseEntity<ApiResponse> createStocks(@RequestBody Map<String, Object> timeSeriesDaily) {
         List<Stock> createdStocks = stockService.createStocks(timeSeriesDaily);
-        
+
         if (createdStocks.isEmpty()) {
-            return ResponseEntity.ok(new ApiResponse(HttpStatus.NO_CONTENT.value(), Collections.emptyList(), "No stocks created"));
+            return ResponseEntity
+                    .ok(new ApiResponse(HttpStatus.NO_CONTENT.value(), Collections.emptyList(), "No stocks created"));
         } else {
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(HttpStatus.OK.value(), createdStocks, "Stocks created successfully"));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponse(HttpStatus.OK.value(), createdStocks, "Stocks created successfully"));
         }
     }
 

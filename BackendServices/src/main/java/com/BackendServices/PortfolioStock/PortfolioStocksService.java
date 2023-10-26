@@ -40,12 +40,16 @@ public class PortfolioStocksService {
 
     public boolean deletePortfolioStockById(String portfolioStockId) {
         try {
+          if (portfolioStocksRepository.existsById(portfolioStockId)) {
             portfolioStocksRepository.deleteById(portfolioStockId);
             return true; // Deletion successful
+          } else {
+            return false; // Portfolio stock does not exist
+          }
         } catch (Exception e) {
-            return false; // Deletion failed
+          return false; // Deletion failed
         }
-    }
+      }
 
     public Map<String, Object> getStockPriceChange(String stockId, LocalDate date) {
         Stock inputStock = stockService.getStockById(stockId, date);

@@ -27,18 +27,25 @@ public class PortfolioStocksController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PortfolioStocks>> getAllPortfolioStocks() {
+    public ResponseEntity<?> getAllPortfolioStocks() {
         List<PortfolioStocks> portfolioStocks = portfolioStocksService.getAllPortfolioStocks();
-        return new ResponseEntity<>(portfolioStocks, HttpStatus.OK);
+        if (portfolioStocks.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.NOT_FOUND.value(),
+                    "Failed to fetch portfolio stocks."));
+        }
+        return ResponseEntity
+                .ok(new ApiResponse(HttpStatus.OK.value(), portfolioStocks, "All Portfolio Stocks Retrieved"));
     }
 
     @GetMapping("/{portfolioId}")
-    public ResponseEntity<List<PortfolioStocks>> getPortfolioStocksById(@PathVariable String portfolioId) {
+    public ResponseEntity<?> getPortfolioStocksById(@PathVariable String portfolioId) {
         List<PortfolioStocks> portfolioStocks = portfolioStocksService.getPortfolioStocksById(portfolioId);
         if (portfolioStocks.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.NOT_FOUND.value(),
+                    String.format("No portfolio found with ID (%s).", portfolioId)));
         }
-        return new ResponseEntity<>(portfolioStocks, HttpStatus.OK);
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), portfolioStocks,
+                String.format("Portfolio found with ID (%s).", portfolioId)));
     }
 
     @GetMapping("getStockPriceChange/{stockid}/{date}")
@@ -70,9 +77,7 @@ public class PortfolioStocksController {
                     String.format("Deletion for portfolio stock (%s) successful.", portfolioStockId)));
         } else {
             return ResponseEntity.ok(new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    String.format("Deletion for portfolio stock (%s) unsuccessful.", portfolioStockId)));
+                    String.format("Deletion for portfolio stock (%s) unsuccessful or does not exist.", portfolioStockId)));
         }
     }
-
-    // Add other endpoints as needed
 }

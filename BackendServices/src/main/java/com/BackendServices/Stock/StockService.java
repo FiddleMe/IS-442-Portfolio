@@ -11,6 +11,7 @@ import com.BackendServices.Stock.dto.StockDTO;
 import com.BackendServices.Stock.exception.StockServiceException;
 import com.BackendServices.common.ApiResponse;
 
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,9 @@ public class StockService {
             throw new StockServiceException("Error retrieving all companies");
         }
         //pass to mapping
-        List<Stock> stockDTOList = StockDTO.mapJsonToStockDTO(timeSeriesDaily, companyOverviewData);
+
+        LocalDate latestDate = this.getLatestDate();
+        List<Stock> stockDTOList = StockDTO.mapJsonToStockDTO(timeSeriesDaily, companyOverviewData, latestDate);
         return stockRepository.saveAll(stockDTOList);
     }
     
