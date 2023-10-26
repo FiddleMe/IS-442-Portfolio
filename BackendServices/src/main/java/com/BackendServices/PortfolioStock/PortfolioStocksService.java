@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.BackendServices.Stock.Stock;
 import com.BackendServices.Stock.StockService;
+import com.BackendServices.PortfolioStock.exception.PortfolioStockException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,7 +31,11 @@ public class PortfolioStocksService {
     }
 
     public PortfolioStocks createPortfolioStocks(PortfolioStocks portfolioStocks) {
-        return portfolioStocksRepository.save(portfolioStocks);
+        try {
+            return portfolioStocksRepository.save(portfolioStocks);
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to create PortfolioStocks", e);
+        }
     }
 
     public boolean deletePortfolioStockById(String portfolioStockId) {

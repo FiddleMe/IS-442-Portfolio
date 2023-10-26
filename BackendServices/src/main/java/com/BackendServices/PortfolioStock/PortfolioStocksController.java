@@ -56,18 +56,21 @@ public class PortfolioStocksController {
     }
 
     @PostMapping
-    public ResponseEntity<PortfolioStocks> createPortfolioStock(@RequestBody PortfolioStocks portfolioStock) {
+    public ResponseEntity<?> createPortfolioStock(@RequestBody PortfolioStocks portfolioStock) {
         PortfolioStocks createdPortfolioStock = portfolioStocksService.createPortfolioStocks(portfolioStock);
-        return new ResponseEntity<>(createdPortfolioStock, HttpStatus.CREATED);
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.CREATED.value(), createdPortfolioStock,
+                "Posting of portfolio stock successful."));
     }
 
     @DeleteMapping("/{portfolioStockId}")
-    public ResponseEntity<Void> deletePortfolioStockById(@PathVariable String portfolioStockId) {
+    public ResponseEntity<?> deletePortfolioStockById(@PathVariable String portfolioStockId) {
         boolean deletionSuccessful = portfolioStocksService.deletePortfolioStockById(portfolioStockId);
         if (deletionSuccessful) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Success
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.NO_CONTENT.value(),
+                    String.format("Deletion for portfolio stock (%s) successful.", portfolioStockId)));
         } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Failure
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    String.format("Deletion for portfolio stock (%s) unsuccessful.", portfolioStockId)));
         }
     }
 
