@@ -2,7 +2,7 @@ package com.BackendServices.Portfolio;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.BackendServices.Portfolio.dto.PortfolioDTO;
 import com.BackendServices.Portfolio.dto.UpdatePortfolioDTO;
 import com.BackendServices.common.ApiResponse;
@@ -12,6 +12,7 @@ import java.util.List;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/portfolio")
 public class PortfolioController {
     

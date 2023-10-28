@@ -17,9 +17,47 @@ function CreatePortfolio() {
   const currentPage = 'Create Portfolio';
 
   const [portfolioName, setPortfolioName] = useState('New Portfolio');
+  const [description, setDescription] = useState('New Description');
+  const [capitalAmount, setCapitalAmount] = useState(0);
 
   const handleNameChange = (e) => {
     setPortfolioName(e.target.value || 'New Portfolio');
+  };
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value || 'New Description');
+  };
+
+  const handleCapitalAmountChange = (e) => {
+    setCapitalAmount(e.target.value || 'New Capital');
+  };
+
+  const handleCreatePortfolio = async () => {
+    const data = {
+      name: portfolioName,
+      description: description, // Include description from state
+      capitalAmount: capitalAmount, // Include capitalAmount from state
+      userId: userDetails.userId,
+    };
+    try {
+      const response = await fetch('http://localhost:8082/api/portfolio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.status === 201) {
+        const responseData = await response.json(); // Parse the response body as JSON
+        console.log(responseData.data);
+
+        alert('Portfolio created successfully');
+      } else {
+        console.log('Failed to create portfolio');
+      }
+    } catch (error) {
+      console.error('An error occurred while creating a portfolio:', error);
+    }
   };
 
   return (
@@ -54,6 +92,8 @@ function CreatePortfolio() {
                     className="form-control rounded-3"
                     id="capitalAmount"
                     placeholder="Enter capital amount ($)"
+                    value={capitalAmount} // Set the value from state
+                    onChange={handleCapitalAmountChange} // Handle change using the change handler
                   />
                 </div>
               </div>
@@ -67,12 +107,16 @@ function CreatePortfolio() {
                 id="description"
                 rows="3"
                 placeholder="Enter description"
+                value={description === 'New Description' ? '' : description} // Set the value from state
+                onChange={handleDescriptionChange} // Handle change using the change handler
               ></textarea>
             </div>
             <br />
 
             <AddStocks />
-
+            <button className="btn btn-primary" onClick={handleCreatePortfolio}>
+              Create Portfolio
+            </button>
           </div>
         </div>
       </div>
