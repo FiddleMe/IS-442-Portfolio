@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 function ValidateOTP() {
   const location = useLocation();
@@ -29,12 +30,21 @@ function ValidateOTP() {
       .then((response) => {
         console.log(response.data.message);
         console.log("otpValidated set to true");
-        alert(response.data.message);
+        Swal.fire({
+          icon: 'success',
+          title: 'Nice!',
+          text: response.data.message,
+          footer: ''
+        });
         navigate(`/reset-password?email=${email}`);
       })
       .catch((error) => {
-        alert(error);
-        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error,
+          footer: 'Try Again!'
+        });
       });
   };
   const componentStyles = {

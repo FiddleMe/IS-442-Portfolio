@@ -5,6 +5,7 @@ import "../App.css"
 import personIcon from "./pngegg.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 function Login() {
   const navigate = useNavigate();
@@ -24,14 +25,29 @@ function Login() {
       sessionStorage.setItem('userData', JSON.stringify(response.data.data));
       console.log(response.data);
     if (response.data.message != null) {
-      alert(response.data.message);
+      Swal.fire({
+        icon: 'success',
+        title: 'Welcome!',
+        text: response.data.message,
+        footer: ''
+      });
       navigate("/home");
     } else {
-      alert("Failed to reset the password. Please try again.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: response.data.message,
+        footer: 'Try Again!'
+      });
     }
     })
     .catch((error) => {
-    alert("An error occurred. Please try again later.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error,
+        footer: 'Try Again!'
+      });
     console.error(error);
     });
 

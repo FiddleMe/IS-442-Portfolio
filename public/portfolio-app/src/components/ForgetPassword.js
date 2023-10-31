@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 function ForgotPassword() {
     const [email, setEmail] = useState(""); // Define and initialize 'email'
@@ -16,7 +17,12 @@ function ForgotPassword() {
         .then((response) => {
         console.log(response.data.message);
         console.log(email)
-        alert(response.data.message);
+        Swal.fire({
+          icon: 'success',
+          title: 'Nice!',
+          text: response.data.message,
+          footer: ''
+        });
         navigate(`/validate-otp?email=${email}`);
       }) 
         .catch((error)=>{
