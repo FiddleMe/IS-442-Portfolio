@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BsPencil, BsPlusLg } from 'react-icons/bs';
+import AddStockPopUp from '../AddStock/AddStockPopUp';
 import './HomePage.css';
 
 function Portfolios({ PortfolioData }) {
@@ -11,7 +12,7 @@ function Portfolios({ PortfolioData }) {
 
   return (
     <>
-      <div className="bg-white rounded-3 p-3 w-25">
+      <div className="bg-white rounded-3 p-3 w-25 ">
         <table className="table">
           <thead className="">
             <tr>
@@ -46,7 +47,8 @@ function Portfolios({ PortfolioData }) {
       </div>
 
       <div className="bg-white rounded-3 p-3 w-50">
-        <span className="fw-bold">Portfolio 1 </span>
+        {/* commented it out as its hardcoded and doesnt conform to the change in portfolio click */}
+        {/* <span className="fw-bold">Portfolio 1 </span> */}
         <div>
           <span className="text-secondary">Portfolio Balance</span>
           <div>
@@ -68,10 +70,10 @@ function Portfolios({ PortfolioData }) {
         <br />
 
         <div>
-          <span className="fw-bolder">Stocks</span>
-          <button className="float-end btn btn-outline-primary buttonFont">
+          {/* <button className="float-end btn btn-outline-primary buttonFont">
             <BsPlusLg className="pb-1 buttonIcon" /> Add Stocks
-          </button>
+          </button> */}
+          <AddStockPopUp className="float-end btn btn-outline-primary buttonFont pb-1" />
         </div>
         <br />
         <table className="table">
@@ -91,8 +93,7 @@ function Portfolios({ PortfolioData }) {
               </th>
             </tr>
           </thead>
-          <tbody>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </>
