@@ -4,6 +4,7 @@ import "./Login.css";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 function ResetPassword() {
   const location = useLocation();
@@ -24,14 +25,29 @@ function ResetPassword() {
         .then((response) => {
             console.log(response.data);
           if (response.data.message != null) {
-            alert(response.data.message);
+            Swal.fire({
+              icon: 'success',
+              title: 'Welcome!',
+              text: response.data.message,
+              footer: ''
+            });
             navigate("/login");
           } else {
-            alert("Failed to reset the password. Please try again.");
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: response.data.message,
+              footer: 'Try Again!'
+            });
           }
         })
         .catch((error) => {
-          alert("An error occurred. Please try again later.");
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error,
+            footer: 'Try Again!'
+          });
           console.error(error);
         });
     } else {

@@ -5,6 +5,7 @@ import personIcon from "./pngegg.png";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 function SignUp() {
   const location = useLocation();
@@ -19,7 +20,12 @@ function SignUp() {
 
   const createUser = () => {
     if (user.password !== user.confirmPassword) {
-      alert("Password and Confirm Password must match.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Password and confirm password do not match!',
+        footer: 'Try Again!'
+      });
       return;
     }
 
@@ -30,15 +36,30 @@ function SignUp() {
         console.log(response.data.message);
         var message = response.data.message;
         if (response.data != null) {
-          alert(message);
+          Swal.fire({
+            icon: 'success',
+            title: 'Account Created!',
+            text: response.data.message,
+            footer: ''
+          });
           // Redirect to the login page or perform any other action
           navigate("/login");
         } else {
-          alert("Failed to create user. Please try again.");
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+            footer: 'Try Again!'
+          });
         }
       })
       .catch((error) => {
-        alert("An error occurred. Please try again later.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error,
+          footer: 'Try Again!'
+        });
         console.error(error);
       });
   };
