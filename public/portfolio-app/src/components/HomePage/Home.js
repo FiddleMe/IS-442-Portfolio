@@ -4,6 +4,17 @@ import Sidebar from '../Sidebar';
 import Header from '../Header';
 import { FaBookOpen } from 'react-icons/fa';
 import DonutChart from './DonutChart';
+
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ReferenceArea,
+} from 'recharts';
 import Portfolios from './Portfolios';
 
 let data = [
@@ -20,6 +31,14 @@ let GeographicalData = [
   { value: 2, label: 'Africa' },
   { value: 1, label: 'Australia' },
 ];
+let historicalData = [
+  { name: '2023-01-01', value: 100.0 },
+  { name: '2023-01-02', value: 150.0 },
+  { name: '2023-01-03', value: 120.0 },
+  { name: '2023-01-04', value: 200.0 },
+  // Add more data points with date and value
+];
+const latestValue = historicalData[historicalData.length - 1].value;
 
 let PortfolioData = [
   {
@@ -62,11 +81,44 @@ function Home() {
         <div className="col-md p-0">
           <Header name={name} email={email} />
           <div className="m-2 d-flex flex-wrap gap-4">
+            <div className="bg-white">
+              <LineChart width={600} height={400} data={historicalData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="name"
+                  type="category"
+                  allowDuplicatedCategory={false}
+                  tick={false}
+                />
+                <YAxis tick={false} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="value" stroke="#8884d8" />
+                <ReferenceArea
+                  x1={historicalData.length - 1}
+                  x2={historicalData.length}
+                  fill="rgba(255, 255, 255, 0.7)"
+                />
+                <text
+                  x={100}
+                  y={50}
+                  textAnchor="start"
+                  fontSize={20}
+                  fontWeight="bold"
+                  fill="#505050"
+                >
+                  Your Balance{' '}
+                  <tspan fontSize={30} x={100} dy={30}>
+                    ${latestValue}
+                  </tspan>
+                </text>
+              </LineChart>
+            </div>
             <DonutChart title={'industry'} data={data} />
             <DonutChart title={'Geographical Distrubution'} data={GeographicalData} />
           </div>
           <div className="m-2 d-flex flex-wrap gap-4">
-            <Portfolios PortfolioData = {PortfolioData}/>
+            <Portfolios PortfolioData={PortfolioData} />
           </div>
         </div>
       </div>
