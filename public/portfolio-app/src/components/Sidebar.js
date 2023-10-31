@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Nav, NavItem, NavLink, Collapse } from 'reactstrap';
 import { FaChevronDown, FaChevronUp, FaBars, FaHome, FaSignOutAlt } from 'react-icons/fa';
@@ -31,11 +30,11 @@ function Sidebar(props) {
   };
 
   const pages = [
-    { icon: FaHome, title: 'Home', subpages: [] },
-    { icon: GoStack, title: 'Portfolios', subpages: subPages },
-    { icon: MdCreateNewFolder, title: 'Create Portfolio', subpages: [] },
-    { icon: GoGraph, title: 'Stocks', subpages: [] },
-    { icon: FaSignOutAlt, title: 'Logout', subpages: [] },
+    { icon: FaHome, title: 'Home', subpages: [], path: '/home' },
+    { icon: GoStack, title: 'Portfolios', subpages: subPages , path: '/home'},
+    { icon: MdCreateNewFolder, title: 'Create Portfolio', subpages: [], path: '/create-portfolio'},
+    { icon: GoGraph, title: 'Stocks', subpages: [], path: '/stocks',},
+    { icon: FaSignOutAlt, title: 'Logout', subpages: [], path: '/logout' },
   ];
 
   const toggleSidebar = () => {
@@ -120,7 +119,7 @@ function Sidebar(props) {
                 ) : (
                   <NavLink
                     active={page.title === currentPage}
-                    href="#"
+                    href={page.path}
                     className={`tab ${page.title === currentPage ? 'bold' : ''}`}
                   >
                     {page.icon()} {page.title}
