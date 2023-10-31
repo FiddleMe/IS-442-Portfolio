@@ -117,7 +117,7 @@ function Home() {
             <DonutChart title={'industry'} data={data} />
             <DonutChart title={'Geographical Distrubution'} data={GeographicalData} />
           </div>
-          <div className="m-2 d-flex flex-wrap gap-4">
+          <div className="">
             <Portfolios PortfolioData={PortfolioData} />
           </div>
         </div>

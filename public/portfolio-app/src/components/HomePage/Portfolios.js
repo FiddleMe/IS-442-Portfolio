@@ -10,8 +10,8 @@ function Portfolios({ PortfolioData }) {
   };
 
   return (
-    <>
-      <div className="bg-white rounded-3 p-3 w-25">
+    <div className='m-2 d-flex flex-wrap gap-4 row'>
+      <div className="bg-white rounded-3 p-3 col-12 col-md-5">
         <table className="table">
           <thead className="">
             <tr>
@@ -45,7 +45,7 @@ function Portfolios({ PortfolioData }) {
         </table>
       </div>
 
-      <div className="bg-white rounded-3 p-3 w-50">
+      <div className="bg-white rounded-3 p-3 col-12 col-md-6 ">
         <span className="fw-bold">Portfolio 1 </span>
         <div>
           <span className="text-secondary">Portfolio Balance</span>
@@ -95,7 +95,7 @@ function Portfolios({ PortfolioData }) {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }
 
