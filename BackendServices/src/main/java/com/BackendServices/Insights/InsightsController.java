@@ -4,6 +4,8 @@ package com.BackendServices.Insights;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import com.BackendServices.Portfolio.dto.PortfolioDTO;
 import com.BackendServices.common.ApiResponse;
 
@@ -15,6 +17,7 @@ import java.time.LocalDate;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/insights")
 public class InsightsController {
 
@@ -75,6 +78,17 @@ public class InsightsController {
     @GetMapping("/profit-loss/{portfolioId}")
     public ResponseEntity<?> getProfitLoss(@PathVariable String portfolioId) {
         List<Object> profitLoss = insightsService.getProfitLoss(portfolioId);
+        
+        if (profitLoss != null) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), profitLoss, "success"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "industry distribution not found"));
+        }
+    }
+
+    @GetMapping("/total-profit-loss/{portfolioId}")
+    public ResponseEntity<?> getTotalProfitLoss(@PathVariable String portfolioId) {
+        Object profitLoss = insightsService.getTotalProfitLoss(portfolioId);
         
         if (profitLoss != null) {
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), profitLoss, "success"));
