@@ -6,3 +6,4 @@ BackendServices/src/.DS_Store
 BackendServices/src/main/resources/application.properties
 BackendServices/src/main/resources/application.properties
 BackendServices/src/main/resources/application.properties
+public/portfolio-app/.env

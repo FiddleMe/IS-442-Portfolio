@@ -1,13 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { BsPlusLg } from 'react-icons/bs';
+import { getAllStocks } from '../../api/Stock/getAllStocks';
+// import filterLatestStocks from '../../utils/filterLatestDateStock';
+
+function filterLatestStocks(data) {
+  const stocksData = data;
+  const groupedStocks = {};
+
+  stocksData.forEach((stock) => {
+    const stockId = stock.stockId;
+    if (!(stockId in groupedStocks) || stock.date > groupedStocks[stockId].date) {
+      groupedStocks[stockId] = {
+        name: stock.name,
+        price: stock.price,
+      };
+    }
+  });
+
+  return Object.values(groupedStocks);
+}
 
 function AddStocks() {
-  const [stocks, setStocks] = useState([
-    { name: 'Apple Inc.', price: 150.0 },
-    { name: 'Microsoft Corporation', price: 300.0 },
-    { name: 'Amazon.com, Inc.', price: 3000.0 },
-  ]);
+  useEffect(() => {
+    // Call the getAllStocks function to fetch the list of stocks
+    async function fetchStocks() {
+      try {
+        const data = await getAllStocks();
+        // Set the retrieved stocks to the state
+
+        const filteredStocks = filterLatestStocks(data);
+        console.log(filteredStocks);
+
+        setStocks(filteredStocks);
+      } catch (error) {
+        console.error('Error fetching stocks:', error);
+      }
+    }
+
+    // Call the fetchStocks function
+    fetchStocks();
+  }, []);
+
+  const [stocks, setStocks] = useState([]);
 
   const [selectedStocks, setSelectedStocks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
