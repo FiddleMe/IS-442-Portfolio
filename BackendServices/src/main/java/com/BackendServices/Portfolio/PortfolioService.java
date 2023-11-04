@@ -45,6 +45,25 @@ public class PortfolioService {
         }
     }
 
+    public List<PortfolioDTO> getPortfolioByUserId(String userId) {
+        try {
+            List<Portfolio> portfolios = portfolioRepository.findAll();
+            List<PortfolioDTO> portfolioDTOs = new ArrayList<>();
+    
+            for (Portfolio portfolio : portfolios) {
+
+                if (portfolio.getUserId().equals(userId)){                
+                    PortfolioDTO portfolioDTO = PortfolioMapper.mapEntityToDTO(portfolio);
+                    portfolioDTOs.add(portfolioDTO);
+                }
+            }
+    
+            return portfolioDTOs;
+        } catch (Exception e) {
+            throw new PortfolioServiceException("Error retrieving all Portfolios", e);
+        }
+    }
+
 
     public PortfolioDTO createPortfolio(PortfolioDTO PortfolioDTO) {
         try{

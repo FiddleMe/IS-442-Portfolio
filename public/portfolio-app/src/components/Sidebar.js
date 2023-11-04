@@ -34,7 +34,7 @@ function Sidebar(props) {
     { icon: GoStack, title: 'Portfolios', subpages: subPages , path: '/home'},
     { icon: MdCreateNewFolder, title: 'Create Portfolio', subpages: [], path: '/create-portfolio'},
     { icon: GoGraph, title: 'Stocks', subpages: [], path: '/stocks',},
-    { icon: FaSignOutAlt, title: 'Logout', subpages: [], path: '/logout' },
+    { icon: FaSignOutAlt, title: 'Logout', subpages: [], path: '/login' },
   ];
 
   const toggleSidebar = () => {

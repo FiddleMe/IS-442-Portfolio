@@ -28,7 +28,11 @@ function SignUp() {
       });
       return;
     }
-
+    const param = {
+      "recipient": user.email,
+      "subject": "Your Account Has Been Successfully Created",
+      "msg": "Dear "+ user.firstName + " " + user.lastName +", \n\n\nThank you for joining us. We are pleased to confirm that your account has been created successfully. \nKindly note that this is a system-generated email. Please do not reply. \n\n\n Best Regards, \n Team 3"
+    }
     // Make an HTTP POST request to create a new user using Axios
     axios
       .post("http://localhost:8082/api/users", user)
@@ -43,7 +47,7 @@ function SignUp() {
             footer: ''
           });
           // Redirect to the login page or perform any other action
-          navigate("/login");
+          return axios.post("http://localhost:8082/api/email/sendEmail", param)
         } else {
           Swal.fire({
             icon: 'error',
@@ -52,6 +56,10 @@ function SignUp() {
             footer: 'Try Again!'
           });
         }
+      })
+      .then (response => {
+        console.log('Email request successful:', response.data);
+        navigate("/login");
       })
       .catch((error) => {
         Swal.fire({

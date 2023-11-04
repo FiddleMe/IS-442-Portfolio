@@ -3,12 +3,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.BackendServices.Email.dto.EmailDTO;
 import com.BackendServices.Email.dto.EmailMapper;
 import com.BackendServices.common.ApiResponse;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/email")
 public class EmailController {
     @Autowired

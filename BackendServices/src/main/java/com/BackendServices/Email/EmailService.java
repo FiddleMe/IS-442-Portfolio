@@ -23,14 +23,14 @@ public class EmailService {
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("<Replace with email address>", "<Replace with password>");
+                return new PasswordAuthentication("gigsterjob@gmail.com", "towlwhajswsrmubo");
             }
         });
 
         try {
             Message msg = new MimeMessage(session);
 
-            msg.setFrom(new InternetAddress("<Replace with email address>"));
+            msg.setFrom(new InternetAddress("gigsterjob@gmail.com"));
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email.getRecipient()));
             msg.setSubject(email.getSubject());
             msg.setText(email.getMsg());

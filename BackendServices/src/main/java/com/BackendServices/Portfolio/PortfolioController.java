@@ -42,6 +42,18 @@ public class PortfolioController {
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), portfolios, "Portfolios found"));
         }
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getPortfolioByUserId(@PathVariable String userId) {
+        List<PortfolioDTO> portfolios = portfolioService.getPortfolioByUserId(userId);
+        if (portfolios.isEmpty()) {
+            ApiResponse response = new ApiResponse(HttpStatus.NOT_FOUND.value(), Collections.emptyList(), "No portfolios found");
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), portfolios, "Portfolios found"));
+        }
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse> createPortfolio(@RequestBody PortfolioDTO portfolioDTO) {
         PortfolioDTO createdPortfolio = portfolioService.createPortfolio(portfolioDTO);
