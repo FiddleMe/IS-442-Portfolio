@@ -39,17 +39,17 @@ public class InsightsController {
     //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "Portfolio not found"));
     //     }
     // }
-    @GetMapping("/price-distribution/{portfolioId}")
-    public ResponseEntity<?> getPriceDistribution(@PathVariable String portfolioId) {
+    // @GetMapping("/price-distribution/{portfolioId}")
+    // public ResponseEntity<?> getPriceDistribution(@PathVariable String portfolioId) {
 
-        Map<String, BigDecimal> priceDistribution = insightsService.getPriceDistribution(portfolioId);
+    //     Map<String, BigDecimal> priceDistribution = insightsService.getPriceDistribution(portfolioId);
 
-        if (priceDistribution != null) {
-            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), priceDistribution, "success"));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "price distribution not found"));
-        }
-    }
+    //     if (priceDistribution != null) {
+    //         return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), priceDistribution, "success"));
+    //     } else {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "price distribution not found"));
+    //     }
+    // }
 
     @GetMapping("/geo-distribution/{portfolioId}")
     public ResponseEntity<?> getGeographicalDistribution(@PathVariable String portfolioId) {
@@ -74,7 +74,7 @@ public class InsightsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "industry distribution not found"));
         }
     }
-    //Name, Starting value, current value, p&L, %PL
+    //Name, Starting value, current value, p&L, %PL, qty, allocation
     @GetMapping("/profit-loss/{portfolioId}")
     public ResponseEntity<?> getProfitLoss(@PathVariable String portfolioId) {
         List<Object> profitLoss = insightsService.getProfitLoss(portfolioId);

@@ -32,64 +32,60 @@ public class InsightsService {
         this.portfolioStocksService = portfolioStocksService;
     }
 
-    public Map<String, BigDecimal> getPriceDistribution(String portfolioId) {
-      // Price distribution of the ArrayList of stocks
-      System.out.println("portfolioId: " + portfolioId);
-      // //initialise Portfolio using portfolioId
+//     public Map<String, BigDecimal> getPriceDistribution(String portfolioId) {
+//       // Price distribution of the ArrayList of stocks
+//     //   System.out.println("portfolioId: " + portfolioId);
+//       // //initialise Portfolio using portfolioId
 
-      PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
-      System.out.println(portfolio.getName());
-      System.out.println(portfolio.getCapitalAmount());
+//       PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
+//     //   System.out.println(portfolio.getName());
+//     //   System.out.println(portfolio.getCapitalAmount());
 
-      System.out.println("portfolio: " + portfolio);
+//     //   System.out.println("portfolio: " + portfolio);
 
-      Map<String, BigDecimal> priceDistribution = new HashMap<>();
+//       Map<String, BigDecimal> priceDistribution = new HashMap<>();
       
-      BigDecimal totalCapital = portfolio.getCapitalAmount();
-      
-      // Assuming capitalAmount is the total amount of portfolioValue,
-      portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
-      for (PortfolioStocks portfolioStock : portfolioStocksList) {
-          System.out.println("PORTFOLIO STOCK" + portfolioStock.getPortfolioStockId());
-          String stockId = portfolioStock.getStockId();
-          System.out.println("STOCKID" + stockId);
+//       BigDecimal totalCapital = portfolio.getCapitalAmount();
 
-          BigDecimal latestPrice = portfolioStocksService.getLatestPrice(stockId);
-          System.out.println("lastestprice" + latestPrice);
-          Integer quantity = portfolioStock.getQuantity();
-          System.out.println("lquantity" + quantity);
-          BigDecimal totalPrice = latestPrice.multiply(BigDecimal.valueOf(quantity));
-          System.out.println("toalprice" + totalPrice);
-          String name = portfolioStocksService.getName(stockId);
-          totalCapital = totalCapital.add(totalPrice);
-          System.out.println(totalCapital);
+//       portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
+//       for (PortfolioStocks portfolioStock : portfolioStocksList) {
+//         //   System.out.println("PORTFOLIO STOCK" + portfolioStock.getPortfolioStockId());
+//           String stockId = portfolioStock.getStockId();
+//         //   System.out.println("STOCKID" + stockId);
+
+//           BigDecimal latestPrice = portfolioStocksService.getLatestPrice(stockId);
+//         //   System.out.println("lastestprice" + latestPrice);
+//           Integer quantity = portfolioStock.getQuantity();
+//         //   System.out.println("lquantity" + quantity);
+//           BigDecimal totalPrice = latestPrice.multiply(BigDecimal.valueOf(quantity));
+//         //   System.out.println("toalprice" + totalPrice);
+//           String name = portfolioStocksService.getName(stockId);
+//           totalCapital = totalCapital.add(totalPrice);
+//         //   System.out.println(totalCapital);
   
-          if (priceDistribution.containsKey(name)) {
-              // If the stock name is already in the map, add the totalPrice to the existing value
-              BigDecimal currentAllocation = priceDistribution.get(name);
-              currentAllocation = currentAllocation.add(totalPrice); 
-              priceDistribution.put(name, currentAllocation);
-          } else {
-              // If the stock name is not in the map, create a new entry
-              priceDistribution.put(name, totalPrice);
-          }
-      }
+//           if (priceDistribution.containsKey(name)) {
+//               // If the stock name is already in the map, add the totalPrice to the existing value
+//               BigDecimal currentAllocation = priceDistribution.get(name);
+//               currentAllocation = currentAllocation.add(totalPrice); 
+//               priceDistribution.put(name, currentAllocation);
+//           } else {
+//               // If the stock name is not in the map, create a new entry
+//               priceDistribution.put(name, totalPrice);
+//           }
+//       }
       
-      for (Map.Entry<String, BigDecimal> entry : priceDistribution.entrySet()) {
-        String stockName = entry.getKey();
-        BigDecimal stockPrice = entry.getValue();
-        System.out.println(stockPrice);
-        System.out.println(totalCapital);
-        BigDecimal allocationPercentage = stockPrice.divide(totalCapital, new MathContext(4)); // Adjust the scale and rounding mode as needed
-        priceDistribution.put(stockName, allocationPercentage);
-    }
+//       for (Map.Entry<String, BigDecimal> entry : priceDistribution.entrySet()) {
+//         String stockName = entry.getKey();
+//         BigDecimal stockPrice = entry.getValue();
+//         // System.out.println(stockPrice);
+//         // System.out.println(totalCapital);
+//         BigDecimal allocationPercentage = stockPrice.divide(totalCapital, new MathContext(4)); // Adjust the scale and rounding mode as needed
+//         priceDistribution.put(stockName, allocationPercentage);
+//     }
 
-      return priceDistribution;
-  }
-  
-  // public List<PortfolioStocks> getPortfolioStocks(String portfolioId) {
-  //   return portfolioStocksService.getPortfolioStocksById(portfolioId);
-  // }
+//       return priceDistribution;
+//   }
+
   public Map<String, BigDecimal> getGeographicalDistribution(String portfolioId) {
       // Geographical distribution of the ArrayList of stocks
       Map<String, BigDecimal> geographicalDistribution = new HashMap<>();
@@ -119,9 +115,9 @@ public class InsightsService {
       for (Map.Entry<String, BigDecimal> entry : geographicalDistribution.entrySet()) {
         String regionName = entry.getKey();
         BigDecimal stockPrice = entry.getValue();
-        System.out.println(stockPrice);
-        System.out.println(regionName);
-        System.out.println(totalCapital);
+        // System.out.println(stockPrice);
+        // System.out.println(regionName);
+        // System.out.println(totalCapital);
         BigDecimal allocationPercentage = stockPrice.divide(totalCapital, new MathContext(4)); // Adjust the scale and rounding mode as needed
         geographicalDistribution.put(regionName, allocationPercentage);
       }
@@ -157,9 +153,9 @@ public class InsightsService {
       for (Map.Entry<String, BigDecimal> entry : industryDistribution.entrySet()) {
         String industryName = entry.getKey();
         BigDecimal stockPrice = entry.getValue();
-        System.out.println(stockPrice);
-        System.out.println(industryName);
-        System.out.println(totalCapital);
+        // System.out.println(stockPrice);
+        // System.out.println(industryName);
+        // System.out.println(totalCapital);
         BigDecimal allocationPercentage = stockPrice.divide(totalCapital, new MathContext(4)); // Adjust the scale and rounding mode as needed
         industryDistribution.put(industryName, allocationPercentage);
       }
@@ -174,36 +170,64 @@ public class InsightsService {
       List<Object> out = new ArrayList<>();
 
       portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
+
+      Map<String, BigDecimal> priceDistribution = new HashMap<>();
+      PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
+      BigDecimal totalCapital = portfolio.getCapitalAmount();
   
       for (PortfolioStocks portfolioStock : portfolioStocksList) {
+        
+              String stockId = portfolioStock.getStockId();
+              BigDecimal latestPrice = portfolioStocksService.getLatestPrice(stockId);
+              Integer quantity = portfolioStock.getQuantity();
+              BigDecimal totalPrice = latestPrice.multiply(BigDecimal.valueOf(quantity));
+              String name = portfolioStocksService.getName(stockId);
+              totalCapital = totalCapital.add(totalPrice);
+      
+              if (priceDistribution.containsKey(name)) {
+                  // If the stock name is already in the map, add the totalPrice to the existing value
+                  BigDecimal currentAllocation = priceDistribution.get(name);
+                  currentAllocation = currentAllocation.add(totalPrice); 
+                  priceDistribution.put(name, currentAllocation);
+              } else {
+                  // If the stock name is not in the map, create a new entry
+                  priceDistribution.put(name, totalPrice);
+              }
+          }
+          
+          
+        for (Map.Entry<String, BigDecimal> entry : priceDistribution.entrySet()) {
+            String stockName = entry.getKey();
+            BigDecimal stockPrice = entry.getValue();
+            BigDecimal allocationPercentage = stockPrice.divide(totalCapital, new MathContext(4)); // Adjust the scale and rounding mode as needed
+            priceDistribution.put(stockName, allocationPercentage);
+        }
+
+        for (PortfolioStocks portfolioStock : portfolioStocksList) {
           String stockId = portfolioStock.getStockId();
+          int quantity = portfolioStock.getQuantity();
           LocalDate purchaseDate = portfolioStock.getdate();
-          // Object priceDifferenceObj = portfolioStocksService.getStockPriceChange(stockId, date).get("priceDifference");
           BigDecimal currentPrice = portfolioStocksService.getLatestPrice(stockId);
           BigDecimal purchasePrice = portfolioStocksService.getPurchasePrice(stockId, purchaseDate);
-          // BigDecimal priceDifference = (BigDecimal) priceDifferenceObj;
           BigDecimal priceDifference = currentPrice.subtract(purchasePrice);
           String name = portfolioStocksService.getName(stockId);
-  
-          // BigDecimal purchasePrice = portfolioStocksService.getPurchasePrice(stockId, date);
-  
-          // Calculate profitLossPercentage
           BigDecimal profitLossPercentage = BigDecimal.ZERO;
           if (!purchasePrice.equals(BigDecimal.ZERO)) {
               profitLossPercentage = priceDifference.divide(purchasePrice, new MathContext(4));
           }
   
-          // Create a map to store the values
           Map<String, Object> stockInfo = new HashMap<>();
           stockInfo.put("name", name);
+          stockInfo.put("qty", quantity);
           stockInfo.put("currentPrice", currentPrice);
           stockInfo.put("purchasePrice", purchasePrice);
           stockInfo.put("priceDifference", priceDifference);
           stockInfo.put("profitLossPercentage", profitLossPercentage);
+          stockInfo.put("allocation", priceDistribution.get(name));
   
-          // Add the map to the list
           out.add(stockInfo);
       }
+    
   
       return out;
   }
@@ -277,7 +301,8 @@ public class InsightsService {
   public Map<LocalDate, BigDecimal> getHistoricalReturns(String portfolioId, String interval) {
       Map<LocalDate, BigDecimal> historicalReturns = new LinkedHashMap<>();
       portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
-  
+        PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
+      
       int numberOfIntervals = 50;
       int intervalCount = 0;
   
@@ -296,21 +321,19 @@ public class InsightsService {
   
       for (int i = totalDuration; i >= 0; i -= intervalCount) {
           LocalDate date = latestDate.minusDays(i);
-          System.out.println("date: " + date);
-          // Get the total value at currentDate
           BigDecimal totalValue = BigDecimal.ZERO;
           for (PortfolioStocks portfolioStock : portfolioStocksList) {
             try{
               String stockId = portfolioStock.getStockId();
-              System.out.println("stock: " + stockId);
+            //   System.out.println("stock: " + stockId);
               BigDecimal lastestPrice = portfolioStocksService.getPurchasePrice(stockId, date);
               Integer quantity = portfolioStock.getQuantity();
-              System.out.println("quantity: " + quantity);
-              BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity));
+            //   System.out.println("quantity: " + quantity);
+              BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity)).add(portfolio.getCapitalAmount());
               totalValue = totalValue.add(totalPrice);
             }
             catch (Exception e) {
-              e.printStackTrace(); 
+            //   e.printStackTrace(); 
               continue;
           }
 
