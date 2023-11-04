@@ -157,96 +157,101 @@ function Home() {
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
       <div className="row">
         <Sidebar subPages={subPages} currentPage={currentPage} />
-        {currentPortfolio !== null && (
-          <div className="col-md p-0">
-            <Header name={name} email={email} />
-            <div className="m-2 d-flex flex-wrap gap-4">
-              {currentPortfolio.hasOwnProperty('historicalInsights') &&
-              currentPortfolio.name !== 'Portfolio A' &&
-              currentPortfolio.historicalInsights.length !== 0 &&
-              !isPromise(currentPortfolio.historicalInsights) ? (
-                <HistoricalChart
-                  title={'Perforamnce'}
-                  historicalData={currentPortfolio.historicalInsights}
-                />
-              ) : (
-                <div>Loading...</div>
-              )}
 
-              {!isPromise(currentPortfolio.industryInsights) &&
-              currentPortfolio.name !== 'Portfolio A' ? (
-                <DonutChart
-                  title={'Industrial Distrubution'}
-                  data={currentPortfolio.industryInsights}
-                />
-              ) : (
-                <div>Loading...</div>
-              )}
+        <div className="col-md p-0">
+          <Header name={name} email={email} />
+          <div className="m-2 d-flex flex-wrap gap-4">
+            {currentPortfolio !== null &&
+            currentPortfolio !== undefined &&
+            currentPortfolio.hasOwnProperty('historicalInsights') &&
+            currentPortfolio.name !== 'Portfolio A' &&
+            currentPortfolio.historicalInsights.length !== 0 &&
+            !isPromise(currentPortfolio.historicalInsights) ? (
+              <HistoricalChart
+                title={'Perforamnce'}
+                historicalData={currentPortfolio.historicalInsights}
+              />
+            ) : (
+              <div>Loading...</div>
+            )}
 
-              {!isPromise(currentPortfolio.geographicalInsights) &&
-              currentPortfolio.name !== 'Portfolio A' ? (
-                <DonutChart
-                  title={'Geographical Distrubution'}
-                  data={currentPortfolio.geographicalInsights}
-                />
-              ) : null}
-            </div>
-            <div className="">
-              <div className="m-2 d-flex flex-wrap gap-4 row">
-                <div className="bg-white rounded-3 p-3 col-12 col-md-5">
-                  <table className="table">
-                    <thead className="">
-                      <tr>
-                        <th scope="col" className="text-muted fw-bolder">
-                          Name
-                        </th>
-                        <th scope="col" className="text-muted fw-bolder">
-                          Balance
-                        </th>
-                        <th scope="col" className="text-muted fw-bolder">
-                          Change
-                        </th>
-                      </tr>
-                    </thead>
-                    {portfolioData !== null && (
-                      <tbody>
-                        {portfolioData.map((Portfolio) => (
-                          <tr
-                            key={Portfolio.name}
+            {currentPortfolio !== null &&
+            currentPortfolio !== undefined &&
+            !isPromise(currentPortfolio.industryInsights) &&
+            currentPortfolio.name !== 'Portfolio A' ? (
+              <DonutChart
+                title={'Industrial Distrubution'}
+                data={currentPortfolio.industryInsights}
+              />
+            ) : (
+              <div>Loading...</div>
+            )}
+
+            {currentPortfolio !== null &&
+            currentPortfolio !== undefined &&
+            !isPromise(currentPortfolio.geographicalInsights) &&
+            currentPortfolio.name !== 'Portfolio A' ? (
+              <DonutChart
+                title={'Geographical Distrubution'}
+                data={currentPortfolio.geographicalInsights}
+              />
+            ) : null}
+          </div>
+          <div className="">
+            <div className="m-2 d-flex flex-wrap gap-4 row">
+              <div className="bg-white rounded-3 p-3 col-12 col-md-5">
+                <table className="table">
+                  <thead className="">
+                    <tr>
+                      <th scope="col" className="text-muted fw-bolder">
+                        Name
+                      </th>
+                      <th scope="col" className="text-muted fw-bolder">
+                        Balance
+                      </th>
+                      <th scope="col" className="text-muted fw-bolder">
+                        Change
+                      </th>
+                    </tr>
+                  </thead>
+                  {portfolioData !== null && (
+                    <tbody>
+                      {portfolioData.map((Portfolio) => (
+                        <tr
+                          key={Portfolio.name}
+                          className={Portfolio === currentPortfolio ? 'table-active text-bold' : ''}
+                          onClick={() => handleRowClick(Portfolio)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <td>{Portfolio.name}</td>
+                          <td>${Portfolio.capitalAmount.toLocaleString()}</td>
+                          <td
                             className={
-                              Portfolio === currentPortfolio ? 'table-active text-bold' : ''
+                              Portfolio.profitInsights
+                                ? Portfolio.profitInsights.totalProfitLossPercentage === 0.0
+                                  ? 'text-normal'
+                                  : Portfolio.profitInsights.totalProfitLossPercentage < 0
+                                  ? 'text-danger'
+                                  : 'text-success'
+                                : ''
                             }
-                            onClick={() => handleRowClick(Portfolio)}
-                            style={{ cursor: 'pointer' }}
                           >
-                            <td>{Portfolio.name}</td>
-                            <td>${Portfolio.capitalAmount.toLocaleString()}</td>
-                            <td
-                              className={
-                                Portfolio.profitInsights
-                                  ? Portfolio.profitInsights.totalProfitLossPercentage === 0.0
-                                    ? 'text-normal'
-                                    : Portfolio.profitInsights.totalProfitLossPercentage < 0
-                                    ? 'text-danger'
-                                    : 'text-success'
-                                  : ''
-                              }
-                            >
-                              {
-                                Portfolio.profitInsights
-                                  ? (
-                                      Portfolio.profitInsights.totalProfitLossPercentage * 100
-                                    ).toFixed(2) + '%'
-                                  : 'Loading...' // Display a loading message when insights are not available
-                              }
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    )}
-                  </table>
-                </div>
+                            {
+                              Portfolio.profitInsights
+                                ? (
+                                    Portfolio.profitInsights.totalProfitLossPercentage * 100
+                                  ).toFixed(2) + '%'
+                                : 'Loading...' // Display a loading message when insights are not available
+                            }
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  )}
+                </table>
+              </div>
 
+              {currentPortfolio !== null && currentPortfolio !== undefined && (
                 <div className="bg-white rounded-3 p-3 col-12 col-md-6 ">
                   <span className="fw-bold">${currentPortfolio.name} </span>
                   <div>
@@ -320,10 +325,10 @@ function Home() {
                     </tbody>
                   </table>
                 </div>
-              </div>
+              )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
