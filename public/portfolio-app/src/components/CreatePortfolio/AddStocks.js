@@ -2,8 +2,10 @@ import { FaTimes } from 'react-icons/fa';
 import { BsPlusLg } from 'react-icons/bs';
 import { getAllStocks } from '../../api/Stock/getAllStocks';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; // Import the CSS
+import 'react-datepicker/dist/react-datepicker.css'; 
 import React, { useState, useEffect } from 'react';
+import './AddStock.css';
+
 
 function filterLatestStocks(data) {
   const stocksData = data;
@@ -45,8 +47,10 @@ function AddStocks() {
     fetchStocks();
   }, []);
 
+
   const [selectedStocks, setSelectedStocks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
 
   const handleAddStock = (stock) => {
     const existingStock = selectedStocks.find((s) => s.name === stock.name);
@@ -69,6 +73,19 @@ function AddStocks() {
   const filteredStocks = stocks.filter((stock) =>
     stock.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setIsMobile(true);
+      } else {
+        setIsMobile(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="">
@@ -83,37 +100,40 @@ function AddStocks() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             ></input>
-            <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
-              <table className="table">
+            <div className="overflow-auto table-responsive" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+              <table className={`table ${isMobile ? 'mobile' : 'website'}`}>
                 <thead>
                   <tr>
-                    <th className="small text-secondary col-4">Stock Name</th>
+                    <th className={`small text-secondary col-3 ${isMobile ? 'mobile' : 'website'}`}>Stock Name</th>
                     <th className="small text-secondary col-2">Price</th>
                     <th className="small text-secondary col-3">Date</th>
-                    <th className="col-1"></th>
+                    <th className="col-2"></th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {filteredStocks.map((stock, index) => (
                     <tr key={index}>
-                      <td>{stock.name}</td>
+                      <td className={`${isMobile ? 'mobile' : 'website'}`}>{stock.name}</td>
                       <td>${stock.price.toLocaleString('en-US')}</td>
-                      <td className="text-center">
-                        <DatePicker
-                          selected={selectedDate}
-                          onChange={(date) => setSelectedDate(date)}
-                          placeholderText="Select Date"
-                          dateFormat="yyyy/MM/dd"
-                          className="form-control text-sm w-75"
-                        />
+                      <td className="text-center" >
+                        <div className="datePickerWrapper">
+                          <DatePicker
+                            selected={selectedDate}
+                            onChange={(date) => setSelectedDate(date)}
+                            placeholderText="Select Date"
+                            dateFormat="yyyy/MM/dd"
+                            className="form-control text-sm datepicker"
+                          />
+                        </div>
                       </td>
                       <td>
                         <button
-                          className="float-end btn btn-outline-primary buttonFont"
+                          className={`float-end btn btn-outline-primary btn-small buttonFont ${isMobile ? 'mobile_btn' : 'web_btn'}`}
                           onClick={() => handleAddStock(stock)}
+                          
                         >
-                          <BsPlusLg className="pb-1 buttonIcon " /> Add Stocks
+                          <BsPlusLg className="pb-1 buttonIcon " /> 
                         </button>
                       </td>
                     </tr>
