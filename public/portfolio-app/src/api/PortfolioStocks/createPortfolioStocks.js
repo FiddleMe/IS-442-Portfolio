@@ -1,8 +1,8 @@
 import axios from 'axios'; // Import Axios
 
-export const getAllStocks = async () => {
+export const createPortfolioStocks = async () => {
   try {
-    const response = await axios.get(`http://localhost:8082/api/stocks`, {
+    const response = await axios.get(`http://localhost:8082/api/portfoliostocks`, {
       headers: {
         'Content-Type': 'application/json',
       },

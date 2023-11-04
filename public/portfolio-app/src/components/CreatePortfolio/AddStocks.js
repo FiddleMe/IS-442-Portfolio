@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { BsPlusLg } from 'react-icons/bs';
 import { getAllStocks } from '../../api/Stock/getAllStocks';
-// import filterLatestStocks from '../../utils/filterLatestDateStock';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'; // Import the CSS
+import React, { useState, useEffect } from 'react';
 
 function filterLatestStocks(data) {
   const stocksData = data;
@@ -22,6 +23,8 @@ function filterLatestStocks(data) {
 }
 
 function AddStocks() {
+  const [stocks, setStocks] = useState([]); // Move the useState here
+  const [selectedDate, setSelectedDate] = useState(null);
   useEffect(() => {
     // Call the getAllStocks function to fetch the list of stocks
     async function fetchStocks() {
@@ -41,8 +44,6 @@ function AddStocks() {
     // Call the fetchStocks function
     fetchStocks();
   }, []);
-
-  const [stocks, setStocks] = useState([]);
 
   const [selectedStocks, setSelectedStocks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -86,26 +87,35 @@ function AddStocks() {
               <table className="table">
                 <thead>
                   <tr>
-                    <th className="small text-secondary" style={{ width: '50%' }}>
-                      Stock Name
-                    </th>
-                    <th className="small text-secondary" style={{ width: '25%' }}>
-                      Price
-                    </th>
-                    <th style={{ width: '25%' }}></th>
+                    <th className="small text-secondary col-4">Stock Name</th>
+                    <th className="small text-secondary col-2">Price</th>
+                    <th className="small text-secondary col-3">Date</th>
+                    <th className="col-1"></th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {filteredStocks.map((stock, index) => (
                     <tr key={index}>
                       <td>{stock.name}</td>
                       <td>${stock.price.toLocaleString('en-US')}</td>
+                      <td className="text-center">
+                        <DatePicker
+
+                          selected={selectedDate}
+                          onChange={(date) => setSelectedDate(date)}
+                          placeholderText="Select Date"
+                          dateFormat="yyyy/MM/dd"
+                          className="form-control" // Apply form-control class
+                          style={{ width: '120px' }} // Set a specific width
+                        />
+                      </td>
                       <td>
                         <button
                           className="float-end btn btn-outline-primary buttonFont"
                           onClick={() => handleAddStock(stock)}
                         >
-                          <BsPlusLg className="pb-1 buttonIcon" /> Add Stocks
+                          <BsPlusLg className="pb-1 buttonIcon " /> Add Stocks
                         </button>
                       </td>
                     </tr>
