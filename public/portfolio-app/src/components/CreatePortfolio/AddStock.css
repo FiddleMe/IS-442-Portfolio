@@ -23,19 +23,19 @@ table {
     line-height: 1;
     max-width: 100%
   }
-  .mobile_btn{
-    padding: 6px 12px;
-    max-width: 100%;
-  }
-  .buttonFont {
-    width: '100%',
-  }
-  .web_btn {
-    font-size: 12px;
-    padding: 8px 16px;
-  }
-  .datePickerWrapper {
-    position: "static"; 
-    width: "100%";
-  }
+.mobile_btn{
+  padding: 6px 12px;
+  max-width: 100%;
+}
+.buttonFont {
+  width: '100%',
+}
+.web_btn {
+  font-size: 12px;
+  padding: 8px 16px;
+}
+.datePickerWrapper {
+  position: static; 
+  width: "100%";
+}
 
