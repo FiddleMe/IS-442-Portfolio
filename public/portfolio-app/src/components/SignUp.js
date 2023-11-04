@@ -65,7 +65,7 @@ function SignUp() {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: error,
+          text: error.response.data.message,
           footer: 'Try Again!'
         });
         console.error(error);
@@ -170,8 +170,8 @@ function SignUp() {
                     }
                   
                   />
+                    <small className="header3">Your password should contain at least 8 characters, including a combination of letters and numbers.</small>
                 </div>
-
                 <div className="form-group">
                   <label htmlFor="confirm_password">Confirm Password</label>
                   <input

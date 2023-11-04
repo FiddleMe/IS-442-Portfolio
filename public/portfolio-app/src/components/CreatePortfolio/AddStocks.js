@@ -51,13 +51,16 @@ function AddStocks() {
               <table className="table">
                 <thead>
                   <tr>
-                    <th className="small text-secondary" style={{ width: '50%' }}>
+                    <th className="small text-secondary" style={{ width: '40%' }}>
                       Stock Name
                     </th>
-                    <th className="small text-secondary" style={{ width: '25%' }}>
+                    <th className="small text-secondary" style={{ width: '15%' }}>
                       Price
                     </th>
-                    <th style={{ width: '25%' }}></th>
+                    <th className="small text-secondary" style={{ width: '15%' }}>
+                      Date
+                    </th>
+                    <th style={{ width: '30%' }}></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -65,6 +68,7 @@ function AddStocks() {
                     <tr key={index}>
                       <td>{stock.name}</td>
                       <td>${stock.price.toLocaleString('en-US')}</td>
+                      <td>Date</td>
                       <td>
                         <button
                           className="float-end btn btn-outline-primary buttonFont"
