@@ -101,13 +101,11 @@ function AddStocks() {
                       <td>${stock.price.toLocaleString('en-US')}</td>
                       <td className="text-center">
                         <DatePicker
-
                           selected={selectedDate}
                           onChange={(date) => setSelectedDate(date)}
                           placeholderText="Select Date"
                           dateFormat="yyyy/MM/dd"
-                          className="form-control" // Apply form-control class
-                          style={{ width: '120px' }} // Set a specific width
+                          className="form-control text-sm w-75"
                         />
                       </td>
                       <td>
