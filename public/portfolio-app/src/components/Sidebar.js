@@ -103,6 +103,11 @@ function Sidebar(props) {
     setIsDropdownOpen(isSubPage(currentPage));
   }, [currentPage]);
 
+  const handleLogout = () => {
+    sessionStorage.clear();
+    console.log("LOGOUt")
+    window.location.href = '/login'; 
+  };
   return (
     // <div className={`col-md-2 ${isSidebarOpen && !isMobile ? 'web_sidebar' : 'mobile_sidebar'}`}>
     <div
@@ -161,6 +166,7 @@ function Sidebar(props) {
                     active={page.title === currentPage}
                     href={page.path}
                     className={`tab ${page.title === currentPage ? 'bold' : ''}`}
+                    onClick={page.title === 'Logout' ? handleLogout : undefined}
                   >
                     {page.icon()} {page.title}
                   </NavLink>

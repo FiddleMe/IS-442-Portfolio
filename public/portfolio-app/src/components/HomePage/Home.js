@@ -47,6 +47,19 @@ function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const checkSessionStorage = () => {
+      if (sessionStorage.getItem('userData') === null) {
+        navigate("/");
+        return;
+      }
+      
+    };
+  
+    checkSessionStorage();
+  
+  }, []);
+
+  useEffect(() => {
     console.log('Home component rendered');
     // Function to fetch data from the API
     const fetchData = async () => {
@@ -150,11 +163,11 @@ function Home() {
     setCurrentPortfolio(portfolio);
     navigate('/home', { replace: true });
   };
-
-
-  const userDetails = JSON.parse(sessionStorage.getItem('userData'));
-  const name = userDetails.firstName + ' ' + userDetails.lastName;
-  const email = userDetails.email;
+  const userDetails = sessionStorage.getItem('userData')!=null? JSON.parse(sessionStorage.getItem('userData')): null;
+  const name = userDetails !=null ? userDetails.firstName + ' ' + userDetails.lastName : '';
+  const email = userDetails !=null ? userDetails.email: '';
+  const userId = userDetails !=null ? userDetails.userId: '';
+  
 
   const currentPage = 'Home';
   function isPromise(p) {
@@ -186,7 +199,7 @@ function Home() {
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
       <div className="row">
-        <Sidebar userId={userDetails.userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar}/>
+        <Sidebar userId={userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar}/>
 
         <div className="col-md p-0">
           <Header name={name} email={email} />

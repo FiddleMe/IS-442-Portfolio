@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
@@ -8,9 +8,11 @@ import { useNavigate } from 'react-router-dom';
 
 function CreatePortfolio() {
 
-  const userDetails = JSON.parse(sessionStorage.getItem('userData'));
-  const name = userDetails.firstName + ' ' + userDetails.lastName;
-  const email = userDetails.email;
+  const userDetails = sessionStorage.getItem('userData')!=null? JSON.parse(sessionStorage.getItem('userData')): null;
+  const name = userDetails !=null ? userDetails.firstName + ' ' + userDetails.lastName : '';
+  const email = userDetails !=null ? userDetails.email: '';
+  const userId = userDetails !=null ? userDetails.userId: '';
+
   const navigate = useNavigate();
 
   const currentPage = 'Create Portfolio';
@@ -19,6 +21,18 @@ function CreatePortfolio() {
   const [description, setDescription] = useState('New Description');
   const [capitalAmount, setCapitalAmount] = useState(0);
 
+  useEffect(() => {
+    const checkSessionStorage = () => {
+      if (sessionStorage.getItem('userData') === null) {
+        navigate("/");
+        return;
+      }
+      
+    };
+  
+    checkSessionStorage();
+  
+  }, []);
   const handleNameChange = (e) => {
     setPortfolioName(e.target.value || 'New Portfolio');
   };
@@ -67,7 +81,7 @@ function CreatePortfolio() {
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
       <div className="row">
-      <Sidebar userId={userDetails.userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar}/>
+      <Sidebar userId={userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar}/>
         <div className="col-md p-0">
           <Header name={name} email={email} />
           <div className="px-5">
@@ -118,7 +132,7 @@ function CreatePortfolio() {
             <br />
 
             <AddStocks />
-            <button className="btn btn-primary" onClick={handleCreatePortfolio}>
+            <button className="btn btn-primary my-3" onClick={handleCreatePortfolio}>
               Create Portfolio
             </button>
           </div>
