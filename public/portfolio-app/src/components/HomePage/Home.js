@@ -5,7 +5,7 @@ import Header from '../Header';
 import { FaBookOpen } from 'react-icons/fa';
 import DonutChart from './DonutChart';
 import { BsPencil, BsPlusLg } from 'react-icons/bs';
-
+import './HomePage.css';
 import HistoricalChart from './HistoricalChart';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -239,16 +239,17 @@ function Home() {
             // <div className="d-flex justify-content-center align-items-center p-3">
             //   No stocks found in this portfolio, Please add stocks.
             // </div>
-            <div className="d-flex justify-content-center align-items-center m-3" style={{ minHeight: '300px', backgroundColor:"white", borderRadius:"5px" }}>
+            <div className="d-flex justify-content-center align-items-center m-3 wrapper" >
               <div className="border p-3">
-                <p className="text-center">No stocks found in this portfolio, Please add stocks.</p>
+                <p className="text-center">No stocks found in this portfolio. Please add stocks.</p>
               </div>
             </div>
             
           )}
           <div className="">
-            <div className="m-2 d-flex flex-wrap gap-4 row">
+            <div className="m-3 d-flex flex-wrap gap-4 row">
               <div className="bg-white rounded-3 p-3 col-12 col-md-5">
+                <h3 className='py-2 fw-bolder'>Portfolios</h3>
                 <table className="table">
                   <thead className="">
                     <tr>
@@ -301,7 +302,7 @@ function Home() {
               </div>
 
               {currentPortfolio !== null && currentPortfolio !== undefined && (
-                <div className="bg-white rounded-3 p-3 col-12 col-md-6 ">
+                <div className="bg-white rounded-3 p-3 col-12 col-md-6">
                   <span className="fw-bold">${currentPortfolio.name} </span>
                   <div>
                     <span className="text-secondary">
