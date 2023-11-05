@@ -3,16 +3,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
 import AddStocks from './AddStocks';
-import { FaBookOpen } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+
 
 function CreatePortfolio() {
-  const subPages = [
-    { icon: FaBookOpen, title: 'Portfolio 1' },
-    { icon: FaBookOpen, title: 'Portfolio 2' },
-  ];
+
   const userDetails = JSON.parse(sessionStorage.getItem('userData'));
   const name = userDetails.firstName + ' ' + userDetails.lastName;
   const email = userDetails.email;
+  const navigate = useNavigate();
 
   const currentPage = 'Create Portfolio';
 
@@ -29,6 +28,11 @@ function CreatePortfolio() {
 
   const handleCapitalAmountChange = (e) => {
     setCapitalAmount(e.target.value || 'New Capital');
+  };
+
+  const handleDataFromSidebar = (data) => {
+    console.log('Data from child:', data);
+    navigate('/home?selectedPortfolio=' + data);
   };
 
   const handleCreatePortfolio = async () => {
@@ -63,7 +67,7 @@ function CreatePortfolio() {
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
       <div className="row">
-        <Sidebar subPages={subPages} currentPage={currentPage} />
+      <Sidebar userId={userDetails.userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar}/>
         <div className="col-md p-0">
           <Header name={name} email={email} />
           <div className="px-5">

@@ -8,6 +8,7 @@ import { BsPencil, BsPlusLg } from 'react-icons/bs';
 
 import HistoricalChart from './HistoricalChart';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const apiUrl = 'http://localhost:8082/api/portfolio';
 
@@ -34,11 +35,16 @@ let geographicalData = [
 
 function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handleRowClick = (portfolio) => {
     setCurrentPortfolio(portfolio);
+    console.log(portfolio)
+    navigate('/home', { replace: true });
   };
   const [portfolioData, setPortfolioData] = useState(null);
   const [currentPortfolio, setCurrentPortfolio] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     console.log('Home component rendered');
@@ -108,8 +114,10 @@ function Home() {
 
         // Set the portfolio data after all promises have resolved
         setPortfolioData(updatedPortfolios);
+        setLoading(false);
       } catch (error) {
         console.error('Error:', error);
+        setLoading(false);
       }
     };
 
@@ -121,17 +129,34 @@ function Home() {
     console.log('Current portfolio updated:', currentPortfolio);
   }, [portfolioData, currentPortfolio]);
 
-  const subPages = [
-    { icon: FaBookOpen, title: 'Portfolio 1' },
-    { icon: FaBookOpen, title: 'Portfolio 2' },
-  ];
+  useEffect(() => {
+    if (!loading) {
+      console.log('Data loaded:', portfolioData);
+      const searchParams = new URLSearchParams(location.search);
+      const selectedPortfolio = searchParams.get('selectedPortfolio');
+      if (selectedPortfolio) {
+        console.log(selectedPortfolio)
+        const portfolio = portfolioData.find(item => item.name === selectedPortfolio);
+        console.log(portfolio)
+        setCurrentPortfolio(portfolio);
+      }
+    }
+  }, [loading, portfolioData, location.search]);
+
+
+  const handleDataFromSidebar = (data) => {
+    console.log('Data from child:', data);
+    const portfolio = portfolioData.find(item => item.name === data);
+    setCurrentPortfolio(portfolio);
+    navigate('/home', { replace: true });
+  };
+
+
   const userDetails = JSON.parse(sessionStorage.getItem('userData'));
-  // console.log(userDetails);
   const name = userDetails.firstName + ' ' + userDetails.lastName;
   const email = userDetails.email;
 
-  const currentPage = 'Portfolio 1';
-  // console.log(currentPortfolio);
+  const currentPage = 'Home';
   function isPromise(p) {
     return p && Object.prototype.toString.call(p) === '[object Promise]';
   }
@@ -161,7 +186,7 @@ function Home() {
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
       <div className="row">
-        <Sidebar subPages={subPages} currentPage={currentPage} />
+        <Sidebar userId={userDetails.userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar}/>
 
         <div className="col-md p-0">
           <Header name={name} email={email} />
@@ -211,9 +236,15 @@ function Home() {
               )}
             </div>
           ) : (
-            <div className="d-flex justify-content-center align-items-center p-3">
-              No stocks found in this portfolio, Please add stocks.
+            // <div className="d-flex justify-content-center align-items-center p-3">
+            //   No stocks found in this portfolio, Please add stocks.
+            // </div>
+            <div className="d-flex justify-content-center align-items-center m-3" style={{ minHeight: '300px', backgroundColor:"white", borderRadius:"5px" }}>
+              <div className="border p-3">
+                <p className="text-center">No stocks found in this portfolio, Please add stocks.</p>
+              </div>
             </div>
+            
           )}
           <div className="">
             <div className="m-2 d-flex flex-wrap gap-4 row">
