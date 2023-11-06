@@ -4,6 +4,7 @@ import Sidebar from '../Sidebar';
 import Header from '../Header';
 import AddStocks from './AddStocks';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 
 function CreatePortfolio() {
@@ -68,13 +69,32 @@ function CreatePortfolio() {
       if (response.status === 201) {
         const responseData = await response.json(); // Parse the response body as JSON
         console.log(responseData.data);
-
         alert('Portfolio created successfully');
-      } else {
+        // Swal.fire({
+        //   icon: 'success',
+        //   title: 'Success!',
+        //   text: 'Portfolio created successfully',
+        //   footer: ''
+        // });
+      } 
+      else {
         console.log('Failed to create portfolio');
+        // Swal.fire({
+        //   icon: 'error',
+        //   title: 'Oops...',
+        //   text: 'Failed to create portfolio',
+        //   footer: 'Try Again!'
+        // });
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('An error occurred while creating a portfolio:', error);
+      // Swal.fire({
+      //   icon: 'error',
+      //   title: 'Oops...',
+      //   text: error,
+      //   footer: 'Try Again!'
+      // });
     }
   };
 

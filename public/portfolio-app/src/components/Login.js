@@ -51,9 +51,8 @@ function Login() {
     console.error(error);
     });
 
-      ;
-  
   };
+
   const componentStyles = {
     backgroundColor: "#101729", // Background color
     borderRadius: "25px", // Border radius
