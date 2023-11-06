@@ -40,16 +40,16 @@ public class PortfolioStocksService {
 
     public boolean deletePortfolioStockById(String portfolioStockId) {
         try {
-          if (portfolioStocksRepository.existsById(portfolioStockId)) {
-            portfolioStocksRepository.deleteById(portfolioStockId);
-            return true; // Deletion successful
-          } else {
-            return false; // Portfolio stock does not exist
-          }
+            if (portfolioStocksRepository.existsById(portfolioStockId)) {
+                portfolioStocksRepository.deleteById(portfolioStockId);
+                return true; // Deletion successful
+            } else {
+                return false; // Portfolio stock does not exist
+            }
         } catch (Exception e) {
-          return false; // Deletion failed
+            return false; // Deletion failed
         }
-      }
+    }
 
     public Map<String, Object> getStockPriceChange(String stockId, LocalDate date) {
         Stock inputStock = stockService.getStockById(stockId, date);
@@ -70,36 +70,41 @@ public class PortfolioStocksService {
         }
         return response;
     }
+
     // public BigDecimal getStockPriceChange(String stockId, LocalDate date){
-    //     return getLatestPrice(stockId).subtract(getPurchasePrice(stockId, date));
+    // return getLatestPrice(stockId).subtract(getPurchasePrice(stockId, date));
     // }
-    public BigDecimal getLatestPrice(String stockId){
+    public BigDecimal getLatestPrice(String stockId) {
         LocalDate latestDate = stockService.getLatestDate();
         Stock stock = stockService.getStockById(stockId, latestDate);
         System.out.println(latestDate + " " + stock);
         return stock.getPrice();
     }
-    public BigDecimal getPurchasePrice(String stockId, LocalDate date){
+
+    public BigDecimal getPurchasePrice(String stockId, LocalDate date) {
         Stock stock = stockService.getStockById(stockId, date);
         return stock.getPrice();
     }
 
-    public String getName(String stockId){
+    public String getName(String stockId) {
         LocalDate latestDate = stockService.getLatestDate();
         Stock stock = stockService.getStockById(stockId, latestDate);
         return stock.getName();
     }
-    public String getGeographicalRegion(String stockId){
+
+    public String getGeographicalRegion(String stockId) {
         LocalDate latestDate = stockService.getLatestDate();
         Stock stock = stockService.getStockById(stockId, latestDate);
         return stock.getGeographicalRegion();
     }
-    public String getIndustrySector(String stockId){
+
+    public String getIndustrySector(String stockId) {
         LocalDate latestDate = stockService.getLatestDate();
         Stock stock = stockService.getStockById(stockId, latestDate);
         return stock.getIndustrySector();
     }
-    public LocalDate getLatestDate(){
+
+    public LocalDate getLatestDate() {
         return stockService.getLatestDate();
     }
 
