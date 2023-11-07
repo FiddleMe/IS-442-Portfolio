@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
-import { FaBookOpen } from 'react-icons/fa';
 import DonutChart from './DonutChart';
-import { BsPencil, BsPlusLg } from 'react-icons/bs';
+
 import './HomePage.css';
 import HistoricalChart from './HistoricalChart';
 import { useNavigate } from 'react-router-dom';
 import AddStockPopUp from '../AddStock/AddStockPopUp';
 import { useLocation } from 'react-router-dom';
+import PortfoliosView from './PortfoliosView';
 
 const apiUrl = 'http://localhost:8082/api/portfolio';
 
@@ -209,13 +209,8 @@ function Home() {
           currentPortfolio.hasOwnProperty('historicalInsights') &&
           currentPortfolio.stockInsights.length !== 0 ? (
             <div className="m-2 d-flex flex-wrap gap-4">
-              {currentPortfolio !== null &&
-              currentPortfolio !== undefined &&
-              currentPortfolio.hasOwnProperty('historicalInsights') &&
-              !isPromise(currentPortfolio.historicalInsights) &&
-              currentPortfolio.name !== 'Portfolio A' &&
-              currentPortfolio.historicalInsights.length !== 0 &&
-              !isPromise(currentPortfolio.historicalInsights) ? (
+              {!isPromise(currentPortfolio.historicalInsights) &&
+              currentPortfolio.historicalInsights.length !== 0 ? (
                 <HistoricalChart
                   title={'Performance'}
                   historicalData={currentPortfolio.historicalInsights}
@@ -224,10 +219,7 @@ function Home() {
                 <HistoricalChart title={'Performance'} historicalData={historicalData} />
               )}
 
-              {currentPortfolio !== null &&
-              currentPortfolio !== undefined &&
-              !isPromise(currentPortfolio.industryInsights) &&
-              currentPortfolio.name !== 'Portfolio A' ? (
+              {!isPromise(currentPortfolio.industryInsights) ? (
                 <DonutChart
                   title={'Industrial Distrubution'}
                   data={currentPortfolio.industryInsights}
@@ -236,10 +228,7 @@ function Home() {
                 <DonutChart title={'Industrial Distrubution'} data={data} />
               )}
 
-              {currentPortfolio !== null &&
-              currentPortfolio !== undefined &&
-              !isPromise(currentPortfolio.geographicalInsights) &&
-              currentPortfolio.name !== 'Portfolio A' ? (
+              {!isPromise(currentPortfolio.geographicalInsights) ? (
                 <DonutChart
                   title={'Geographical Distrubution'}
                   data={currentPortfolio.geographicalInsights}
@@ -249,176 +238,18 @@ function Home() {
               )}
             </div>
           ) : (
-            // <div className="d-flex justify-content-center align-items-center p-3">
-            //   No stocks found in this portfolio, Please add stocks.
-            // </div>
             <div className="d-flex justify-content-center align-items-center m-3 wrapper">
               <div className="border p-3">
                 <p className="text-center">No stocks found in this portfolio. Please add stocks.</p>
               </div>
             </div>
           )}
-          <div className="">
-            <div className="m-3 d-flex flex-wrap gap-4 row">
-              <div className="bg-white rounded-3 p-3 col-12 col-md-5">
-                <h3 className="py-2 fw-bolder">Portfolios</h3>
-                <table className="table">
-                  <thead className="">
-                    <tr>
-                      <th scope="col" className="text-muted fw-bolder">
-                        Name
-                      </th>
-                      <th scope="col" className="text-muted fw-bolder">
-                        Balance
-                      </th>
-                      <th scope="col" className="text-muted fw-bolder">
-                        Change
-                      </th>
-                    </tr>
-                  </thead>
-                  {portfolioData !== null && (
-                    <tbody>
-                      {portfolioData.map((Portfolio) => (
-                        <tr
-                          key={Portfolio.name}
-                          className={Portfolio === currentPortfolio ? 'table-active text-bold' : ''}
-                          onClick={() => handleRowClick(Portfolio)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <td>{Portfolio.name}</td>
-                          <td>${Portfolio.capitalAmount.toLocaleString()}</td>
-                          <td
-                            className={
-                              Portfolio.profitInsights
-                                ? Portfolio.profitInsights.totalProfitLossPercentage === 0.0
-                                  ? 'text-normal'
-                                  : Portfolio.profitInsights.totalProfitLossPercentage < 0
-                                  ? 'text-danger'
-                                  : 'text-success'
-                                : ''
-                            }
-                          >
-                            {
-                              Portfolio.profitInsights
-                                ? (
-                                    Portfolio.profitInsights.totalProfitLossPercentage * 100
-                                  ).toFixed(2) + '%'
-                                : 'Loading...' // Display a loading message when insights are not available
-                            }
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  )}
-                </table>
-              </div>
 
-              {currentPortfolio !== null && currentPortfolio !== undefined && (
-                <div className="bg-white rounded-3 p-3 col-12 col-md-6">
-                  <span className="fw-bold">${currentPortfolio.name} </span>
-                  <div>
-                    <span className="text-secondary">
-                      ${currentPortfolio.capitalAmount.toLocaleString()}
-                    </span>
-                    <div>
-                      <h3 className="d-inline fw-bolder">
-                        ${currentPortfolio.capitalAmount.toLocaleString()}
-                      </h3>
-                      <div
-                        className={`d-inline fw-bolder mx-2 ${
-                          currentPortfolio.profitInsights
-                            ? currentPortfolio.profitInsights.totalProfitLossPercentage === 0.0
-                              ? 'text-normal'
-                              : currentPortfolio.profitInsights.totalProfitLossPercentage < 0
-                              ? 'text-danger'
-                              : 'text-success'
-                            : ''
-                        }`}
-                      >
-                        {
-                          currentPortfolio.profitInsights
-                            ? (
-                                currentPortfolio.profitInsights.totalProfitLossPercentage * 100
-                              ).toFixed(2) + '%'
-                            : 'Loading...' // Display a loading message when insights are not available
-                        }
-                      </div>
-                      <button className="float-end btn btn-outline-primary buttonFont">
-                        <BsPencil className="pb-1 buttonIcon" /> Edit Portfolio
-                      </button>
-                    </div>
-                  </div>
-                  <br />
-
-                  <div>
-                    <AddStockPopUp
-                      className="float-end btn btn-outline-primary buttonFont pb-1"
-                      portfolio={currentPortfolio}
-                    />
-                  </div>
-                  <br />
-                  <table className="table">
-                    <thead className="">
-                      <tr>
-                        <th scope="col" className="text-muted fw-bolder">
-                          Name
-                        </th>
-                        <th scope="col" className="text-muted fw-bolder">
-                          Price
-                        </th>
-                        <th scope="col" className="text-muted fw-bolder">
-                          Qty
-                        </th>
-                        <th scope="col" className="text-muted fw-bolder">
-                          Change
-                        </th>
-                        <th scope="col" className="text-muted fw-bolder">
-                          Profit Loss
-                        </th>
-                        <th scope="col" className="text-muted fw-bolder">
-                          Allocation
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {' '}
-                      {currentPortfolio.stockInsights.map((stock, index) => (
-                        <tr key={index}>
-                          <td>{stock.name}</td>
-                          <td>${stock.currentPrice.toFixed(2)}</td>
-                          <td>{stock.qty}</td>
-                          <td
-                            className={`${
-                              stock.priceDifference.toFixed(2) === 0.0
-                                ? 'text-normal'
-                                : stock.priceDifference.toFixed(2) < 0
-                                ? 'text-danger'
-                                : 'text-success'
-                            }`}
-                          >
-                            {stock.priceDifference.toFixed(2) > 0 ? '+ ' : '- '}
-                            {stock.priceDifference.toFixed(2)}
-                          </td>
-                          <td
-                            className={`${
-                              (stock.profitLossPercentage * 100).toFixed(2) === 0.0
-                                ? 'text-normal'
-                                : (stock.profitLossPercentage * 100).toFixed(2) < 0
-                                ? 'text-danger'
-                                : 'text-success'
-                            }`}
-                          >
-                            {(stock.profitLossPercentage * 100).toFixed(2)}%
-                          </td>
-                          <td>{(stock.allocation * 100).toFixed(2)}%</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </div>
+          <PortfoliosView
+            portfolioData={portfolioData}
+            currentPortfolio={currentPortfolio}
+            handleRowClick={handleRowClick}
+          />
         </div>
       </div>
     </div>

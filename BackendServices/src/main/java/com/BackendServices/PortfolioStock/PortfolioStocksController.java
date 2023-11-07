@@ -63,6 +63,25 @@ public class PortfolioStocksController {
                         stockid)));
     }
 
+    @GetMapping("getRangeStockPriceChange/{stockId}/{startDate}/{endDate}")
+    public ResponseEntity<?> getRangeStockPriceChange(@PathVariable String stockId, @PathVariable String startDate,
+            @PathVariable String endDate) {
+        LocalDate startDateValue = LocalDate.parse(startDate);
+        LocalDate endDateValue = LocalDate.parse(endDate);
+        Map<String, Object> response = portfolioStocksService.getRangeStockPriceChange(stockId, startDateValue,
+                endDateValue);
+
+        if (response.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.NO_CONTENT.value(), response, String.format(
+                    "Price retrieval for stock is unsuccessful.")));
+        }
+
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), response,
+                String.format(
+                        "Price retrieval for stock (%s) is successful. Result is the %% change between the latest price and purchase price.",
+                        stockId)));
+    }
+
     @PostMapping
     public ResponseEntity<?> createPortfolioStock(@RequestBody PortfolioStocks portfolioStock) {
         PortfolioStocks createdPortfolioStock = portfolioStocksService.createPortfolioStocks(portfolioStock);
@@ -78,7 +97,8 @@ public class PortfolioStocksController {
                     String.format("Deletion for portfolio stock (%s) successful.", portfolioStockId)));
         } else {
             return ResponseEntity.ok(new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    String.format("Deletion for portfolio stock (%s) unsuccessful or does not exist.", portfolioStockId)));
+                    String.format("Deletion for portfolio stock (%s) unsuccessful or does not exist.",
+                            portfolioStockId)));
         }
     }
 }

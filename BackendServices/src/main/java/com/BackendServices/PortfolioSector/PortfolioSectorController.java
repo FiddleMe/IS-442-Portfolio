@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.BackendServices.PortfolioSector.exception.PortfolioSectorException;
 
 import java.util.List;
 
@@ -19,27 +20,42 @@ public class PortfolioSectorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PortfolioSector>> getAllPortfolioSectors() {
-        List<PortfolioSector> portfolioSectors = portfolioSectorService.getAllPortfolioSectors();
-        return new ResponseEntity<>(portfolioSectors, HttpStatus.OK);
+    public ResponseEntity<?> getAllPortfolioSectors() {
+        try {
+            List<PortfolioSector> portfolioSectors = portfolioSectorService.getAllPortfolioSectors();
+            return new ResponseEntity<>(portfolioSectors, HttpStatus.OK);
+        } catch (PortfolioSectorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{portfolioId}")
-    public ResponseEntity<List<PortfolioSector>> getPortfolioSectorsByPortfolioId(@PathVariable String portfolioId) {
-        List<PortfolioSector> portfolioSectors = portfolioSectorService.getPortfolioSectorsByPortfolioId(portfolioId);
-        return new ResponseEntity<>(portfolioSectors, HttpStatus.OK);
+    public ResponseEntity<?> getPortfolioSectorsByPortfolioId(@PathVariable String portfolioId) {
+        try {
+            List<PortfolioSector> portfolioSectors = portfolioSectorService.getPortfolioSectorsByPortfolioId(portfolioId);
+            return new ResponseEntity<>(portfolioSectors, HttpStatus.OK);
+        } catch (PortfolioSectorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{portfolioId}/{sector}")
-    public ResponseEntity<PortfolioSector> getPortfolioSectorById(@PathVariable String portfolioId,
-            @PathVariable String sector) {
-        PortfolioSector portfolioSector = portfolioSectorService.getPortfolioSectorById(portfolioId, sector);
-        return new ResponseEntity<>(portfolioSector, HttpStatus.OK);
+    public ResponseEntity<?> getPortfolioSectorById(@PathVariable String portfolioId, @PathVariable String sector) {
+        try {
+            PortfolioSector portfolioSector = portfolioSectorService.getPortfolioSectorById(portfolioId, sector);
+            return new ResponseEntity<>(portfolioSector, HttpStatus.OK);
+        } catch (PortfolioSectorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
-    public ResponseEntity<PortfolioSector> createPortfolioSector(@RequestBody PortfolioSector portfolioSector) {
-        PortfolioSector createdPortfolioSector = portfolioSectorService.createPortfolioSector(portfolioSector);
-        return new ResponseEntity<>(createdPortfolioSector, HttpStatus.CREATED);
+    public ResponseEntity<?> createPortfolioSector(@RequestBody PortfolioSector portfolioSector) {
+        try {
+            PortfolioSector createdPortfolioSector = portfolioSectorService.createPortfolioSector(portfolioSector);
+            return new ResponseEntity<>(createdPortfolioSector, HttpStatus.CREATED);
+        } catch (PortfolioSectorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
