@@ -5,14 +5,19 @@ import Header from '../Header';
 import AddStocks from './AddStocks';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-
+import { createPortfolio } from '../../api/Portfolio/createPortfolioApi';
+import { transformPortfolioStocks } from '../../utils/transformPortfolioStocks';
+import { createPortfolioStocks } from '../../api/PortfolioStocks/createPortfolioStocks';
+import { updatePortfolio } from '../../api/Portfolio/updatePortfolio';
 
 function CreatePortfolio() {
-
-  const userDetails = sessionStorage.getItem('userData')!=null? JSON.parse(sessionStorage.getItem('userData')): null;
-  const name = userDetails !=null ? userDetails.firstName + ' ' + userDetails.lastName : '';
-  const email = userDetails !=null ? userDetails.email: '';
-  const userId = userDetails !=null ? userDetails.userId: '';
+  const userDetails =
+    sessionStorage.getItem('userData') != null
+      ? JSON.parse(sessionStorage.getItem('userData'))
+      : null;
+  const name = userDetails != null ? userDetails.firstName + ' ' + userDetails.lastName : '';
+  const email = userDetails != null ? userDetails.email : '';
+  const userId = userDetails != null ? userDetails.userId : '';
 
   const navigate = useNavigate();
 
@@ -21,18 +26,17 @@ function CreatePortfolio() {
   const [portfolioName, setPortfolioName] = useState('New Portfolio');
   const [description, setDescription] = useState('New Description');
   const [capitalAmount, setCapitalAmount] = useState(0);
+  const [selectedStocks, setSelectedStocks] = useState([]);
 
   useEffect(() => {
     const checkSessionStorage = () => {
       if (sessionStorage.getItem('userData') === null) {
-        navigate("/");
+        navigate('/');
         return;
       }
-      
     };
-  
+
     checkSessionStorage();
-  
   }, []);
   const handleNameChange = (e) => {
     setPortfolioName(e.target.value || 'New Portfolio');
@@ -42,7 +46,7 @@ function CreatePortfolio() {
   };
 
   const handleCapitalAmountChange = (e) => {
-    setCapitalAmount(e.target.value || 'New Capital');
+    setCapitalAmount(e.target.value);
   };
 
   const handleDataFromSidebar = (data) => {
@@ -51,49 +55,100 @@ function CreatePortfolio() {
   };
 
   const handleCreatePortfolio = async () => {
-    const data = {
-      name: portfolioName,
-      description: description, // Include description from state
-      capitalAmount: capitalAmount, // Include capitalAmount from state
-      userId: userDetails.userId,
-    };
     try {
-      const response = await fetch('http://localhost:8082/api/portfolio', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+      const data = {
+        name: String(portfolioName),
+        description: String(description),
+        capitalAmount: parseFloat(capitalAmount),
+        userId: String(userDetails.userId),
+        wallet: parseFloat(capitalAmount),
+      };
 
-      if (response.status === 201) {
-        const responseData = await response.json(); // Parse the response body as JSON
-        console.log(responseData.data);
-        //alert('Portfolio created successfully');
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Portfolio created successfully',
-          footer: ''
-        });
-      } 
-      else {
-        console.log('Failed to create portfolio');
+      let totalPrice = 0;
+      for (let i = 0; i < selectedStocks.length; i++) {
+        const qty = selectedStocks[i].quantity;
+        const price = selectedStocks[i].price;
+        totalPrice += price * qty;
+      }
+
+      const totalBalance = capitalAmount - totalPrice;
+
+      if (totalBalance < 0) {
         Swal.fire({
           icon: 'error',
-          title: 'Oops...',
-          text: 'Failed to create portfolio',
-          footer: 'Try Again!'
+          title: 'Insufficient Balance to add stocks!',
+          text: 'Please adjust your capital amount',
+          footer: '',
         });
+      } else {
+        const response = await createPortfolio(data);
+
+        if (response) {
+          console.log(response);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Portfolio created successfully',
+            footer: '',
+            showConfirmButton: true,
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const transformed = transformPortfolioStocks(selectedStocks, response.portfolioId);
+              const responseArr = [];
+
+              for (let i = 0; i < transformed.length; i++) {
+                const stockResponse = await createPortfolioStocks(transformed[i]);
+                if (stockResponse) {
+                  responseArr.push(stockResponse);
+                }
+              }
+
+              if (responseArr.length === transformed.length) {
+                const updateData = { wallet: totalBalance };
+                const updatedPortfolio = await updatePortfolio(response.portfolioId, updateData);
+
+                if (updatedPortfolio) {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Stocks added successfully',
+                    footer: '',
+                    showConfirmButton: true,
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      navigate('/home');
+                    }
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to add stocks',
+                    footer: 'Try Again!',
+                    showConfirmButton: true,
+                  });
+                  navigate('/home');
+                }
+              }
+            }
+          });
+        } else {
+          console.log('Failed to create portfolio');
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Failed to create portfolio',
+            footer: 'Try Again!',
+          });
+        }
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.error('An error occurred while creating a portfolio:', error);
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: error,
-        footer: 'Try Again!'
+        footer: 'Try Again!',
       });
     }
   };
@@ -101,7 +156,7 @@ function CreatePortfolio() {
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
       <div className="row">
-      <Sidebar userId={userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar}/>
+        <Sidebar userId={userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar} />
         <div className="col-md p-0">
           <Header name={name} email={email} />
           <div className="px-5">
@@ -151,7 +206,7 @@ function CreatePortfolio() {
             </div>
             <br />
 
-            <AddStocks />
+            <AddStocks selectedStocks={selectedStocks} setSelectedStocks={setSelectedStocks} />
             <button className="btn btn-primary my-3" onClick={handleCreatePortfolio}>
               Create Portfolio
             </button>
