@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
-import { FaBookOpen } from 'react-icons/fa';
+//import { FaBookOpen } from 'react-icons/fa';  // never used
 import DonutChart from './DonutChart';
 import { BsPencil, BsPlusLg } from 'react-icons/bs';
 import './HomePage.css';
