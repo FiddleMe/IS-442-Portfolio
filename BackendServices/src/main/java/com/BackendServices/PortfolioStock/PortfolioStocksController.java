@@ -77,7 +77,7 @@ public class PortfolioStocksController {
 
         return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), response,
                 String.format(
-                        "Price retrieval for stock (%s) is successful. Result is the % change between the latest price and purchase price.",
+                        "Price retrieval for stock (%s) is successful. Result is the %% change between the latest price and purchase price.",
                         stockId)));
     }
 
