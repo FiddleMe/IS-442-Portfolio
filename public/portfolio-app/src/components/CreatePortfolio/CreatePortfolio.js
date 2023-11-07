@@ -69,32 +69,32 @@ function CreatePortfolio() {
       if (response.status === 201) {
         const responseData = await response.json(); // Parse the response body as JSON
         console.log(responseData.data);
-        alert('Portfolio created successfully');
-        // Swal.fire({
-        //   icon: 'success',
-        //   title: 'Success!',
-        //   text: 'Portfolio created successfully',
-        //   footer: ''
-        // });
+        //alert('Portfolio created successfully');
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Portfolio created successfully',
+          footer: ''
+        });
       } 
       else {
         console.log('Failed to create portfolio');
-        // Swal.fire({
-        //   icon: 'error',
-        //   title: 'Oops...',
-        //   text: 'Failed to create portfolio',
-        //   footer: 'Try Again!'
-        // });
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Failed to create portfolio',
+          footer: 'Try Again!'
+        });
       }
     } 
     catch (error) {
       console.error('An error occurred while creating a portfolio:', error);
-      // Swal.fire({
-      //   icon: 'error',
-      //   title: 'Oops...',
-      //   text: error,
-      //   footer: 'Try Again!'
-      // });
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error,
+        footer: 'Try Again!'
+      });
     }
   };
 

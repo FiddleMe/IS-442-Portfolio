@@ -76,6 +76,7 @@ function Login() {
   const header2Styles = {
     color: "#FFFFFF",
   };
+  
   return (
     <div className="container mt-5" style={componentStyles}>
       <div className="row justify-content-center">
