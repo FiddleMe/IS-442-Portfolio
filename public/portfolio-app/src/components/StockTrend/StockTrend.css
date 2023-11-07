@@ -1,0 +1,6 @@
+.chart-container {
+    width: 80% !important; 
+    /* Set the same width as the table */
+    height: auto;
+    /* Center the chart horizontally */
+}

@@ -11,10 +11,10 @@ function SignUp() {
   const location = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState({
-    First_Name: "",
-    Last_Name: "",
-    Email: "",
-    Password: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
     confirmPassword: "",
   });
 
@@ -34,8 +34,7 @@ function SignUp() {
       "msg": "Dear "+ user.firstName + " " + user.lastName +", \n\n\nThank you for joining us. We are pleased to confirm that your account has been created successfully. \nKindly note that this is a system-generated email. Please do not reply. \n\n\n Best Regards, \n Team 3"
     }
     // Make an HTTP POST request to create a new user using Axios
-    axios
-      .post("http://localhost:8082/api/users", user)
+    axios.post("http://localhost:8082/api/users", user)
       .then((response) => {
         console.log(response.data.message);
         var message = response.data.message;

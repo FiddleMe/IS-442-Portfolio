@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Nav, NavItem, NavLink, Collapse } from 'reactstrap';
-import { FaChevronDown, FaChevronUp, FaBars, FaHome, FaSignOutAlt, FaBookOpen } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaBars, FaHome, FaSignOutAlt, FaRegChartBar, FaBookOpen } from 'react-icons/fa';
 import { GoStack, GoGraph } from 'react-icons/go';
 import { MdCreateNewFolder } from 'react-icons/md';
 import './Sidebar.css';
@@ -74,6 +74,7 @@ function Sidebar(props) {
     { icon: GoStack, title: 'Portfolios', subpages: subPages , path: '/home'},
     { icon: MdCreateNewFolder, title: 'Create Portfolio', subpages: [], path: '/create-portfolio'},
     { icon: GoGraph, title: 'Stocks', subpages: [], path: '/stocks',},
+    { icon: FaRegChartBar, title: 'StockTrend', subpages: [], path: '/stock-trend' }, // New link for StockTrend
     { icon: FaSignOutAlt, title: 'Logout', subpages: [], path: '/login' },
   ];
 

@@ -31,9 +31,6 @@ public class PortfolioStocks {
   @Column(name = "Quantity")
   private Integer quantity;
 
-  @Column(name = "Wallet")
-  private Double wallet;
-
   // Getters and setters
   public String getPortfolioStockId() {
     return portfolioStockId;
@@ -73,14 +70,6 @@ public class PortfolioStocks {
 
   public void setQuantity(Integer quantity) {
     this.quantity = quantity;
-  }
-
-  public Double getWallet() {
-    return wallet;
-  }
-
-  public void setWallet(Double wallet) {
-    this.wallet = wallet;
   }
 
 }

@@ -35,6 +35,17 @@ public class Portfolio {
     @Column(name = "UserID", length = 36)
     private String userId;
 
+    @Column(name="Wallet")
+    private Double wallet;
+
+    public Double getWallet() {
+      return wallet;
+    }
+
+    public void setWallet(Double wallet) {
+      this.wallet = wallet;
+    }
+
     public String getPortfolioId() {
       return portfolioId;
     }

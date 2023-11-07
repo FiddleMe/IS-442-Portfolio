@@ -5,7 +5,7 @@ import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.BackendServices.Stock.Stock;
 import com.BackendServices.Stock.StockRepository;
 import com.BackendServices.Stock.StockService;
@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/portfoliostocks")
+@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/portfoliostocks")
 public class PortfolioStocksController {
 
     private final PortfolioStocksService portfolioStocksService;
