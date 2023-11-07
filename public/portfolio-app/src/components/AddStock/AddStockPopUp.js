@@ -61,7 +61,7 @@ function AddStockPopUp({ portfolio }) {
             Swal.fire({
               icon: 'success',
               title: 'Success!',
-              text: 'Portfolio created successfully',
+              text: 'Stocks added successfully',
               footer: '',
               showConfirmButton: true,
             }).then((result) => {
@@ -76,14 +76,14 @@ function AddStockPopUp({ portfolio }) {
           Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'Failed to create portfolio',
+            text: 'Failed to add stocks',
             footer: 'Try Again!',
             showConfirmButton: true,
           });
         }
       } catch (error) {
         closeModal();
-        console.error('An error occurred while creating a portfolio:', error);
+        console.error('An error occurred while adding a stock:', error);
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
