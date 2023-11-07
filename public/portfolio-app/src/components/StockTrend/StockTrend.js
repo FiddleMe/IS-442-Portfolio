@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
 import { useNavigate } from 'react-router-dom';
+import PriceDifferenceChart from './StockChart';
+
 
 function StockTrend() {
     const userDetails =
@@ -110,6 +112,8 @@ function StockTrend() {
                         ) : (
                             <p>No data available for stock trend.</p>
                         )}
+
+                        <PriceDifferenceChart />
                     </div>
                 </div>
             </div>

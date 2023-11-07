@@ -9,6 +9,7 @@ import Home from './components/HomePage/Home';
 import CreatePortfolio from './components/CreatePortfolio/CreatePortfolio';
 import Stocks from './components/StocksPage/Stocks';
 import StockTrend from './components/StockTrend/StockTrend';
+import PriceDifferenceChart from './components/StockTrend/StockChart';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/create-portfolio" element={<CreatePortfolio />} />
         <Route path="/stock-trend" element={<StockTrend />} />
         <Route path="/stocks" element={<Stocks />} />
+        <Route path="/stockchart" element={<PriceDifferenceChart />} />
       </Routes>
     </Router>
   );
