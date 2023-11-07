@@ -25,7 +25,7 @@ function SearchStock() {
 
   const handleDataFromSidebar = (data) => {
     console.log('Data from child:', data);
-    navigate('/stocks');
+    navigate('/home?selectedPortfolio=' + data);
   };
 
 
