@@ -55,7 +55,7 @@ const PortfoliosView = ({ portfolioData, currentPortfolio, handleRowClick }) => 
 
       {currentPortfolio !== null && currentPortfolio !== undefined && (
         <div className="bg-white rounded-3 p-3 col-12 col-md-6">
-          <span className="fw-bold">${currentPortfolio.name} </span>
+          <span className="fw-bold">{currentPortfolio.name} </span>
           <div>
             <span className="text-secondary">
               ${currentPortfolio.capitalAmount.toLocaleString()}
@@ -94,63 +94,65 @@ const PortfoliosView = ({ portfolioData, currentPortfolio, handleRowClick }) => 
             </button>
           </div>
           <br />
-          <table className="table table-responsive">
-            <thead className="">
-              <tr>
-                <th scope="col" className="text-muted fw-bolder">
-                  Name
-                </th>
-                <th scope="col" className="text-muted fw-bolder">
-                  Price
-                </th>
-                <th scope="col" className="text-muted fw-bolder">
-                  Qty
-                </th>
-                <th scope="col" className="text-muted fw-bolder">
-                  Change
-                </th>
-                <th scope="col" className="text-muted fw-bolder">
-                  Profit Loss
-                </th>
-                <th scope="col" className="text-muted fw-bolder">
-                  Allocation
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentPortfolio.stockInsights.map((stock, index) => (
-                <tr key={index}>
-                  <td>{stock.name}</td>
-                  <td>${stock.currentPrice.toFixed(2)}</td>
-                  <td>{stock.qty}</td>
-                  <td
-                    className={`${
-                      stock.priceDifference.toFixed(2) === 0.0
-                        ? 'text-normal'
-                        : stock.priceDifference.toFixed(2) < 0
-                        ? 'text-danger'
-                        : 'text-success'
-                    }`}
-                  >
-                    {stock.priceDifference.toFixed(2) > 0 ? '+ ' : '- '}
-                    {stock.priceDifference.toFixed(2)}
-                  </td>
-                  <td
-                    className={`${
-                      (stock.profitLossPercentage * 100).toFixed(2) === 0.0
-                        ? 'text-normal'
-                        : (stock.profitLossPercentage * 100).toFixed(2) < 0
-                        ? 'text-danger'
-                        : 'text-success'
-                    }`}
-                  >
-                    {(stock.profitLossPercentage * 100).toFixed(2)}%
-                  </td>
-                  <td>{(stock.allocation * 100).toFixed(2)}%</td>
+          <div className="overflow-scroll">
+            <table className="table ">
+              <thead className="">
+                <tr>
+                  <th scope="col" className="text-muted fw-bolder">
+                    Name
+                  </th>
+                  <th scope="col" className="text-muted fw-bolder">
+                    Price
+                  </th>
+                  <th scope="col" className="text-muted fw-bolder">
+                    Qty
+                  </th>
+                  <th scope="col" className="text-muted fw-bolder">
+                    Change
+                  </th>
+                  <th scope="col" className="text-muted fw-bolder">
+                    Profit Loss
+                  </th>
+                  <th scope="col" className="text-muted fw-bolder">
+                    Allocation
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {currentPortfolio.stockInsights.map((stock, index) => (
+                  <tr key={index}>
+                    <td>{stock.name}</td>
+                    <td>${stock.currentPrice.toFixed(2)}</td>
+                    <td>{stock.qty}</td>
+                    <td
+                      className={`${
+                        stock.priceDifference.toFixed(2) === 0.0
+                          ? 'text-normal'
+                          : stock.priceDifference.toFixed(2) < 0
+                          ? 'text-danger'
+                          : 'text-success'
+                      }`}
+                    >
+                      {stock.priceDifference.toFixed(2) > 0 ? '+ ' : '- '}
+                      {stock.priceDifference.toFixed(2)}
+                    </td>
+                    <td
+                      className={`${
+                        (stock.profitLossPercentage * 100).toFixed(2) === 0.0
+                          ? 'text-normal'
+                          : (stock.profitLossPercentage * 100).toFixed(2) < 0
+                          ? 'text-danger'
+                          : 'text-success'
+                      }`}
+                    >
+                      {(stock.profitLossPercentage * 100).toFixed(2)}%
+                    </td>
+                    <td>{(stock.allocation * 100).toFixed(2)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

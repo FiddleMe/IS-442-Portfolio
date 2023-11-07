@@ -204,7 +204,6 @@ function Home() {
           <Header name={name} email={email} />
 
           {currentPortfolio !== null &&
-          currentPortfolio !== undefined &&
           currentPortfolio.hasOwnProperty('historicalInsights') &&
           currentPortfolio.stockInsights.length !== 0 ? (
             <div className="m-2 d-flex flex-wrap gap-4">
