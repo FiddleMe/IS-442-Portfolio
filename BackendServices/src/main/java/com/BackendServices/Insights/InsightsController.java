@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.time.LocalDate;
+import java.util.HashMap;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -24,37 +25,25 @@ public class InsightsController {
         this.insightsService = insightsService;
     }
 
-    // @GetMapping("/price-distribution")
-    // public ResponseEntity<?> getPriceDistribution(@PathVariable String
-    // portfolioId) {
+    @GetMapping("/insights/{portfolioId}")
+    public ResponseEntity<?> getAllInsights(@PathVariable String portfolioId) {
+        Map<String, BigDecimal> geographicalDistribution = insightsService.getGeographicalDistribution(portfolioId);
+        Map<String, BigDecimal> industryDistribution = insightsService.getIndustryDistribution(portfolioId);
+        List<Object> profitLoss = insightsService.getProfitLoss(portfolioId);
+        Object totalProfitLoss = insightsService.getTotalProfitLoss(portfolioId);
+        Map<LocalDate, BigDecimal> historicalReturns = insightsService.getHistoricalReturns(portfolioId, "daily");
+        //combine them all into an object
+        Map<String, Object> allInsights = new HashMap<>();
+        allInsights.put("geographicalDistribution", geographicalDistribution);
+        allInsights.put("industryDistribution", industryDistribution);
+        allInsights.put("profitLoss", profitLoss);
+        allInsights.put("totalProfitLoss", totalProfitLoss);
+        allInsights.put("historicalReturns", historicalReturns);        
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), allInsights, "success"));
+        
+    }
 
-    // Map<String, BigDecimal> priceDistribution =
-    // insightsService.getPriceDistribution(portfolioId);
 
-    // if (priceDistribution != null) {
-    // return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(),
-    // priceDistribution, "suceesss"));
-    // } else {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new
-    // ApiResponse(HttpStatus.NOT_FOUND.value(), null, "Portfolio not found"));
-    // }
-    // }
-    // @GetMapping("/price-distribution/{portfolioId}")
-    // public ResponseEntity<?> getPriceDistribution(@PathVariable String
-    // portfolioId) {
-
-    // Map<String, BigDecimal> priceDistribution =
-    // insightsService.getPriceDistribution(portfolioId);
-
-    // if (priceDistribution != null) {
-    // return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(),
-    // priceDistribution, "success"));
-    // } else {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new
-    // ApiResponse(HttpStatus.NOT_FOUND.value(), null, "price distribution not
-    // found"));
-    // }
-    // }
 
     @GetMapping("/geo-distribution/{portfolioId}")
     public ResponseEntity<?> getGeographicalDistribution(@PathVariable String portfolioId) {
@@ -97,23 +86,15 @@ public class InsightsController {
 
     @GetMapping("/total-profit-loss/{portfolioId}")
     public ResponseEntity<?> getTotalProfitLoss(@PathVariable String portfolioId) {
-        Object profitLoss = insightsService.getTotalProfitLoss(portfolioId);
+        Object totalProfitLoss = insightsService.getTotalProfitLoss(portfolioId);
 
-        if (profitLoss != null) {
-            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), profitLoss, "success"));
+        if (totalProfitLoss != null) {
+            return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), totalProfitLoss, "success"));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "industry distribution not found"));
         }
     }
-
-    // @GetMapping("/portfolio-stocks")
-    // public ResponseEntity<List<PortfolioStocks>> getPortfolioStocks(@PathVariable
-    // String portfolioId) {
-    // List<PortfolioStocks> portfolioStocks =
-    // insightsService.getPortfolioStocks(portfolioId);
-    // return ResponseEntity.ok(portfolioStocks);
-    // }
 
     @GetMapping("/historical-returns/{interval}/{portfolioId}")
     public ResponseEntity<?> getHistoricalReturns(@PathVariable String portfolioId, @PathVariable String interval) {
