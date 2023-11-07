@@ -1,5 +1,6 @@
 import React from 'react';
 import { BsPencil, BsPlusLg } from 'react-icons/bs';
+import AddStockPopUp from '../AddStock/AddStockPopUp';
 
 const PortfoliosView = ({ portfolioData, currentPortfolio, handleRowClick }) => {
   return (
@@ -89,9 +90,7 @@ const PortfoliosView = ({ portfolioData, currentPortfolio, handleRowClick }) => 
 
           <div>
             <span className="fw-bolder">Stocks</span>
-            <button className="float-end btn btn-outline-primary buttonFont">
-              <BsPlusLg className="pb-1 buttonIcon" /> Add Stocks
-            </button>
+            <AddStockPopUp portfolio={currentPortfolio} />
           </div>
           <br />
           <table className="table table-responsive">

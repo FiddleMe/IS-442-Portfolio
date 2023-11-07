@@ -7,6 +7,7 @@ import DonutChart from './DonutChart';
 import './HomePage.css';
 import HistoricalChart from './HistoricalChart';
 import { useNavigate } from 'react-router-dom';
+import AddStockPopUp from '../AddStock/AddStockPopUp';
 import { useLocation } from 'react-router-dom';
 import PortfoliosView from './PortfoliosView';
 
@@ -243,6 +244,7 @@ function Home() {
               </div>
             </div>
           )}
+
           <PortfoliosView
             portfolioData={portfolioData}
             currentPortfolio={currentPortfolio}

@@ -1,10 +1,10 @@
 version: "3.8"
 
 services:
-  OOP-mysqldb:
+  oop-mysqldb:
     image: mysql:5.7
     platform: linux/x86_64
-    container_name: OOP-mysqldb
+    container_name: oop-mysqldb
     restart: always
     healthcheck:
       test: "mysqladmin ping -h localhost -proot"
@@ -15,16 +15,26 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: oopPortfolio
+      MYSQL_DATABASE: oopportfolio
 
-  OOP-phpmyadmin:
+  oop-phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: OOP-phpmyadmin
+    container_name: oop-phpmyadmin
     ports:
       - 8080:80
     environment:
-      PMA_HOST: OOP-mysqldb
+      PMA_HOST: oop-mysqldb
       PMA_PORT: 3306
     depends_on:
-      OOP-mysqldb:
+      oop-mysqldb:
         condition: service_healthy
+
+  oop-springboot:
+    build: ./BackendServices
+    container_name: oop-springboot
+    ports:
+      - 8082:8082
+    environment:
+      SPRING_PROFILES_ACTIVE: "production"
+    depends_on:
+      - oop-mysqldb
