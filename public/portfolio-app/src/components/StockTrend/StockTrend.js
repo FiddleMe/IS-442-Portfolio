@@ -3,8 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
 import { useNavigate } from 'react-router-dom';
-import PriceDifferenceChart from './StockChart';
+import StockChart from './StockChart';
+import './StockTrend.css'
 
+const positiveColor = {
+    color: 'green',
+};
+
+const negativeColor = {
+    color: 'red',
+};
 
 function StockTrend() {
     const userDetails =
@@ -33,31 +41,32 @@ function StockTrend() {
             const stockSymbol = 'AAPL';
             const currentDate = new Date();
             const apiUrl = `http://localhost:8082/api/portfoliostocks/getRangeStockPriceChange/${stockSymbol}/`;
-    
+
             const stockTrend = [];
-            
-            for (let year = 0; year < 2; year++) {
+
+            for (let year = 1; year < 11; year++) {
                 const startDate = new Date(currentDate);
-                startDate.setFullYear(currentDate.getFullYear() - year);
                 const endDate = new Date(currentDate);
-                
-                const startYear = startDate.getFullYear();
-                const endYear = endDate.getFullYear();
-                
+
+                const startYear = startDate.getFullYear() - year;
+                const endYear = endDate.getFullYear() - year + 1;
+
                 const startMonth = (startDate.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero
                 const endMonth = (endDate.getMonth() + 1).toString().padStart(2, '0');
-                
-                const startDay = (startDate.getDate() - 2).toString().padStart(2, '0'); // Add leading zero
-                const endDay = endDate.getDate().toString().padStart(2, '0');
-                
+
+                const startDay = startDate.getDate().toString().padStart(2, '0'); // Add leading zero
+                const endDay = (endDate.getDate() - 2).toString().padStart(2, '0');
+
                 // Format the date as 'YYYY-MM-DD' for the API request
                 const formattedStartDate = `${startYear}-${startMonth}-${startDay}`;
-                const formattedEndDate = `${endYear}-${endMonth}-${endDay}`;                
-    
+                const formattedEndDate = `${endYear}-${endMonth}-${endDay}`;
+
                 const yearApiUrl = `${apiUrl}${formattedStartDate}/${formattedEndDate}`;
                 const response = await fetch(yearApiUrl);
                 const data = await response.json();
-    
+                console.log('Response:', response);
+                console.log('Data:', data);
+
                 if (data.status === 200) {
                     const percentageDifference = data.data.percentageDifference;
                     stockTrend.push({
@@ -66,18 +75,20 @@ function StockTrend() {
                     });
                 }
             }
-    
-            console.log(stockTrend);
+            // Set the stockData state with the fetched data
+            setStockData(stockTrend);
+            console.log(stockTrend)
+            setLoading(false); // After setting the data, mark loading as false
         } catch (error) {
             console.error('Error fetching stock data:', error);
+            setLoading(false); // Make sure to mark loading as false in case of an error
         }
     };
-    
 
     useEffect(() => {
         fetchHistoricalStockData();
     }, []);
-
+    const reversedStockData = stockData.slice().reverse();
     return (
         <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
             <div className="row">
@@ -93,7 +104,8 @@ function StockTrend() {
                         {loading ? (
                             <p>Loading...</p>
                         ) : stockData.length > 0 ? (
-                            <table className="table">
+                            <div>
+                            <table className="table text-center">
                                 <thead>
                                     <tr>
                                         <th>Year</th>
@@ -103,17 +115,20 @@ function StockTrend() {
                                 <tbody>
                                     {stockData.map((item, index) => (
                                         <tr key={index}>
-                                            <td>{item.year} years ago</td>
-                                            <td>{item.percentageDifference}%</td>
+                                            <td>{item.year} to {item.year + 1}</td>
+                                            <td style={item.percentageDifference >= 0 ? positiveColor : negativeColor} >{item.percentageDifference}%</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
+                            <div className='chart-container text-center mx-auto mb-5'>
+                            <StockChart data={reversedStockData} />
+                            </div>
+                            </div>
                         ) : (
                             <p>No data available for stock trend.</p>
                         )}
 
-                        <PriceDifferenceChart />
                     </div>
                 </div>
             </div>

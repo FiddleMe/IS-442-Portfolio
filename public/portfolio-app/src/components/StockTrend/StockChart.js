@@ -1,106 +1,59 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Chart } from 'chart.js/auto';
-import { useNavigate } from 'react-router-dom';
 
-function PriceDifferenceChart() {
-  const chartRef = useRef();
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [chartData, setChartData] = useState(null);
-  const [percentageChange, setPercentageChange] = useState(null);
-
-  const handleStartDateChange = (event) => {
-    setStartDate(event.target.value);
-  };
-
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
-  };
+const StockChart = ({ data, width, height }) => {
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null);
 
   useEffect(() => {
-    if (startDate && endDate) {
-      // Fetch the price data from your backend based on the selected dates
-      // For this example, we'll assume you have fetched the price data
-      // Replace this with actual data retrieval logic
-      const priceData = [100, 105, 110, 108, 112]; // Replace with actual price data
-
-      // Calculate the percentage change between the two dates
-      const change = calculatePercentageChange(startDate, endDate);
-
-      // Update the percentage change state
-      setPercentageChange(change);
-
-      // Create chart data with dates and price data
-      const dummyChartData = {
-        labels: [startDate, endDate],
-        datasets: [
-          {
-            label: 'Price',
-            data: priceData, // Replace with actual price data
-            borderColor: 'blue',
-            fill: false,
-          },
-        ],
-      };
-
-      // Render the new chart
-      renderChart(dummyChartData);
-    }
-  }, [startDate, endDate]);
-
-  const destroyChart = () => {
-    const canvas = chartRef.current;
-    const ctx = canvas.getContext('2d');
-
-    // Check if a chart already exists and destroy it
-    if (ctx.chart) {
-      ctx.chart.destroy();
-    }
-  };
-
-  const renderChart = (data) => {
-    if (!data) {
-      return;
+    // Destroy the previous chart if it exists
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
     }
 
-    const canvas = chartRef.current;
-    const ctx = canvas.getContext('2d');
+    if (data.length > 0 && chartRef.current) {
+      const years = data.map((item) => `${item.year} - ${item.year + 1}`);
+      const percentageDifferences = data.map((item) => item.percentageDifference);
 
-    // Render the new chart
-    ctx.chart = new Chart(ctx, {
-      type: 'line',
-      data: data,
-      options: {} // Add any chart options here
-    });
-  };
+      const backgroundColors = percentageDifferences.map((percentage) =>
+        percentage >= 0 ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 99, 132, 0.2)'
+      );
 
-  // Function to calculate percentage change between two dates
-  const calculatePercentageChange = (startDate, endDate) => {
-    // Calculate the percentage change based on the fetched price data
-    // For this example, we'll use placeholder values
-    const startPrice = 100;
-    const endPrice = 112;
-    const change = ((endPrice - startPrice) / startPrice) * 100;
-    return change;
-  };
+      const borderColors = percentageDifferences.map((percentage) =>
+        percentage >= 0 ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)'
+      );
 
-  return (
-    <div>
-      <h2>Price Difference Chart</h2>
-      <div>
-        <label>Start Date: </label>
-        <input type="date" value={startDate} onChange={handleStartDateChange} />
-      </div>
-      <div>
-        <label>End Date: </label>
-        <input type="date" value={endDate} onChange={handleEndDateChange} />
-      </div>
-      <canvas ref={chartRef} />
-      {percentageChange && (
-        <p>Percentage Change: {percentageChange.toFixed(2)}%</p>
-      )}
-    </div>
-  );
-}
+      chartInstance.current = new Chart(chartRef.current, {
+        type: 'bar',
+        data: {
+          labels: years,
+          datasets: [
+            {
+              label: 'Percentage Difference',
+              backgroundColor: backgroundColors,
+              borderColor: borderColors,
+              borderWidth: 1,
+              data: percentageDifferences,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+        },
+      });
+    }
 
-export default PriceDifferenceChart;
+    // Ensure the chart instance is destroyed when the component unmounts
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, [data]);
+
+  return <canvas ref={chartRef} width={width} height={height} />;
+};
+
+export default StockChart;
+
