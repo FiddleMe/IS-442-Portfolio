@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import React, { useState, useEffect } from 'react';
 import './AddStock.css';
-import { parse, format } from 'date-fns';
+import { parse } from 'date-fns';
 
 function filterLatestStocks(data) {
   const stocksData = data;
@@ -15,6 +15,7 @@ function filterLatestStocks(data) {
     const stockId = stock.stockId;
     if (!(stockId in groupedStocks) || stock.date > groupedStocks[stockId].date) {
       groupedStocks[stockId] = {
+        stockId: stockId,
         name: stock.name,
         price: stock.price,
         date: stock.date,
@@ -28,6 +29,7 @@ function filterLatestStocks(data) {
 
 function transformData(data) {
   return data.map((stock) => ({
+    stockId: stock.stockId,
     name: stock.name,
     price: stock.price,
     date: stock.date,
@@ -100,14 +102,13 @@ function fillMissingStockData(data) {
   return filledData;
 }
 
-function AddStocks() {
+function AddStocks({ selectedStocks, setSelectedStocks }) {
   const [minDate, setMinDate] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
   const [totalStock, setTotalStocks] = useState(null);
   const [stocks, setStocks] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
-  const [selectedStocks, setSelectedStocks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   useEffect(() => {
     // Call the getAllStocks function to fetch the list of stocks
@@ -116,6 +117,7 @@ function AddStocks() {
         const data = await getAllStocks();
         const filledStocks = fillMissingStockData(data);
         const transformStocks = transformData(filledStocks);
+
         setTotalStocks(transformStocks);
         const availableDatesSet = new Set(
           transformStocks.map((stock) => stock.parseDate.toISOString())
@@ -129,6 +131,7 @@ function AddStocks() {
         setMaxDate(maxDate);
 
         const filteredStocks = filterLatestStocks(data);
+        console.log(filteredStocks);
         setStocks(filteredStocks);
         const initialSelectedDates = filteredStocks.map((stock) => stock.parseDate);
         setSelectedDates(initialSelectedDates);
@@ -276,38 +279,44 @@ function AddStocks() {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedStocks.map((stock, index) => (
-                    <tr key={index}>
-                      <td>{stock.name}</td>
-                      <td>${stock.price.toLocaleString('en-US')}</td>
-                      <td>{stock.date}</td>
-                      <td>
-                        <input
-                          type="number"
-                          min="1"
-                          value={stock.quantity}
-                          onChange={(e) => handleQuantityChange(index, parseInt(e.target.value))}
-                          className="form-control form-control-sm rounded"
-                        />
-                      </td>
-                      <td>
-                        $
-                        {(stock.price * stock.quantity).toLocaleString('en-US', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </td>
-                      <td>
-                        <FaTimes
-                          className="text-danger"
-                          style={{ cursor: 'pointer' }}
-                          onClick={() =>
-                            setSelectedStocks(selectedStocks.filter((s) => s !== stock))
-                          }
-                        />
-                      </td>
+                  {selectedStocks.length > 0 ? (
+                    selectedStocks.map((stock, index) => (
+                      <tr key={index}>
+                        <td>{stock.name}</td>
+                        <td>${stock.price.toLocaleString('en-US')}</td>
+                        <td>{stock.date}</td>
+                        <td>
+                          <input
+                            type="number"
+                            min="1"
+                            value={stock.quantity}
+                            onChange={(e) => handleQuantityChange(index, parseInt(e.target.value))}
+                            className="form-control form-control-sm rounded"
+                          />
+                        </td>
+                        <td>
+                          $
+                          {(stock.price * stock.quantity).toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </td>
+                        <td>
+                          <FaTimes
+                            className="text-danger"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() =>
+                              setSelectedStocks(selectedStocks.filter((s) => s !== stock))
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6">No selected stocks</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

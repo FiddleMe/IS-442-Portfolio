@@ -1,17 +1,17 @@
 import axios from 'axios'; // Import Axios
 
-export const createPortfolio = async (data) => {
+export const updatePortfolio = async (portfolioId, data) => {
   try {
-    const response = await axios.post('http://localhost:8082/api/portfolio', data, {
+    const url = `http://localhost:8082/api/portfolio/${portfolioId}`;
+    const response = await axios.put(url, data, {
       headers: {
         'Content-Type': 'application/json',
       },
-    
     });
 
     console.log(response);
 
-    if (response.status === 201) {
+    if (response.data.status === 200) {
       const responseData = await response.data;
       return responseData.data;
     } else {

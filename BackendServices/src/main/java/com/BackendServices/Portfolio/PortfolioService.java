@@ -68,10 +68,12 @@ public class PortfolioService {
     public PortfolioDTO createPortfolio(PortfolioDTO PortfolioDTO) {
         try{
             Portfolio portfolio = new Portfolio();
+            System.out.println(PortfolioDTO);
             portfolio.setName(PortfolioDTO.getName());
             portfolio.setDescription(PortfolioDTO.getDescription());
             portfolio.setCapitalAmount(PortfolioDTO.getCapitalAmount());
             portfolio.setUserId(PortfolioDTO.getUserId());
+            portfolio.setWallet(PortfolioDTO.getWallet());
             Portfolio savedPortfolio = portfolioRepository.save(portfolio);
     
            
@@ -99,6 +101,9 @@ public class PortfolioService {
             }
             if (updatedPortfolioDTO.getCapitalAmount() != null) {
                 existingPortfolio.setCapitalAmount(updatedPortfolioDTO.getCapitalAmount());
+            }
+            if (updatedPortfolioDTO.getWallet() != null) {
+                existingPortfolio.setWallet(updatedPortfolioDTO.getWallet());
             }
             Portfolio updatedPortfolio = portfolioRepository.save(existingPortfolio);
     

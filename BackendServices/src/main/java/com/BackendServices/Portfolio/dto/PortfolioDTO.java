@@ -10,15 +10,17 @@ public class PortfolioDTO {
     private String description;
     private BigDecimal capitalAmount;
     private String userId;
+    private Double wallet;
 
     public PortfolioDTO() {
         
     }
-    public PortfolioDTO(String name, String description, BigDecimal capitalAmount, String userId) {
+    public PortfolioDTO(String name, String description, BigDecimal capitalAmount, String userId, Double wallet) {
         this.name = name;
         this.description = description;
         this.capitalAmount = capitalAmount;
         this.userId = userId;   
+        this.wallet = wallet;
     }
     public PortfolioDTO(String id) {
         
@@ -30,6 +32,7 @@ public class PortfolioDTO {
         this.description = portfolio.getDescription();
         this.capitalAmount = portfolio.getCapitalAmount();
         this.userId = portfolio.getUserId();
+        this.wallet = portfolio.getWallet();
     }
 
     public String getPortfolioId() {
@@ -71,6 +74,12 @@ public class PortfolioDTO {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+    public Double getWallet() {
+        return wallet;
+    }
+    public void setWallet(Double wallet) {
+        this.wallet = wallet;
+    }
     public Portfolio convertToEntity() {
         Portfolio c = new Portfolio();
         c.setPortfolioId(portfolioId);
@@ -78,6 +87,8 @@ public class PortfolioDTO {
         c.setDescription(description); 
         c.setCapitalAmount(capitalAmount);
         c.setUserId(userId); 
+        c.setWallet(wallet);
         return c;
     }
+   
 }

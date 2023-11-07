@@ -8,6 +8,7 @@ import { BsPencil, BsPlusLg } from 'react-icons/bs';
 import './HomePage.css';
 import HistoricalChart from './HistoricalChart';
 import { useNavigate } from 'react-router-dom';
+import AddStockPopUp from '../AddStock/AddStockPopUp';
 import { useLocation } from 'react-router-dom';
 
 const apiUrl = 'http://localhost:8082/api/portfolio';
@@ -39,7 +40,7 @@ function Home() {
 
   const handleRowClick = (portfolio) => {
     setCurrentPortfolio(portfolio);
-    console.log(portfolio)
+    console.log(portfolio);
     navigate('/home', { replace: true });
   };
   const [portfolioData, setPortfolioData] = useState(null);
@@ -49,14 +50,12 @@ function Home() {
   useEffect(() => {
     const checkSessionStorage = () => {
       if (sessionStorage.getItem('userData') === null) {
-        navigate("/");
+        navigate('/');
         return;
       }
-      
     };
-  
+
     checkSessionStorage();
-  
   }, []);
 
   useEffect(() => {
@@ -148,26 +147,27 @@ function Home() {
       const searchParams = new URLSearchParams(location.search);
       const selectedPortfolio = searchParams.get('selectedPortfolio');
       if (selectedPortfolio) {
-        console.log(selectedPortfolio)
-        const portfolio = portfolioData.find(item => item.name === selectedPortfolio);
-        console.log(portfolio)
+        console.log(selectedPortfolio);
+        const portfolio = portfolioData.find((item) => item.name === selectedPortfolio);
+        console.log(portfolio);
         setCurrentPortfolio(portfolio);
       }
     }
   }, [loading, portfolioData, location.search]);
 
-
   const handleDataFromSidebar = (data) => {
     console.log('Data from child:', data);
-    const portfolio = portfolioData.find(item => item.name === data);
+    const portfolio = portfolioData.find((item) => item.name === data);
     setCurrentPortfolio(portfolio);
     navigate('/home', { replace: true });
   };
-  const userDetails = sessionStorage.getItem('userData')!=null? JSON.parse(sessionStorage.getItem('userData')): null;
-  const name = userDetails !=null ? userDetails.firstName + ' ' + userDetails.lastName : '';
-  const email = userDetails !=null ? userDetails.email: '';
-  const userId = userDetails !=null ? userDetails.userId: '';
-  
+  const userDetails =
+    sessionStorage.getItem('userData') != null
+      ? JSON.parse(sessionStorage.getItem('userData'))
+      : null;
+  const name = userDetails != null ? userDetails.firstName + ' ' + userDetails.lastName : '';
+  const email = userDetails != null ? userDetails.email : '';
+  const userId = userDetails != null ? userDetails.userId : '';
 
   const currentPage = 'Home';
   function isPromise(p) {
@@ -199,7 +199,7 @@ function Home() {
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
       <div className="row">
-        <Sidebar userId={userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar}/>
+        <Sidebar userId={userId} currentPage={currentPage} onDataToParent={handleDataFromSidebar} />
 
         <div className="col-md p-0">
           <Header name={name} email={email} />
@@ -252,17 +252,16 @@ function Home() {
             // <div className="d-flex justify-content-center align-items-center p-3">
             //   No stocks found in this portfolio, Please add stocks.
             // </div>
-            <div className="d-flex justify-content-center align-items-center m-3 wrapper" >
+            <div className="d-flex justify-content-center align-items-center m-3 wrapper">
               <div className="border p-3">
                 <p className="text-center">No stocks found in this portfolio. Please add stocks.</p>
               </div>
             </div>
-            
           )}
           <div className="">
             <div className="m-3 d-flex flex-wrap gap-4 row">
               <div className="bg-white rounded-3 p-3 col-12 col-md-5">
-                <h3 className='py-2 fw-bolder'>Portfolios</h3>
+                <h3 className="py-2 fw-bolder">Portfolios</h3>
                 <table className="table">
                   <thead className="">
                     <tr>
@@ -352,10 +351,10 @@ function Home() {
                   <br />
 
                   <div>
-                    <span className="fw-bolder">Stocks</span>
-                    <button className="float-end btn btn-outline-primary buttonFont">
-                      <BsPlusLg className="pb-1 buttonIcon" /> Add Stocks
-                    </button>
+                    <AddStockPopUp
+                      className="float-end btn btn-outline-primary buttonFont pb-1"
+                      portfolio={currentPortfolio}
+                    />
                   </div>
                   <br />
                   <table className="table">

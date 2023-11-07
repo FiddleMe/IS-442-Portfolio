@@ -23,6 +23,7 @@ function CreatePortfolio() {
   const [portfolioName, setPortfolioName] = useState('New Portfolio');
   const [description, setDescription] = useState('New Description');
   const [capitalAmount, setCapitalAmount] = useState(0);
+  const [selectedStocks, setSelectedStocks] = useState([]);
 
   useEffect(() => {
     const checkSessionStorage = () => {
@@ -42,7 +43,7 @@ function CreatePortfolio() {
   };
 
   const handleCapitalAmountChange = (e) => {
-    setCapitalAmount(e.target.value || 'New Capital');
+    setCapitalAmount(e.target.value);
   };
 
   const handleDataFromSidebar = (data) => {
@@ -52,15 +53,17 @@ function CreatePortfolio() {
 
   const handleCreatePortfolio = async () => {
     const data = {
-      name: portfolioName,
-      description: description, // Include description from state
-      capitalAmount: capitalAmount, // Include capitalAmount from state
-      userId: userDetails.userId,
-      wallet: capitalAmount,
+      name: String(portfolioName),
+      description: String(description), // Include description from state
+      capitalAmount: parseFloat(capitalAmount), // Include capitalAmount from state
+      userId: String(userDetails.userId),
+      wallet: parseFloat(capitalAmount),
     };
     try {
+      console.log(data);
       const response = await createPortfolio(data);
       if (response) {
+        console.log(response);
         Swal.fire({
           icon: 'success',
           title: 'Success!',
@@ -140,7 +143,7 @@ function CreatePortfolio() {
             </div>
             <br />
 
-            <AddStocks />
+            <AddStocks selectedStocks={selectedStocks} setSelectedStocks={setSelectedStocks} />
             <button className="btn btn-primary my-3" onClick={handleCreatePortfolio}>
               Create Portfolio
             </button>
