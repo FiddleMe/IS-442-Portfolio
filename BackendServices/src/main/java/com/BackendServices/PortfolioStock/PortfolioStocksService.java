@@ -7,6 +7,7 @@ import com.BackendServices.Stock.StockService;
 import com.BackendServices.PortfolioStock.exception.PortfolioStockException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,26 @@ public class PortfolioStocksService {
                 return response;
             }
         }
+        return response;
+    }
+
+    public Map<String, Object> getRangeStockPriceChange(String stockId, LocalDate startDate, LocalDate endDate) {
+        Stock startStock = stockService.getStockById(stockId, startDate);
+        Stock endStock = stockService.getStockById(stockId, endDate);
+        Map<String, Object> response = new HashMap<>();
+
+        if (startStock != null && endStock != null) {
+            BigDecimal startPrice = startStock.getPrice();
+            BigDecimal endPrice = endStock.getPrice();
+            BigDecimal priceDifference = endPrice.subtract(startPrice);
+            BigDecimal percentageDifference = priceDifference.divide(startPrice, 2, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal("100"));
+
+            response.put("percentageDifference", percentageDifference);
+            response.put("startStock", startStock);
+            response.put("endStock", endStock);
+        }
+
         return response;
     }
 
