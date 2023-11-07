@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Nav, NavItem, NavLink, Collapse } from 'reactstrap';
-import { FaChevronDown, FaChevronUp, FaBars, FaHome, FaSignOutAlt } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaBars, FaHome, FaSignOutAlt, FaBookOpen } from 'react-icons/fa';
 import { GoStack, GoGraph } from 'react-icons/go';
 import { MdCreateNewFolder } from 'react-icons/md';
 import './Sidebar.css';
+import { useNavigate } from 'react-router-dom';
 
 function Sidebar(props) {
-  const { subPages, currentPage } = props;
+  const { onDataToParent, userId, currentPage } = props;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [subPages, setSubPages] = useState([]);
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -18,6 +21,7 @@ function Sidebar(props) {
 
   const printPortfolio = (page) => {
     console.log(page);
+    sendDataToParent(page);
   };
 
   const isSubPage = (page) => {
@@ -28,6 +32,42 @@ function Sidebar(props) {
     }
     return false;
   };
+  const apiUrl = 'http://localhost:8082/api/portfolio';
+    useEffect(() => {
+      let isMounted = true;
+
+      const fetchData = async () => {
+        try {
+          const response = await fetch(apiUrl + `/user/${userId}`);
+          const data = await response.json();
+          let portfolios = data.data;
+          if (isMounted) {
+            portfolios.forEach((portfolio) => {
+              setSubPages((prevSubPages) => [
+                ...prevSubPages,
+                { icon: FaBookOpen, title: portfolio.name },
+              ]);
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+
+      fetchData();
+
+      return () => {
+        isMounted = false;
+      };
+    }, []);
+
+    const sendDataToParent = (page) => {
+      if (typeof onDataToParent === 'function') {
+        onDataToParent(page);
+        // navigate('/home');
+      }
+    };
+
 
   const pages = [
     { icon: FaHome, title: 'Home', subpages: [], path: '/home' },
@@ -63,6 +103,11 @@ function Sidebar(props) {
     setIsDropdownOpen(isSubPage(currentPage));
   }, [currentPage]);
 
+  const handleLogout = () => {
+    sessionStorage.clear();
+    console.log("LOGOUt")
+    window.location.href = '/login'; 
+  };
   return (
     // <div className={`col-md-2 ${isSidebarOpen && !isMobile ? 'web_sidebar' : 'mobile_sidebar'}`}>
     <div
@@ -100,7 +145,7 @@ function Sidebar(props) {
                       className={`tab displayDropdown ${page.title === currentPage ? 'bold' : ''}`}
                     >
                       {page.icon()} {page.title}
-                      {isDropdownOpen ? <FaChevronUp /> : <FaChevronDown />}
+                      {subPages.length==0? <></> : isDropdownOpen ? <FaChevronUp /> : <FaChevronDown />}
                     </NavLink>
                     <Collapse isOpen={isDropdownOpen}>
                       <div className={`pl-3 ${page.title === currentPage ? 'bold' : ''}`}>
@@ -121,6 +166,7 @@ function Sidebar(props) {
                     active={page.title === currentPage}
                     href={page.path}
                     className={`tab ${page.title === currentPage ? 'bold' : ''}`}
+                    onClick={page.title === 'Logout' ? handleLogout : undefined}
                   >
                     {page.icon()} {page.title}
                   </NavLink>

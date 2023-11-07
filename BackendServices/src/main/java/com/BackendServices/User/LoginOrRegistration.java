@@ -50,6 +50,12 @@ public class LoginOrRegistration {
                 return null;
             }
 
+            // Check if the password is valid
+            if (!isValidPassword(password)) {
+                System.out.println("Invalid password format");
+                return null;
+            }
+
             // Get all users from the UserService
             List<User> users = userService.getAllUsers();
 
@@ -85,6 +91,24 @@ public class LoginOrRegistration {
         }
     }
 
+    public boolean isValidPassword(String password) {
+        if (password.length() < 8) {
+            return false; // Password is too short
+        }
+
+        boolean hasUppercase = false;
+        boolean hasNumber = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUppercase = true;
+            } else if (Character.isDigit(c)) {
+                hasNumber = true;
+            }
+        }
+
+        return hasUppercase && hasNumber;
+    }
     public boolean changePassword(String email, String newPassword) {
         try {
             // Check if the email is associated with a user
@@ -114,11 +138,19 @@ public class LoginOrRegistration {
         }
     }
 
-    private boolean isValidEmail(String email) {
+    public boolean isValidEmail(String email) {
         EmailValidator validator = EmailValidator.getInstance();
         return validator.isValid(email);
     }
 
+    public boolean isEmailInUse(String email) {
+        // Get all users from the UserService
+        List<User> users = userService.getAllUsers();
+    
+        return users.stream()
+                .anyMatch(user -> user.getEmail().equals(email));
+    }
+    
     private String generateUniqueUserId() {
         // Generate a unique user ID (e.g., using UUID)
         return UUID.randomUUID().toString();

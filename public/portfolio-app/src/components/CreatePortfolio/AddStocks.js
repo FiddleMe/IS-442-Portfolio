@@ -242,6 +242,7 @@ function AddStocks() {
                           maxDate={maxDate}
                         />
                       </td>
+
                       <td>
                         <button
                           className={`float-end btn btn-outline-primary btn-small buttonFont ${

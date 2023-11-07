@@ -51,9 +51,8 @@ function Login() {
     console.error(error);
     });
 
-      ;
-  
   };
+
   const componentStyles = {
     backgroundColor: "#101729", // Background color
     borderRadius: "25px", // Border radius
@@ -77,6 +76,7 @@ function Login() {
   const header2Styles = {
     color: "#FFFFFF",
   };
+  
   return (
     <div className="container mt-5" style={componentStyles}>
       <div className="row justify-content-center">

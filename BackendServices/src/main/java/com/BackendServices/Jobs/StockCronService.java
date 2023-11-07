@@ -14,7 +14,7 @@ public class StockCronService {
     
     
     public String getStockDataJson(String symbol) {
-        String apiUrl = "https://www.alphavantage.co/query?symbol=" + symbol + "&function=TIME_SERIES_DAILY_ADJUSTED&apikey=" + apiKey;
+        String apiUrl = "https://www.alphavantage.co/query?symbol=" + symbol + "&function=TIME_SERIES_DAILY_ADJUSTED&outputsize=full&apikey=" + apiKey;
         RestTemplate restTemplate = new RestTemplate();
 
         try {

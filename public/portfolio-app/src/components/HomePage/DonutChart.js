@@ -19,7 +19,7 @@ function DonutChart({ title, data }) {
         slotProps={{
           legend: {
             direction: 'column',
-            position: { vertical: 'middke', horizontal: 'right' },
+            position: { vertical: 'middle', horizontal: 'right' },
             itemMarkWidth: 9,
             itemMarkHeight: 9,
             markGap: 7,

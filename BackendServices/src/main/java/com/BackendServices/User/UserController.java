@@ -65,7 +65,15 @@ public class UserController {
         if (createdUser != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(HttpStatus.CREATED.value(), createdUser, "User created successfully"));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, "Failed to create user"));
+            if (loginOrRegistration.isEmailInUse(user.getEmail())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, "Email is already in use. Please try another email."));
+            } else if (!loginOrRegistration.isValidEmail(user.getEmail())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, "Invalid email format."));
+            } else if (!loginOrRegistration.isValidPassword(user.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, "Invalid password format. Password must be at least 8 characters long, have at least 1 uppercase letter, and include 1 number."));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, "Failed to create user for an unknown reason."));
+            }
         }
     }
 
