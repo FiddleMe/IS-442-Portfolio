@@ -325,10 +325,10 @@ public class InsightsService {
           for (PortfolioStocks portfolioStock : portfolioStocksList) {
             try{
               String stockId = portfolioStock.getStockId();
-            //   System.out.println("stock: " + stockId);
+            
               BigDecimal lastestPrice = portfolioStocksService.getPurchasePrice(stockId, date);
               Integer quantity = portfolioStock.getQuantity();
-            //   System.out.println("quantity: " + quantity);
+            
               BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity)).add(portfolio.getCapitalAmount());
               totalValue = totalValue.add(totalPrice);
             }
