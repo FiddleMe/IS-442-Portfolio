@@ -214,9 +214,7 @@ public class InsightsService {
         for (Map.Entry<String, BigDecimal> entry : priceDistribution.entrySet()) {
             String stockName = entry.getKey();
             BigDecimal stockPrice = entry.getValue();
-            BigDecimal allocationPercentage = stockPrice.divide(totalCapital, new MathContext(4)); // Adjust the scale
-                                                                                                   // and rounding mode
-                                                                                                   // as needed
+            BigDecimal allocationPercentage = stockPrice.divide(totalCapital, new MathContext(4)); 
             priceDistribution.put(stockName, allocationPercentage);
         }
 
