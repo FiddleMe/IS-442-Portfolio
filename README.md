@@ -18,7 +18,7 @@ To start up Springboot backend
 1. `cd BackendServices`
 2. `mvn clean install`
 3. `mvn spring-boot:run`
-4. goto localhost:8080, login using default username & password, oopPortfolio tables should be created.
+4. go to localhost:8080, login using default username & password, oopPortfolio tables should be created.
 
 SETUP FRONTEND
 1. `cd public/portfolio-app`
@@ -27,5 +27,5 @@ SETUP FRONTEND
 To start up React frontend
 1. `cd public/portfolio-app`
 2. `npm start`
-3. go to http://localhost:3000/ on browser
+3. go to http://localhost:3000/ on browser, a login page should appear.
    
