@@ -12,7 +12,7 @@ const StockChart = ({ data, width, height }) => {
     }
 
     if (data.length > 0 && chartRef.current) {
-      const years = data.map((item) => `${item.year} - ${item.year + 1}`);
+      const years = data.map((item) => `${item.year}`);
       const percentageDifferences = data.map((item) => item.percentageDifference);
 
       const backgroundColors = percentageDifferences.map((percentage) =>

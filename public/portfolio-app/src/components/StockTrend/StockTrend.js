@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
+import Typography from '@mui/material/Typography';
+import DateSlider from './DateSlider'
+import StockDropdown from './StockDropDown'; // Adjust the import path as needed
 import Sidebar from '../Sidebar';
 import Header from '../Header';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +30,7 @@ function StockTrend() {
 
     const navigate = useNavigate();
     const currentPage = 'Stocks';
-    const stockName = 'AAPL Stock Trend';
+    const [selectedStock, setSelectedStock] = useState('AAPL');
 
     const [stockData, setStockData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -34,50 +39,101 @@ function StockTrend() {
         console.log('Data from child:', data);
         navigate('/home?selectedPortfolio=' + data);
     };
+    const [portfolioIds, setPortfolioIds] = useState([]);
+
+    const fetchPortfolioData = async () => {
+        try {
+            const response = await fetch('http://localhost:8082/api/portfolio');
+            const data = await response.json();
+            if (data.status === 200) {
+                const ids = data.data.map((portfolio) => portfolio.portfolioId);
+                setPortfolioIds(ids);
+            }
+        } catch (error) {
+            console.error('Error fetching portfolio data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPortfolioData();
+    }, []);
+
+    const [stockIds, setStockIds] = useState(new Set());
+
+    const fetchStockIdsFromPortfolios = async () => {
+        const allStockIds = new Set(); // Use a Set to store unique stock IDs
+
+        for (const portfolioId of portfolioIds) {
+            try {
+                const apiUrl = `http://localhost:8082/api/portfoliostocks/${portfolioId}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                if (data.status === 200) {
+                    const ids = data.data.map((stock) => stock.stockId);
+                    ids.forEach((stockId) => allStockIds.add(stockId)); // Add to the Set
+                }
+            } catch (error) {
+                console.error(`Error fetching stock data for portfolio ${portfolioId}:`, error);
+            }
+        }
+
+        // Convert the Set to an array before setting it in state
+        setStockIds(Array.from(allStockIds));
+    };
+
+    useEffect(() => {
+        if (portfolioIds.length > 0) {
+            fetchStockIdsFromPortfolios();
+        }
+    }, [portfolioIds]);
+
+    const [startYear, setStartYear] = useState(new Date().getFullYear() - 20); // Set initial start year
+    const [endYear, setEndYear] = useState(new Date().getFullYear()); // Set initial end year
 
     const fetchHistoricalStockData = async () => {
         setLoading(true);
         try {
-            const stockSymbol = 'AAPL';
-            const currentDate = new Date();
-            const apiUrl = `http://localhost:8082/api/portfoliostocks/getRangeStockPriceChange/${stockSymbol}/`;
+            const stockSymbol = selectedStock;
+            const apiUrl = `http://localhost:8082/api/portfoliostocks/getRangeStockPriceChange/${stockSymbol}`;
 
             const stockTrend = [];
 
-            for (let year = 1; year < 11; year++) {
-                const startDate = new Date(currentDate);
-                const endDate = new Date(currentDate);
+            const currentDate = new Date();
+            for (let year = startYear; year <= endYear; year++) {
+                const startDate = new Date(year, 0, 5); // Start of the selected year
+                let endDate = new Date(year, 11, 20); // End of the selected year
+            
+                if (year === currentDate.getFullYear()) {
+                    // If it's the current year, adjust the end date to today - 2 days
+                    const twoDaysAgo = new Date(currentDate);
+                    twoDaysAgo.setDate(currentDate.getDate() - 2);
+                    endDate = twoDaysAgo;
+                }
 
-                const startYear = startDate.getFullYear() - year;
-                const endYear = endDate.getFullYear() - year + 1;
-
-                const startMonth = (startDate.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero
+                const startMonth = (startDate.getMonth() + 1).toString().padStart(2, '0');
                 const endMonth = (endDate.getMonth() + 1).toString().padStart(2, '0');
+                const startDay = startDate.getDate().toString().padStart(2, '0');
+                const endDay = endDate.getDate().toString().padStart(2, '0');
 
-                const startDay = startDate.getDate().toString().padStart(2, '0'); // Add leading zero
-                const endDay = (endDate.getDate() - 2).toString().padStart(2, '0');
+                const formattedStartDate = `${year}-${startMonth}-${startDay}`;
+                const formattedEndDate = `${year}-${endMonth}-${endDay}`;
 
-                // Format the date as 'YYYY-MM-DD' for the API request
-                const formattedStartDate = `${startYear}-${startMonth}-${startDay}`;
-                const formattedEndDate = `${endYear}-${endMonth}-${endDay}`;
-
-                const yearApiUrl = `${apiUrl}${formattedStartDate}/${formattedEndDate}`;
+                const yearApiUrl = `${apiUrl}/${formattedStartDate}/${formattedEndDate}`;
                 const response = await fetch(yearApiUrl);
                 const data = await response.json();
-                console.log('Response:', response);
-                console.log('Data:', data);
+                console.log(data)
 
                 if (data.status === 200) {
                     const percentageDifference = data.data.percentageDifference;
                     stockTrend.push({
-                        year: startYear,
+                        year: year,
                         percentageDifference: percentageDifference.toFixed(2),
                     });
                 }
             }
             // Set the stockData state with the fetched data
             setStockData(stockTrend);
-            console.log(stockTrend)
+            // console.log(stockTrend)
             setLoading(false); // After setting the data, mark loading as false
         } catch (error) {
             console.error('Error fetching stock data:', error);
@@ -87,8 +143,31 @@ function StockTrend() {
 
     useEffect(() => {
         fetchHistoricalStockData();
-    }, []);
+    }, [selectedStock, startYear, endYear]);
+
     const reversedStockData = stockData.slice().reverse();
+    const [averagePercentageChange, setAveragePercentageChange] = useState(null);
+
+    // Calculate the average percentage change from stockData
+    useEffect(() => {
+        if (stockData.length > 0) {
+            const totalPercentageChange = stockData.reduce(
+                (accumulator, item) => accumulator + parseFloat(item.percentageDifference),
+                0
+            );
+            const average = totalPercentageChange / stockData.length;
+            setAveragePercentageChange(average);
+        }
+    }, [stockData, startYear, endYear]);
+
+    // Calculate and display how this year's percentage compares to the average
+    const thisYearPercentageDifference =
+        stockData.length > 0 ? parseFloat(stockData[0].percentageDifference) : null;
+
+    const comparisonToAverage =
+        thisYearPercentageDifference !== null && averagePercentageChange !== null
+            ? ((thisYearPercentageDifference - averagePercentageChange) / averagePercentageChange) * 100
+            : null;
     return (
         <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
             <div className="row">
@@ -97,33 +176,72 @@ function StockTrend() {
                     <Header name={name} email={email} />
 
                     <div className="px-5">
-                        <h2>{stockName}</h2>
+                        <h2>{selectedStock} Stock Trend</h2>
                         <br />
                         <br />
-
+                        <div className='row'>
+                            <div className='col-3'>
+                                <StockDropdown stockIds={stockIds} setSelectedStock={setSelectedStock} />
+                            </div>
+                            <div className='col-8 mx-auto'>
+                            <div>
+                            <DateSlider
+                                minYear={new Date().getFullYear() - 20} // Minimum year (20 years ago)
+                                maxYear={new Date().getFullYear()} // Maximum year (current year)
+                                value={[startYear, endYear]}
+                                onChange={([start, end]) => {
+                                    setStartYear(start);
+                                    setEndYear(end);
+                                }}
+                            />
+                        </div>
+                            </div>
+                        </div>
                         {loading ? (
                             <p>Loading...</p>
                         ) : stockData.length > 0 ? (
                             <div>
-                            <table className="table text-center">
-                                <thead>
-                                    <tr>
-                                        <th>Year</th>
-                                        <th>Percentage Difference</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {stockData.map((item, index) => (
-                                        <tr key={index}>
-                                            <td>{item.year} to {item.year + 1}</td>
-                                            <td style={item.percentageDifference >= 0 ? positiveColor : negativeColor} >{item.percentageDifference}%</td>
+                                <table className="table text-center mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Year</th>
+                                            <th>Percentage Difference</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <div className='chart-container text-center mx-auto mb-5'>
-                            <StockChart data={reversedStockData} />
-                            </div>
+                                    </thead>
+                                    <tbody>
+                                        {stockData.map((item, index) => (
+                                            <tr key={index}>
+                                                <td>{item.year}</td>
+                                                <td style={item.percentageDifference >= 0 ? positiveColor : negativeColor} >{item.percentageDifference}%</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                <div>
+                                    {averagePercentageChange !== null && thisYearPercentageDifference !== null && (
+                                        <p>
+                                            The average % change from {startYear} to {endYear} is
+                                            <span style={{ color: averagePercentageChange >= 0 ? 'green' : 'red' }}>
+                                                {averagePercentageChange >= 0 ? '+' : '-'}
+                                                {Math.abs(averagePercentageChange).toFixed(2)}% {". "}
+                                            </span>
+                                            {startYear}'s percentage is{' '}
+                                            <span style={{ color: thisYearPercentageDifference >= 0 ? 'green' : 'red' }}>
+                                                {thisYearPercentageDifference >= 0 ? '+' : '-'}
+                                                {Math.abs(thisYearPercentageDifference).toFixed(2)}%
+                                            </span>
+                                            , which is {comparisonToAverage >= 0 ? 'higher' : 'lower'}
+                                            <span style={{ color: comparisonToAverage >= 0 ? 'green' : 'red' }}>
+                                                {" "}{Math.abs(comparisonToAverage).toFixed(2)}%{' '}
+                                            </span>
+                                            than the average.
+                                        </p>
+
+                                    )}
+                                </div>
+                                <div className='chart-container text-center mx-auto mb-5'>
+                                    <StockChart data={stockData} />
+                                </div>
                             </div>
                         ) : (
                             <p>No data available for stock trend.</p>
