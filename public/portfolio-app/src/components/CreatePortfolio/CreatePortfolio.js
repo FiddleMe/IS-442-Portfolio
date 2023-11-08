@@ -120,7 +120,7 @@ function CreatePortfolio() {
                       subject: 'Created Portfolio successfully!',
                       msg: `Dear ${name}, your portfolio of portfolio ID ${response.portfolioId} has been created!`,
                     };
-                    await postEmail(emailBody);
+                    postEmail(emailBody);
                     Swal.fire({
                       icon: 'success',
                       title: 'Success!',
