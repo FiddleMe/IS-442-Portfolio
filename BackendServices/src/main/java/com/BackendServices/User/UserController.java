@@ -4,8 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import com.BackendServices.common.ApiResponse;
+import com.BackendServices.entity.AccessLog;
+import com.BackendServices.service.AccessLogService;
+import com.BackendServices.entity.AccessLog;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -15,15 +20,22 @@ public class UserController {
     private final UserService userService;
     private final LoginOrRegistration loginOrRegistration;
     private final OtpService otpService;
+    private final AccessLogService accessLogService;
 
-    public UserController(UserService userService, LoginOrRegistration loginOrRegistration, OtpService otpService) {
+    public UserController(UserService userService, LoginOrRegistration loginOrRegistration, OtpService otpService, AccessLogService accessLogService) {
         this.userService = userService;
         this.loginOrRegistration = loginOrRegistration;
         this.otpService = otpService;
+        this.accessLogService = accessLogService;
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable String userId) {
+        AccessLog accessLog = new AccessLog();
+        accessLog.setUserId(userId);
+        accessLog.setAction("RETRIEVE USER");
+        accessLog.setTimestamp(LocalDateTime.now());
+        accessLogService.createAccessLog(accessLog);
         Optional<User> userOptional = userService.getUserById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -47,7 +59,12 @@ public class UserController {
         userToShow.setEmail(originalUser.getEmail());
         userToShow.setFirstName(originalUser.getFirstName());
         userToShow.setLastName(originalUser.getLastName());
+
         if (loginSuccess.isPresent()) {
+            AccessLog accessLog = new AccessLog();
+            accessLog.setUserId(originalUser.getUserId());
+            accessLog.setAction("USER LOGIN");
+            accessLog.setTimestamp(LocalDateTime.now());
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), userToShow, "Login successful"));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(HttpStatus.UNAUTHORIZED.value(), null, "Login failed"));
@@ -63,6 +80,11 @@ public class UserController {
         );
 
         if (createdUser != null) {
+            AccessLog accessLog = new AccessLog();
+            accessLog.setUserId(createdUser.getUserId());
+            accessLog.setAction("USER CREATED");
+            accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(HttpStatus.CREATED.value(), createdUser, "User created successfully"));
         } else {
             if (loginOrRegistration.isEmailInUse(user.getEmail())) {
@@ -90,6 +112,16 @@ public class UserController {
         boolean passwordUpdated = loginOrRegistration.changePassword(updatePasswordRequest.getEmail(), updatePasswordRequest.getPassword());
 
         if (passwordUpdated) {
+        // Fetch the user by email
+        Optional<User> userOptional = userService.getUserByEmail(updatePasswordRequest.getEmail());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            AccessLog accessLog = new AccessLog();
+            accessLog.setUserId(user.getUserId());
+            accessLog.setAction("USER UPDATE PASSWORD");
+            accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
+        }
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), "Password updated successfully", "Password updated successfully"));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "Email is not associated with a user or failed to update password"));
@@ -100,6 +132,11 @@ public class UserController {
     public ResponseEntity<ApiResponse> generateOTP(@RequestParam String email) {
         // Call the generateOTP method in OtpService
         otpService.generateOTP(email);
+        AccessLog accessLog = new AccessLog();
+        accessLog.setUserId(email);
+        accessLog.setAction("USER GENERATE OTP");
+        accessLog.setTimestamp(LocalDateTime.now());
+        accessLogService.createAccessLog(accessLog);
 
         return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), "OTP generated and sent to your email", "OTP generated and sent to your email"));
     }
@@ -108,10 +145,19 @@ public class UserController {
     public ResponseEntity<ApiResponse> validateOTP(@RequestParam String email, @RequestParam String otp) {
         // Call the validateOTP method in OtpService
         boolean isOTPValid = otpService.validateOTP(email, otp);
+        AccessLog accessLog = new AccessLog();
 
         if (isOTPValid) {
+            accessLog.setUserId(email);
+            accessLog.setAction("USER VALIDATE OTP");
+            accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), "OTP is valid", "OTP is valid"));
         } else {
+            accessLog.setUserId(email);
+            accessLog.setAction("USER USES INVALID OTP");
+            accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, "OTP is invalid or has expired"));
         }
     }
@@ -119,9 +165,18 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable String userId, @RequestBody User updatedUser) {
         User user = userService.updateUser(userId, updatedUser);
+        AccessLog accessLog = new AccessLog();
         if (user != null) {
+            accessLog.setUserId(userId);
+            accessLog.setAction("USER UPDATE");
+            accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), user, "User updated successfully"));
         } else {
+            accessLog.setUserId(userId);
+            accessLog.setAction("USER UPDATE FAILED");
+            accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "User not found"));
         }
     }
@@ -129,9 +184,18 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable String userId) {
         boolean deleted = userService.deleteUser(userId);
+        AccessLog accessLog = new AccessLog();
         if (deleted) {
+            accessLog.setUserId(userId);
+            accessLog.setAction("USER DELETED");
+            accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
             return ResponseEntity.noContent().build();
         } else {
+            accessLog.setUserId(userId);
+            accessLog.setAction("USER DELETE FAILED");
+            accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "User not found"));
         }
     }
