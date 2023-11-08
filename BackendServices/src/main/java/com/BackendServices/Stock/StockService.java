@@ -29,11 +29,19 @@ public class StockService {
     }
 
     public List<Stock> getAllStocks() {
-        return stockRepository.findAll();
+        List<Stock> stocks = stockRepository.findAll();
+        if (stocks.isEmpty()) {
+            throw new StockServiceException("No stocks found");
+        }
+        return stocks;
     }
 
     public Stock getStockById(String stockId, LocalDate date) {
-        return stockRepository.findByStockIdAndDate(stockId, date);
+        Stock stock = stockRepository.findByStockIdAndDate(stockId, date);
+        if (stock == null) {
+            throw new StockServiceException("Stock not found with id: " + stockId + " and date: " + date);
+        }
+        return stock;
     }
 
     public List<Stock> createStocks(Map<String, Object> timeSeriesDaily) {

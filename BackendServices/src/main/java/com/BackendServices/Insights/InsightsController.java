@@ -32,18 +32,16 @@ public class InsightsController {
         List<Object> profitLoss = insightsService.getProfitLoss(portfolioId);
         Object totalProfitLoss = insightsService.getTotalProfitLoss(portfolioId);
         Map<LocalDate, BigDecimal> historicalReturns = insightsService.getHistoricalReturns(portfolioId, "daily");
-        //combine them all into an object
+        // combine them all into an object
         Map<String, Object> allInsights = new HashMap<>();
         allInsights.put("geographicalDistribution", geographicalDistribution);
         allInsights.put("industryDistribution", industryDistribution);
         allInsights.put("profitLoss", profitLoss);
         allInsights.put("totalProfitLoss", totalProfitLoss);
-        allInsights.put("historicalReturns", historicalReturns);        
+        allInsights.put("historicalReturns", historicalReturns);
         return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), allInsights, "success"));
-        
+
     }
-
-
 
     @GetMapping("/geo-distribution/{portfolioId}")
     public ResponseEntity<?> getGeographicalDistribution(@PathVariable String portfolioId) {
@@ -103,12 +101,18 @@ public class InsightsController {
     }
 
     @GetMapping("/redistribution/{portfolioId}")
-    public ResponseEntity<Map<String, String>> getRedistributionData(@PathVariable String portfolioId) {
+    public ResponseEntity<?> getRedistributionData(@PathVariable String portfolioId) {
         try {
-            Map<String, String> redistributionData = insightsService.getRedistributionData(portfolioId);
-            return new ResponseEntity<>(redistributionData, HttpStatus.OK);
+            Map<String, Map<String, Object>> redistributionData = insightsService.getRedistributionData(portfolioId);
+            if (!redistributionData.isEmpty()) {
+                return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), redistributionData, "success"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "Redistribution data not found"));
+            }
         } catch (InsightsException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, e.getMessage()));
         }
     }
 }
