@@ -93,6 +93,7 @@ function StockChart({ stockSymbol, stockData }) {
         <input
           type="number"
           id="startYear"
+          className="form-control w-25"
           value={startYear}
           onChange={(e) => setStartYear(e.target.value)}
           onBlur={handleYearChange}
@@ -103,6 +104,7 @@ function StockChart({ stockSymbol, stockData }) {
         <input
           type="number"
           id="endYear"
+          className="form-control w-25"
           value={endYear}
           onChange={(e) => setEndYear(e.target.value)}
           onBlur={handleYearChange}
