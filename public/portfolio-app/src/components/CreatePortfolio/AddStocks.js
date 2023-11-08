@@ -198,6 +198,8 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
     stock.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  console.log(selectedStocks)
+
   return (
     <div className="">
       <div className="row">
