@@ -31,14 +31,14 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable String userId) {
-        AccessLog accessLog = new AccessLog();
-        accessLog.setUserId(userId);
-        accessLog.setAction("RETRIEVE USER");
-        accessLog.setTimestamp(LocalDateTime.now());
-        accessLogService.createAccessLog(accessLog);
         Optional<User> userOptional = userService.getUserById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+            AccessLog accessLog = new AccessLog();
+            accessLog.setUserId(user.getUserId());
+            accessLog.setAction("RETRIEVE USER");
+            accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), user, "User retrieved successfully"));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "User not found"));
