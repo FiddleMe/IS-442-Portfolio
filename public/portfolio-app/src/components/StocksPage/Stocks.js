@@ -4,6 +4,7 @@ import Sidebar from '../Sidebar';
 import Header from '../Header';
 import { useNavigate } from 'react-router-dom';
 import './Stocks.css';
+import StockChart from './StockChart'; // Import StockChart
 
 
 function Stock() {
@@ -272,15 +273,15 @@ function Stock() {
                   </p>
                 )} */}
                 <p>
-                  Latest Stock Price <b>:</b> $
+                <b>Latest Stock Price:</b> $
                   {parseFloat(stockData['Time Series (Daily)'][Object.keys(stockData['Time Series (Daily)'])[0]]['5. adjusted close']).toFixed(2)}
                 </p>
-                <p>Latest Date <b>:</b> {Object.keys(stockData['Time Series (Daily)'])[0]}</p>
+                <p><b>Latest Date:</b> {Object.keys(stockData['Time Series (Daily)'])[0]}</p>
                 
                 <br />
 
                 <p>
-                  Percentage Change (1 year) <b>:</b> {' '}
+                  <b>Percentage Change (1 year):</b> {' '}
                   {percentageChangeYear !== null ? (
                     <span className={getColorClass(percentageChangeYear)}>
                       {percentageChangeYear > 0 ? `+${percentageChangeYear}` : percentageChangeYear}%
@@ -291,7 +292,7 @@ function Stock() {
                 </p>
 
                 <p>
-                  Percentage Change (30 days) <b>:</b> {' '}
+                  <b>Percentage Change (30 days):</b> {' '}
                   {percentageChangeMonth !== null ? (
                     <span className={getColorClass(percentageChangeMonth)}>
                       {percentageChangeMonth > 0 ? `+${percentageChangeMonth}` : percentageChangeMonth}%
@@ -302,7 +303,7 @@ function Stock() {
                 </p>
 
                 <p>
-                  Percentage Change (7 days) <b>:</b> {' '}
+                  <b>Percentage Change (7 days):</b> {' '}
                   {percentageChange7Days !== null ? (
                     <span className={getColorClass(percentageChange7Days)}>
                       {percentageChange7Days > 0 ? `+${percentageChange7Days}` : percentageChange7Days}%
@@ -313,7 +314,7 @@ function Stock() {
                 </p>
 
                 <p>
-                  Percentage Change (Today) <b>:</b> {' '}
+                  <b>Percentage Change (Today):</b> {' '}
                   {percentageChangeToday !== null ? (
                     <span className={getColorClass(percentageChangeToday)}>
                       {percentageChangeToday > 0 ? `+${percentageChangeToday}` : percentageChangeToday}%
@@ -325,6 +326,18 @@ function Stock() {
 
               </div>
             )}
+
+            <br />
+            <br />
+
+            {/* Add the StockChart component */}
+            {searchTerm && (
+              <StockChart
+                stockSymbol={searchTerm}
+                stockData={stockData}
+              />
+            )}
+
           </div>
         </div>
       </div>
