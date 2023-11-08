@@ -29,7 +29,7 @@ const StockChart = ({ data, width, height }) => {
           labels: years,
           datasets: [
             {
-              label: 'Percentage Difference',
+              label: '% Difference',
               backgroundColor: backgroundColors,
               borderColor: borderColors,
               borderWidth: 1,
