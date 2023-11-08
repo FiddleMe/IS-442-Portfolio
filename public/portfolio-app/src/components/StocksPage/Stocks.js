@@ -4,6 +4,7 @@ import Sidebar from '../Sidebar';
 import Header from '../Header';
 import { useNavigate } from 'react-router-dom';
 import './Stocks.css';
+import Spinner from "../Spinner";
 
 
 function Stock() {
