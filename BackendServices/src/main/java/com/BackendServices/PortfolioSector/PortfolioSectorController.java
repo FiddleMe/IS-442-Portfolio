@@ -6,12 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.BackendServices.PortfolioSector.exception.PortfolioSectorException;
 import com.BackendServices.common.ApiResponse;
-
-import java.util.Collections;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/portfoliosectors")
 public class PortfolioSectorController {
 
