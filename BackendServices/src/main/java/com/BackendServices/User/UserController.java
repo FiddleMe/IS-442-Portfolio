@@ -65,6 +65,7 @@ public class UserController {
             accessLog.setUserId(originalUser.getUserId());
             accessLog.setAction("USER LOGIN");
             accessLog.setTimestamp(LocalDateTime.now());
+            accessLogService.createAccessLog(accessLog);
             return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), userToShow, "Login successful"));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(HttpStatus.UNAUTHORIZED.value(), null, "Login failed"));
