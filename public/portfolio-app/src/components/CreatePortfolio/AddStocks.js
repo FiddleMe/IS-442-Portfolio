@@ -39,7 +39,72 @@ function transformData(data) {
   }));
 }
 
-function AddStocks({ selectedStocks, setSelectedStocks }) {
+function fillMissingStockData(data) {
+  // Sort the dataset by 'date' and then by 'stockId'
+  data.sort((a, b) => {
+    const dateComparison = new Date(a.date) - new Date(b.date);
+    if (dateComparison === 0) {
+      return a.stockId.localeCompare(b.stockId);
+    }
+    return dateComparison;
+  });
+
+  const filledData = [];
+
+  const stockDataMap = new Map();
+
+  for (const item of data) {
+    if (!stockDataMap.has(item.date)) {
+      stockDataMap.set(item.date, new Map());
+    }
+
+    stockDataMap.get(item.date).set(item.stockId, item);
+  }
+
+  let previousData = null;
+
+  for (const item of data) {
+    if (previousData) {
+      const currentDate = new Date(item.date);
+      const previousDate = new Date(previousData.date);
+
+      // Check if there are missing dates between the current and previous date
+      while (currentDate - previousDate > 24 * 60 * 60 * 1000) {
+        previousDate.setDate(previousDate.getDate() + 1);
+
+        const missingDate = previousDate.toISOString().slice(0, 10);
+
+        // Create new items for all stocks that are missing for the date
+        if (!stockDataMap.has(missingDate)) {
+          stockDataMap.set(missingDate, new Map());
+        }
+
+        for (const [stockId, stockData] of stockDataMap.get(previousData.date)) {
+          if (!stockDataMap.get(missingDate).has(stockId)) {
+            // Create a new item using the previous stock data with the missing date
+            const missingData = {
+              ...stockData,
+              date: missingDate,
+              parseDate: new Date(missingDate).toDateString(),
+            };
+            stockDataMap.get(missingDate).set(stockId, missingData);
+          }
+        }
+      }
+    }
+
+    previousData = item;
+  }
+
+  // Flatten the map to get the filled data
+  for (const stockMap of stockDataMap.values()) {
+    filledData.push(...stockMap.values());
+  }
+
+  return filledData;
+}
+
+function AddStocks({ selectedStocks, setSelectedStocks, onSectorValuesChange }) {
   const [minDate, setMinDate] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
   const [totalStock, setTotalStocks] = useState(null);
@@ -52,7 +117,9 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
     async function fetchStocks() {
       try {
         const data = await getAllStocks();
-        const transformStocks = transformData(data);
+        const filledStocks = fillMissingStockData(data);
+        const transformStocks = transformData(filledStocks);
+
         setTotalStocks(transformStocks);
         const availableDatesSet = new Set(
           transformStocks.map((stock) => stock.parseDate.toISOString())
@@ -64,6 +131,7 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
         const maxDate = availableDates[availableDates.length - 1];
         setMinDate(minDate);
         setMaxDate(maxDate);
+
         const filteredStocks = filterLatestStocks(data);
         setStocks(filteredStocks);
         const initialSelectedDates = filteredStocks.map((stock) => stock.parseDate);
@@ -131,7 +199,44 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
     stock.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  console.log(selectedStocks)
+  function calculateSectorValues(stocks) {
+    const sectorValues = {};
+  
+    let totalValue = 0;
+    stocks.forEach((stock) => {
+      totalValue += stock.price * stock.quantity;
+    });
+  
+    stocks.forEach((stock) => {
+      const { industrySector, price, quantity } = stock;
+  
+      if (!sectorValues[industrySector]) {
+        sectorValues[industrySector] = 0;
+      }
+  
+      sectorValues[industrySector] += (price * quantity / totalValue) * 100;
+    });
+  
+    return Object.keys(sectorValues).map((sector) => ({
+      value: sectorValues[sector],
+      label: sector.charAt(0).toUpperCase() + sector.slice(1).toLowerCase(),
+    }));
+  }
+  
+  
+  
+
+  // Add this in your AddStocks component
+
+  // Calculate sector values
+  useEffect(() => {
+    const sectorValues = calculateSectorValues(selectedStocks);
+
+    // Pass the sector values to the parent component
+    if (onSectorValuesChange) {
+      onSectorValuesChange(sectorValues);
+    }
+  }, [selectedStocks]);
 
   return (
     <div className="">
