@@ -38,7 +38,7 @@ function HistoricalChart({ title, historicalData, fetchHistoricalData, SetCurren
     boxShadow: 'none',
   });
   return (
-    <div className="bg-white rounded-3 text-center">
+    <div className="bg-white rounded-3 text-center pt-5 pe-5 pb-2">
       <LineChart
         width={600}
         height={400}
