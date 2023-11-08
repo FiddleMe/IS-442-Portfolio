@@ -60,19 +60,12 @@ function CreatePortfolio() {
 
   const handleCreatePortfolio = async () => {
     try {
-      const data = {
-        name: String(portfolioName),
-        description: String(description),
-        capitalAmount: parseFloat(capitalAmount),
-        userId: String(userDetails.userId),
-        wallet: parseFloat(capitalAmount),
-      };
-
       let totalPrice = 0;
       for (let i = 0; i < selectedStocks.length; i++) {
         const qty = selectedStocks[i].quantity;
         const price = selectedStocks[i].price;
         totalPrice += price * qty;
+        console.log('PRICE', totalPrice);
       }
 
       const totalBalance = capitalAmount - totalPrice;
@@ -85,6 +78,13 @@ function CreatePortfolio() {
           footer: '',
         });
       } else {
+        const data = {
+          name: String(portfolioName),
+          description: String(description),
+          capitalAmount: parseFloat(capitalAmount),
+          userId: String(userDetails.userId),
+          balance: totalBalance,
+        };
         const response = await createPortfolio(data);
         var postedSegment = null;
 
@@ -113,7 +113,7 @@ function CreatePortfolio() {
                 }
 
                 if (responseArr.length === transformed.length) {
-                  const updateData = { wallet: totalBalance };
+                  const updateData = { balance: totalBalance };
                   const updatedPortfolio = await updatePortfolio(response.portfolioId, updateData);
 
                   if (updatedPortfolio) {
