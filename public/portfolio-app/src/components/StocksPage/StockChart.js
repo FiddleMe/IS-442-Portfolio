@@ -3,7 +3,7 @@ import Chart from 'chart.js/auto';
 
 function StockChart({ stockSymbol, stockData }) {
   const chartRef = useRef(null);
-  const [startYear, setStartYear] = useState('2018'); // Initial start year
+  const [startYear, setStartYear] = useState('2021'); // Initial start year
   const [endYear, setEndYear] = useState('2023'); // Initial end year
 
   const handleYearChange = () => {
