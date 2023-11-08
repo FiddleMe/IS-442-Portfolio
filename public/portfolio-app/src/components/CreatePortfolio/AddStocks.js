@@ -20,6 +20,7 @@ function filterLatestStocks(data) {
         price: stock.price,
         date: stock.date,
         parseDate: parse(stock.date, 'yyyy-MM-dd', new Date()),
+        industrySector: stock.industrySector,
       };
     }
   });
@@ -34,6 +35,7 @@ function transformData(data) {
     price: stock.price,
     date: stock.date,
     parseDate: parse(stock.date, 'yyyy-MM-dd', new Date()),
+    industrySector: stock.industrySector,
   }));
 }
 
@@ -102,7 +104,7 @@ function fillMissingStockData(data) {
   return filledData;
 }
 
-function AddStocks({ selectedStocks, setSelectedStocks }) {
+function AddStocks({ selectedStocks, setSelectedStocks, onSectorValuesChange }) {
   const [minDate, setMinDate] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
   const [totalStock, setTotalStocks] = useState(null);
@@ -131,7 +133,6 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
         setMaxDate(maxDate);
 
         const filteredStocks = filterLatestStocks(data);
-        console.log(filteredStocks);
         setStocks(filteredStocks);
         const initialSelectedDates = filteredStocks.map((stock) => stock.parseDate);
         setSelectedDates(initialSelectedDates);
@@ -197,6 +198,45 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
   const filteredStocks = stocks.filter((stock) =>
     stock.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  function calculateSectorValues(stocks) {
+    const sectorValues = {};
+  
+    let totalValue = 0;
+    stocks.forEach((stock) => {
+      totalValue += stock.price * stock.quantity;
+    });
+  
+    stocks.forEach((stock) => {
+      const { industrySector, price, quantity } = stock;
+  
+      if (!sectorValues[industrySector]) {
+        sectorValues[industrySector] = 0;
+      }
+  
+      sectorValues[industrySector] += (price * quantity / totalValue) * 100;
+    });
+  
+    return Object.keys(sectorValues).map((sector) => ({
+      value: sectorValues[sector],
+      label: sector.charAt(0).toUpperCase() + sector.slice(1).toLowerCase(),
+    }));
+  }
+  
+  
+  
+
+  // Add this in your AddStocks component
+
+  // Calculate sector values
+  useEffect(() => {
+    const sectorValues = calculateSectorValues(selectedStocks);
+
+    // Pass the sector values to the parent component
+    if (onSectorValuesChange) {
+      onSectorValuesChange(sectorValues);
+    }
+  }, [selectedStocks]);
 
   return (
     <div className="">

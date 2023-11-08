@@ -35,15 +35,15 @@ public class Portfolio {
     @Column(name = "UserID", length = 36)
     private String userId;
 
-    @Column(name="Wallet")
-    private Double wallet;
+    @Column(name="Balance")
+    private BigDecimal balance;
 
-    public Double getWallet() {
-      return wallet;
+    public BigDecimal getBalance() {
+      return balance;
     }
 
-    public void setWallet(Double wallet) {
-      this.wallet = wallet;
+    public void setBalance(BigDecimal balance) {
+      this.balance = balance;
     }
 
     public String getPortfolioId() {

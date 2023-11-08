@@ -1,20 +1,27 @@
-package com.BackendServices.entity;
+package com.BackendServices.Logs;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.GenericGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+
 @Entity
-@Table(name = "AccessLog")
-public class AccessLog {
+@Table(name = "Logs")
+public class Logs {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LogID", nullable = false)
-    private Long logId;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "LogID", length = 36, nullable = false)
+    private UUID logId;  // Change data type to UUID
 
     @Column(name = "UserID", length = 36, nullable = false)
     private String userId;
@@ -26,11 +33,11 @@ public class AccessLog {
     private LocalDateTime timestamp;
 
     // Getters and setters
-    public Long getLogId() {
+    public UUID getLogId() {
       return logId;
     }
 
-    public void setLogId(Long logId) {
+    public void setLogId(UUID logId) {
       this.logId = logId;
     }
 
