@@ -232,8 +232,15 @@ function StockTrend() {
                                             </span>
                                             than the average.
                                         </p>
-
                                     )}
+                                    <p>
+                                    If you had bought {selectedStock} on {startYear}, after {endYear - startYear} years,
+                                    you would have gained
+                                    <span style={{ color: averagePercentageChange >= 0 ? 'green' : 'red' }}>
+                                            {averagePercentageChange >= 0 ? '+' : '-'}
+                                            {Math.abs(averagePercentageChange*(endYear - startYear)).toFixed(2)}%.
+                                    </span>
+                                    </p>
                                 </div>
                                 <table className="table text-center mt-3">
                                     <thead>
