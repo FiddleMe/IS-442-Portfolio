@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.math.MathContext;
 import org.springframework.stereotype.Service;
 import com.BackendServices.Portfolio.dto.*;
-
+import java.math.RoundingMode;
 @Service
 public class InsightsService {
     private final PortfolioStocksService portfolioStocksService;
@@ -203,7 +203,7 @@ public class InsightsService {
         portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
         PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
 
-        int numberOfIntervals = 50;
+        int numberOfIntervals = 40;
         int intervalCount = 0;
 
         if (interval.equals("daily")) {
@@ -237,7 +237,7 @@ public class InsightsService {
             }
             System.out.println("date: " + date + "  totalvalue: " + totalValue);
             if (!totalValue.equals(BigDecimal.ZERO)) {
-                historicalReturns.put(date, totalValue);
+                historicalReturns.put(date, totalValue.setScale(2, RoundingMode.HALF_UP));
             }
         }
         return historicalReturns;

@@ -19,9 +19,9 @@ let data = [
   { value: 26, label: 'Construction' },
 ];
 let historicalData = [
-  { name: '2023-01-01', value: 100.0 },
-  { name: '2023-01-02', value: 150.0 },
-  { name: '2023-01-03', value: 120.0 },
+  { name: '2023-01-01', value: 0.0 },
+  { name: '2023-01-02', value: 0.0 },
+  { name: '2023-01-03', value: 0.0 },
   { name: '2023-01-04', value: 0.0 },
   // Add more data points with date and value
 ];
@@ -43,8 +43,63 @@ function Home() {
     console.log(portfolio);
     navigate('/home', { replace: true });
   };
+  const fetchHistoricalData = async (interval = 'daily') => {
+    try {
+      const portfolioId = currentPortfolio.portfolioId;
+
+      const historicalDataResponse = await fetch(
+        `http://localhost:8082/api/insights/historical-returns/${interval}/${portfolioId}`
+      );
+      if (!historicalDataResponse.ok) {
+        throw new Error(`HTTP error! Status: ${historicalDataResponse.status}`);
+      }
+      const historicalData = await historicalDataResponse.json();
+
+      setCurrentHistData(historicalData);
+      console.log(historicalData);
+    } catch (error) {
+      console.error('Error fetching historical data:', error);
+    }
+  };
+  const fetchGeoData = async () => {
+    try {
+      const portfolioId = currentPortfolio.portfolioId;
+      const geoDataResponse = await fetch(
+        `http://localhost:8082/api/insights/geo-distribution/${portfolioId}`
+      );
+      if (!geoDataResponse.ok) {
+        throw new Error(`HTTP error! Status: ${geoDataResponse.status}`);
+      }
+      const geoData = await geoDataResponse.json();
+
+      setCurrentGeoData(geoData.data);
+      console.log(geoData);
+    } catch (error) {
+      console.error('Error fetching historical data:', error);
+    }
+  };
+  const fetchIndData = async () => {
+    try {
+      const portfolioId = currentPortfolio.portfolioId;
+      const indDataResponse = await fetch(
+        `http://localhost:8082/api/insights/industry-distribution/${portfolioId}`
+      );
+      if (!indDataResponse.ok) {
+        throw new Error(`HTTP error! Status: ${indDataResponse.status}`);
+      }
+      const indData = await indDataResponse.json();
+
+      setCurrentIndData(indData.data);
+      console.log(indData);
+    } catch (error) {
+      console.error('Error fetching historical data:', error);
+    }
+  };
   const [portfolioData, setPortfolioData] = useState(null);
   const [currentPortfolio, setCurrentPortfolio] = useState(null);
+  const [currentHistData, setCurrentHistData] = useState([]);
+  const [currentGeoData, setCurrentGeoData] = useState([]);
+  const [currentIndData, setCurrentIndData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -59,72 +114,46 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    console.log('Home component rendered');
-    // Function to fetch data from the API
     const fetchData = async () => {
       try {
-        const response = await fetch(apiUrl + `/user/${userDetails.userId}`);
+        const response = await fetch(
+          `http://localhost:8082/api/portfolio/user/${userDetails.userId}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log('safsafs', data);
-        let portfolios = data.data;
+
+        let portfolios = await data.data;
         if (portfolios.length === 0) {
           navigate('/create-portfolio');
         }
-        const updatedPortfolios = [];
-        // console.log(data.data);
+        var updatedPortfolios = [];
         for (let i = 0; i < portfolios.length; i++) {
-          const portfolio = portfolios[i];
-          const portfolioId = portfolio.portfolioId;
+          const portfolio = await portfolios[i];
+          const portfolioId = await portfolio.portfolioId;
 
-          // Fetch all required insights data sequentially
-          const profitInsightsData = await fetch(
-            `http://localhost:8082/api/insights/total-profit-loss/${portfolioId}`
+          const insightsData = await fetch(
+            `http://localhost:8082/api/insights/insights/${portfolioId}`
           ).then((response) => response.json());
+          const updatedInsightsData = insightsData.data;
+          let { totalProfitLoss: profitInsightsData, profitLoss: stockInsightsData } =
+            await updatedInsightsData;
 
-          const historicalInsightsData = await fetch(
-            `http://localhost:8082/api/insights/historical-returns/daily/${portfolioId}`
-          ).then((response) => response.json());
+          const profitInsights = await profitInsightsData;
+          const stockInsights = await stockInsightsData;
 
-          const industryInsightsData = await fetch(
-            `http://localhost:8082/api/insights/industry-distribution/${portfolioId}`
-          ).then((response) => response.json());
-
-          const geographicalInsightsData = await fetch(
-            `http://localhost:8082/api/insights/geo-distribution/${portfolioId}`
-          ).then((response) => response.json());
-
-          const stockInsightsData = await fetch(
-            `http://localhost:8082/api/insights/profit-loss/${portfolioId}`
-          ).then((response) => response.json());
-
-          const profitInsights = profitInsightsData.data;
-          const historicalInsights = transformHistoricalData(historicalInsightsData);
-          const industryInsights = transformIndustrialData(industryInsightsData.data);
-          console.log(industryInsights);
-          const geographicalInsights = transformGeographicalData(geographicalInsightsData.data);
-          const stockInsights = stockInsightsData.data;
-
-          const updatedPortfolio = await {
-            ...portfolio,
-            profitInsights,
-            historicalInsights,
-            industryInsights,
-            geographicalInsights,
-            stockInsights,
-          };
+          const updatedPortfolio = portfolio;
+          updatedPortfolio.profitInsights = profitInsights;
+          updatedPortfolio.stockInsights = stockInsights;
 
           updatedPortfolios.push(updatedPortfolio);
-          if (i === 0) {
-            setCurrentPortfolio(updatedPortfolio);
-          }
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-        console.log('upadetport: ', updatedPortfolios);
 
-        // Set the portfolio data after all promises have resolved
+          if (i === 0) {
+            await setCurrentPortfolio(updatedPortfolio);
+          }
+        }
+
         setPortfolioData(updatedPortfolios);
         setLoading(false);
       } catch (error) {
@@ -133,7 +162,7 @@ function Home() {
       }
     };
 
-    fetchData(); // Call the fetchData function when the component mounts
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -154,6 +183,14 @@ function Home() {
       }
     }
   }, [loading, portfolioData, location.search]);
+
+  useEffect(() => {
+    if (currentPortfolio && currentPortfolio.portfolioId) {
+      fetchHistoricalData();
+      fetchGeoData();
+      fetchIndData();
+    }
+  }, [currentPortfolio]);
 
   const handleDataFromSidebar = (data) => {
     console.log('Data from child:', data);
@@ -176,24 +213,21 @@ function Home() {
 
   function transformGeographicalData(data) {
     return Object.keys(data).map((key) => ({
-      value: data[key], // Multiplying by 10 for demonstration
+      value: data[key] * 100,
       label: key,
     }));
   }
   function transformIndustrialData(data) {
     return Object.keys(data).map((key) => ({
-      value: data[key], // Multiplying by 10 for demonstration
+      value: data[key] * 100,
       label: key.charAt(0).toUpperCase() + key.slice(1).toLowerCase(),
     }));
   }
   function transformHistoricalData(data) {
-    // console.log(data);
-    const ret = Object.keys(data).map((key) => ({
-      value: data[key], // Multiplying by 10 for demonstration
+    return Object.keys(data).map((key) => ({
+      value: data[key],
       name: key,
     }));
-    // console.log(ret);
-    return ret;
   }
 
   return (
@@ -204,33 +238,34 @@ function Home() {
         <div className="col-md p-0">
           <Header name={name} email={email} />
 
-          {currentPortfolio !== null &&
-          currentPortfolio.hasOwnProperty('historicalInsights') &&
-          currentPortfolio.stockInsights.length !== 0 ? (
+          {currentPortfolio !== null && currentPortfolio.stockInsights.length !== 0 ? (
             <div className="m-2 d-flex flex-wrap gap-4">
-              {!isPromise(currentPortfolio.historicalInsights) &&
-              currentPortfolio.historicalInsights.length !== 0 ? (
+              {currentHistData.length !== 0 &&
+              !isPromise(currentHistData) &&
+              Object.keys(currentHistData).length !== 0 ? (
                 <HistoricalChart
                   title={'Performance'}
-                  historicalData={currentPortfolio.historicalInsights}
+                  historicalData={transformHistoricalData(currentHistData)}
+                  fetchHistoricalData={fetchHistoricalData}
+                  setCurrentHistData={setCurrentHistData}
                 />
               ) : (
                 <HistoricalChart title={'Performance'} historicalData={historicalData} />
               )}
 
-              {!isPromise(currentPortfolio.industryInsights) ? (
+              {currentIndData.length !== 0 && !isPromise(currentIndData) ? (
                 <DonutChart
                   title={'Industrial Distrubution'}
-                  data={currentPortfolio.industryInsights}
+                  data={transformIndustrialData(currentIndData)}
                 />
               ) : (
                 <DonutChart title={'Industrial Distrubution'} data={data} />
               )}
 
-              {!isPromise(currentPortfolio.geographicalInsights) ? (
+              {currentGeoData.length !== 0 && !isPromise(currentGeoData) ? (
                 <DonutChart
                   title={'Geographical Distrubution'}
-                  data={currentPortfolio.geographicalInsights}
+                  data={transformGeographicalData(currentGeoData)}
                 />
               ) : (
                 <DonutChart title={'Geographical Distrubution'} data={geographicalData} />
