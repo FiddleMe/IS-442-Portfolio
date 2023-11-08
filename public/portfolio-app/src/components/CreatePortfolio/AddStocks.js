@@ -201,7 +201,7 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
   return (
     <div className="">
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-lg-6 col-md-12 col-sm-12">
           <div className="card p-3 h-100">
             <h2>Add Stocks</h2>
             <input
@@ -263,7 +263,7 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
             </div>
           </div>
         </div>
-        <div className="col-md-6">
+        <div className="col-lg-6 col-md-12 col-sm-12">
           <div className="card p-3 h-100">
             <h2>Cart</h2>
             <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
