@@ -5,7 +5,8 @@ import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
+import com.BackendServices.PortfolioStock.exception.PortfolioStockException;
 import com.BackendServices.Stock.Stock;
 import com.BackendServices.Stock.StockRepository;
 import com.BackendServices.Stock.StockService;
@@ -99,6 +100,18 @@ public class PortfolioStocksController {
             return ResponseEntity.ok(new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                     String.format("Deletion for portfolio stock (%s) unsuccessful or does not exist.",
                             portfolioStockId)));
+        }
+    }
+
+    @GetMapping("/latestDate")
+    public ResponseEntity<ApiResponse> getLatestDate() {
+        try {
+            LocalDate latestDate = portfolioStocksService.getLatestDate();
+            return ResponseEntity
+                    .ok(new ApiResponse(HttpStatus.OK.value(), "Latest date fetched successfully", latestDate.toString()));
+        } catch (PortfolioStockException e) {
+            return ResponseEntity
+                    .ok(new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to get latest date", null));
         }
     }
 }

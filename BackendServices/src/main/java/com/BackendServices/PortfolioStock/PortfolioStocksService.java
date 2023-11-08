@@ -24,11 +24,19 @@ public class PortfolioStocksService {
     }
 
     public List<PortfolioStocks> getAllPortfolioStocks() {
-        return portfolioStocksRepository.findAll();
+        try {
+            return portfolioStocksRepository.findAll();
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get all PortfolioStocks", e);
+        }
     }
 
     public List<PortfolioStocks> getPortfolioStocksById(String portfolioId) {
-        return portfolioStocksRepository.findAllByPortfolioId(portfolioId);
+        try {
+            return portfolioStocksRepository.findAllByPortfolioId(portfolioId);
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get PortfolioStocks by id", e);
+        }
     }
 
     public PortfolioStocks createPortfolioStocks(PortfolioStocks portfolioStocks) {
@@ -45,39 +53,51 @@ public class PortfolioStocksService {
                 portfolioStocksRepository.deleteById(portfolioStockId);
                 return true; // Deletion successful
             } else {
-                return false; // Portfolio stock does not exist
+                throw new PortfolioStockException("PortfolioStock with id " + portfolioStockId + " does not exist");
             }
         } catch (Exception e) {
-            return false; // Deletion failed
+            throw new PortfolioStockException("Failed to delete PortfolioStock", e);
         }
     }
 
     public Map<String, Object> getStockPriceChange(String stockId, LocalDate date) {
-        Stock inputStock = stockService.getStockById(stockId, date);
-        LocalDate latestDate = stockService.getLatestDate();
-        Map<String, Object> response = new HashMap<>();
+        try {
+            Stock inputStock = stockService.getStockById(stockId, date);
+            LocalDate latestDate = stockService.getLatestDate();
+            Map<String, Object> response = new HashMap<>();
 
-        if (inputStock != null) {
+            if (inputStock == null) {
+                throw new PortfolioStockException(
+                        "Input stock not found for stockId: " + stockId + " and date: " + date);
+            }
+
             Stock latestStock = stockService.getStockById(stockId, latestDate);
 
-            if (latestStock != null) {
-                BigDecimal latestPrice = latestStock.getPrice();
-                BigDecimal inputPrice = inputStock.getPrice();
-                BigDecimal priceDifference = latestPrice.subtract(inputPrice);
-                response.put("priceDifference", priceDifference);
-                response.put("stock", inputStock);
-                return response;
+            if (latestStock == null) {
+                throw new PortfolioStockException("Latest stock not found for stockId: " + stockId);
             }
+
+            BigDecimal latestPrice = latestStock.getPrice();
+            BigDecimal inputPrice = inputStock.getPrice();
+            BigDecimal priceDifference = latestPrice.subtract(inputPrice);
+            response.put("priceDifference", priceDifference);
+            response.put("stock", inputStock);
+            return response;
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get stock price change", e);
         }
-        return response;
     }
 
     public Map<String, Object> getRangeStockPriceChange(String stockId, LocalDate startDate, LocalDate endDate) {
-        Stock startStock = stockService.getStockById(stockId, startDate);
-        Stock endStock = stockService.getStockById(stockId, endDate);
-        Map<String, Object> response = new HashMap<>();
+        try {
+            Stock startStock = stockService.getStockById(stockId, startDate);
+            Stock endStock = stockService.getStockById(stockId, endDate);
+            Map<String, Object> response = new HashMap<>();
 
-        if (startStock != null && endStock != null) {
+            if (startStock == null || endStock == null) {
+                throw new PortfolioStockException("Stock not found for stockId: " + stockId);
+            }
+
             BigDecimal startPrice = startStock.getPrice();
             BigDecimal endPrice = endStock.getPrice();
             BigDecimal priceDifference = endPrice.subtract(startPrice);
@@ -87,46 +107,92 @@ public class PortfolioStocksService {
             response.put("percentageDifference", percentageDifference);
             response.put("startStock", startStock);
             response.put("endStock", endStock);
+            return response;
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get range stock price change", e);
         }
-
-        return response;
     }
 
-    // public BigDecimal getStockPriceChange(String stockId, LocalDate date){
-    // return getLatestPrice(stockId).subtract(getPurchasePrice(stockId, date));
-    // }
     public BigDecimal getLatestPrice(String stockId) {
-        LocalDate latestDate = stockService.getLatestDate();
-        Stock stock = stockService.getStockById(stockId, latestDate);
-        System.out.println(latestDate + " " + stock);
-        return stock.getPrice();
+        try {
+            LocalDate latestDate = stockService.getLatestDate();
+            Stock stock = stockService.getStockById(stockId, latestDate);
+
+            if (stock == null) {
+                throw new PortfolioStockException("Stock not found for stockId: " + stockId);
+            }
+
+            return stock.getPrice();
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get latest price", e);
+        }
     }
 
     public BigDecimal getPurchasePrice(String stockId, LocalDate date) {
-        Stock stock = stockService.getStockById(stockId, date);
-        return stock.getPrice();
+        try {
+            Stock stock = stockService.getStockById(stockId, date);
+
+            if (stock == null) {
+                throw new PortfolioStockException("Stock not found for stockId: " + stockId + " and date: " + date);
+            }
+
+            return stock.getPrice();
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get purchase price", e);
+        }
     }
 
     public String getName(String stockId) {
-        LocalDate latestDate = stockService.getLatestDate();
-        Stock stock = stockService.getStockById(stockId, latestDate);
-        return stock.getName();
+        try {
+            LocalDate latestDate = stockService.getLatestDate();
+            Stock stock = stockService.getStockById(stockId, latestDate);
+
+            if (stock == null) {
+                throw new PortfolioStockException("Stock not found for stockId: " + stockId);
+            }
+
+            return stock.getName();
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get name", e);
+        }
     }
 
     public String getGeographicalRegion(String stockId) {
-        LocalDate latestDate = stockService.getLatestDate();
-        Stock stock = stockService.getStockById(stockId, latestDate);
-        return stock.getGeographicalRegion();
+        try {
+            LocalDate latestDate = stockService.getLatestDate();
+            Stock stock = stockService.getStockById(stockId, latestDate);
+
+            if (stock == null) {
+                throw new PortfolioStockException("Stock not found for stockId: " + stockId);
+            }
+
+            return stock.getGeographicalRegion();
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get geographical region", e);
+        }
     }
 
     public String getIndustrySector(String stockId) {
-        LocalDate latestDate = stockService.getLatestDate();
-        Stock stock = stockService.getStockById(stockId, latestDate);
-        return stock.getIndustrySector();
+        try {
+            LocalDate latestDate = stockService.getLatestDate();
+            Stock stock = stockService.getStockById(stockId, latestDate);
+
+            if (stock == null) {
+                throw new PortfolioStockException("Stock not found for stockId: " + stockId);
+            }
+
+            return stock.getIndustrySector();
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get industry sector", e);
+        }
     }
 
     public LocalDate getLatestDate() {
-        return stockService.getLatestDate();
+        try {
+            return stockService.getLatestDate();
+        } catch (Exception e) {
+            throw new PortfolioStockException("Failed to get latest date", e);
+        }
     }
 
     // Implement other portfolio stocks-related methods as needed
