@@ -101,8 +101,8 @@ function Home() {
   const [currentGeoData, setCurrentGeoData] = useState([]);
   const [currentIndData, setCurrentIndData] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-// Prevent user for entering the page with going through login
+
+  // Prevent user for entering the page with going through login
   useEffect(() => {
     const checkSessionStorage = () => {
       if (sessionStorage.getItem('userData') === null) {
@@ -239,46 +239,52 @@ function Home() {
         <div className="col-md p-0">
           <Header name={name} email={email} />
 
-          {currentPortfolio !== null && currentPortfolio.stockInsights.length !== 0 ? (
-            <div className="m-2 d-flex flex-wrap gap-4">
-              {currentHistData.length !== 0 &&
-              !isPromise(currentHistData) &&
-              Object.keys(currentHistData).length !== 0 ? (
-                <HistoricalChart
-                  title={'Performance'}
-                  historicalData={transformHistoricalData(currentHistData)}
-                  fetchHistoricalData={fetchHistoricalData}
-                  setCurrentHistData={setCurrentHistData}
-                />
-              ) : (
-                <HistoricalChart title={'Performance'} historicalData={historicalData} />
-              )}
+          <div className="container mt-5">
 
-              {currentIndData.length !== 0 && !isPromise(currentIndData) ? (
-                <DonutChart
-                  title={'Industrial Distrubution'}
-                  data={transformIndustrialData(currentIndData)}
-                />
-              ) : (
-                <DonutChart title={'Industrial Distrubution'} data={data} />
-              )}
+            {currentPortfolio !== null && currentPortfolio.stockInsights.length !== 0 ? (
+              <>
+                <div className="row mt-2 me-3">
+                  <div className="bg-white rounded-3 col-lg-12 col-md-12 col-sm-12 d-flex justify-content-center ms-3 w-100">
+                    {currentHistData.length !== 0 && !isPromise(currentHistData) && Object.keys(currentHistData).length !== 0 ? (
+                      <HistoricalChart
+                        title={'Performance'}
+                        historicalData={transformHistoricalData(currentHistData)}
+                        fetchHistoricalData={fetchHistoricalData}
+                        setCurrentHistData={setCurrentHistData}
+                      />
+                    ) : (
+                      <HistoricalChart title={'Performance'} historicalData={historicalData} />
+                    )}
+                  </div>
 
-              {currentGeoData.length !== 0 && !isPromise(currentGeoData) ? (
-                <DonutChart
-                  title={'Geographical Distrubution'}
-                  data={transformGeographicalData(currentGeoData)}
-                />
-              ) : (
-                <DonutChart title={'Geographical Distrubution'} data={geographicalData} />
-              )}
-            </div>
-          ) : (
-            <div className="d-flex justify-content-center align-items-center m-3 wrapper">
-              <div className="border p-3">
-                <p className="text-center">No stocks found in this portfolio. Please add stocks.</p>
+                </div>
+                <div className="row mt-3">
+                  <div className="col-lg-6 col-md-6 col-sm-12">
+                    {currentIndData.length !== 0 && !isPromise(currentIndData) ? (
+                      <DonutChart title={'Industrial Distribution'} data={transformIndustrialData(currentIndData)} />
+                    ) : (
+                      <DonutChart title={'Industrial Distribution'} data={data} />
+                    )}
+                  </div>
+                  <div className="col-lg-6 col-md-6 col-sm-12">
+                    {currentGeoData.length !== 0 && !isPromise(currentGeoData) ? (
+                      <DonutChart title={'Geographical Distribution'} data={transformGeographicalData(currentGeoData)} />
+                    ) : (
+                      <DonutChart title={'Geographical Distribution'} data={geographicalData} />
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="col-12 d-flex justify-content-center align-items-center m-3 wrapper">
+                <div className="border p-3">
+                  <p className="text-center">No stocks found in this portfolio. Please add stocks.</p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+
+          </div>
+
 
           <PortfoliosView
             portfolioData={portfolioData}

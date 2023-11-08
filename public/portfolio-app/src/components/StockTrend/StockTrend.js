@@ -179,7 +179,7 @@ function StockTrend() {
 
     const comparisonToAverage =
         thisYearPercentageDifference !== null && averagePercentageChange !== null
-            ? ((thisYearPercentageDifference - averagePercentageChange) / averagePercentageChange) * 100
+            ? thisYearPercentageDifference - averagePercentageChange
             : null;
     return (
         <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
