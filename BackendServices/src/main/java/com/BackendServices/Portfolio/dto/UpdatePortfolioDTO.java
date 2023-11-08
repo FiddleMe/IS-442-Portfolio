@@ -10,22 +10,22 @@ public class UpdatePortfolioDTO extends PortfolioDTO {
     private Optional<String> name;
     private Optional<String> description;
     private Optional<BigDecimal> capitalAmount;
-    private Optional<Double> wallet;
+    private Optional<BigDecimal> balance;
 
     public UpdatePortfolioDTO() {
         super();
         this.name = Optional.empty();
         this.description = Optional.empty();
         this.capitalAmount = Optional.empty();
-        this.wallet = Optional.empty();
+        this.balance = Optional.empty();
     }
 
-    public UpdatePortfolioDTO(Optional<String> name, Optional<String> description, Optional<BigDecimal> capitalAmount, Optional<Double> wallet) {
+    public UpdatePortfolioDTO(Optional<String> name, Optional<String> description, Optional<BigDecimal> capitalAmount, Optional<BigDecimal> balance) {
         super();
         this.name = name;
         this.description = description;
         this.capitalAmount = capitalAmount;
-        this.wallet = wallet;
+        this.balance = balance;
     }
     
   
@@ -53,12 +53,12 @@ public class UpdatePortfolioDTO extends PortfolioDTO {
     }
 
 
-    public Double getWallet() {
-        return wallet.orElse(null);
+    public BigDecimal getBalance() {
+        return balance.orElse(null);
     }
 
-    public void setWallet(Optional<Double> wallet) {
-        this.wallet = wallet;
+    public void setBalance(Optional<BigDecimal> Balance) {
+        this.balance = balance;
     }
 
     public Portfolio convertToEntity() {
@@ -75,8 +75,8 @@ public class UpdatePortfolioDTO extends PortfolioDTO {
         if (getCapitalAmount() != null) {
             portfolio.setCapitalAmount(getCapitalAmount());
         }
-        if (getWallet() != null) {
-            portfolio.setWallet(getWallet());
+        if (getBalance() != null) {
+            portfolio.setBalance(getBalance());
         }
         return portfolio;
     }
