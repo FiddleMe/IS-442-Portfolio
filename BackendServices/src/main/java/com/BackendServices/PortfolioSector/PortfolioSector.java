@@ -4,10 +4,14 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import com.BackendServices.Portfolio.Portfolio;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,7 +19,7 @@ import jakarta.persistence.Table;
 @IdClass(PortfolioSector.PortfolioSectorKey.class)
 public class PortfolioSector {
   @Id
-  @Column(name = "portfolio_id", length = 36, nullable = false)
+  @Column(name = "PortfolioID", length = 36, nullable = false)
   private String portfolioId;
 
   @Id
@@ -24,6 +28,12 @@ public class PortfolioSector {
 
   @Column(name = "percentage", precision = 5, scale = 2)
   private BigDecimal percentage;
+  
+  @ManyToOne
+  @JoinColumn(name = "PortfolioID", referencedColumnName = "PortfolioID", insertable = false, updatable = false)
+  private Portfolio portfolio;
+  
+
 
   public static class PortfolioSectorKey implements Serializable {
     private String portfolioId;

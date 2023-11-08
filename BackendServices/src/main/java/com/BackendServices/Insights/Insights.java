@@ -48,7 +48,7 @@ public class Insights extends Portfolio {
 public Map<String, BigDecimal> getPriceDistribution() {
     // Price distribution of the ArrayList of stocks
     Map<String, BigDecimal> priceDistribution = new HashMap<>();
-    BigDecimal totalCapital = getCapitalAmount();
+    BigDecimal totalCapital = getBalance();
     // Assuming capitalAmount is the total amount of portfolioValue;
     for (PortfolioStocks portfolioStock : portfolioStocks) {
         String stockId = portfolioStock.getStockId();
@@ -75,7 +75,7 @@ public Map<String, BigDecimal> getPriceDistribution() {
 public Map<String, BigDecimal> getGeographicalDistribution() {
     // Geographical distribution of the ArrayList of stocks
     Map<String, BigDecimal> geographicalDistribution = new HashMap<>();
-    BigDecimal totalCapital = getCapitalAmount();
+    BigDecimal totalCapital = getBalance();
     // Assuming capitalAmount is the total amount of portfolioValue;
     for (PortfolioStocks portfolioStock : portfolioStocks) {
         String stockId = portfolioStock.getStockId();
@@ -101,7 +101,7 @@ public Map<String, BigDecimal> getGeographicalDistribution() {
 public Map<String, BigDecimal> getIndustryDistribution() {
     // Industry distribution of the ArrayList of stocks
     Map<String, BigDecimal> industryDistribution = new HashMap<>();
-    BigDecimal totalCapital = getCapitalAmount(); // Assuming capitalAmount is the total amount of portfolioValue;
+    BigDecimal totalCapital = getBalance(); // Assuming capitalAmount is the total amount of portfolioValue;
 
     for (PortfolioStocks portfolioStock : portfolioStocks) {
         String stockId = portfolioStock.getStockId();

@@ -56,3 +56,4 @@ const StockChart = ({ data, width, height }) => {
 };
 
 export default StockChart;
+
