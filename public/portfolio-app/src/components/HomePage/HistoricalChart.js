@@ -38,9 +38,11 @@ function HistoricalChart({ title, historicalData, fetchHistoricalData, SetCurren
     boxShadow: 'none',
   });
   return (
-    <div className="bg-white rounded-3 text-center pt-5 pe-5 pb-2">
+    <div className="bg-white rounded-3 text-center pt-5 pe-5 pb-3" style={{ maxWidth: '100%', overflowX: 'auto' }}>
+      <div style={{ minWidth: '100%', width: '100%', overflowX: 'auto' }}>
       <LineChart
-        width={600}
+        minWidth={600}
+        width={800}
         height={400}
         data={historicalData}
         margin={{ top: 0, right: 20, left: 0, bottom: 0 }}
@@ -62,6 +64,8 @@ function HistoricalChart({ title, historicalData, fetchHistoricalData, SetCurren
           </tspan>
         </text>
       </LineChart>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
       <ButtonGroup aria-label="Time period">
         <Button
           style={buttonStyle('daily')}
@@ -88,6 +92,7 @@ function HistoricalChart({ title, historicalData, fetchHistoricalData, SetCurren
           Monthly
         </Button>
       </ButtonGroup>
+      </div>
       <br />
       <span className="fw-bold">{title}</span>
     </div>
