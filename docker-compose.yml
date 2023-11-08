@@ -16,8 +16,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: oopPortfolio
-    networks:
-      - springboot-mysql-net
 
   oop-phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -27,36 +25,16 @@ services:
     environment:
       PMA_HOST: oop-mysqldb
       PMA_PORT: 3306
-    networks:
-      - springboot-mysql-net
     depends_on:
       oop-mysqldb:
         condition: service_healthy
 
-  oop-springboot:
-    build: ./BackendServices
-    container_name: oop-springboot
-    ports:
-      - 8082:8082
-    environment:
-      SPRING_APPLICATION_JSON: '{
-        "spring.datasource.url"  : "jdbc:mysql://oop-mysqldb:3306/oopPortfolio?useSSL=false",
-        "spring.datasource.username" : "root",
-        "spring.datasource.password" : "root",
-        "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQLDialect",
-        "spring.jpa.hibernate.ddl-auto" : "update"
-        }'
-    networks:
-      - springboot-mysql-net
-    depends_on:
-      oop-mysqldb:
-        condition: service_healthy
-
-  oop-react-frontend:
-    build: ./public/portfolio-app # Adjust the path to your React app
-    container_name: oop-react-frontend
-    ports:
-      - 3000:3000
-
-networks:
-  springboot-mysql-net:
+  # oop-springboot:
+  #   build: ./BackendServices
+  #   container_name: oop-springboot
+  #   ports:
+  #     - 8082:8082
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: "production"
+  #   depends_on:
+  #     - oop-mysqldb
