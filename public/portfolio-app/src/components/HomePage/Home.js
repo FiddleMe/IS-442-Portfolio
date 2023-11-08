@@ -188,9 +188,9 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       if (currentPortfolio) {
-        await new Promise((resolve) => setTimeout(resolve, 400));
         await fetchGeoData();
         await fetchIndData();
+        await new Promise((resolve) => setTimeout(resolve, 800));
         await fetchHistoricalData();
       }
     };
@@ -235,7 +235,6 @@ function Home() {
       name: key,
     }));
   }
-  console.log(data)
 
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>

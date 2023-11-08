@@ -38,7 +38,7 @@ function Portfolios({ PortfolioData }) {
                     style={{ cursor: 'pointer' }}
                   >
                     <td>{Portfolio.name}</td>
-                    <td>${Portfolio.capitalAmount.toLocaleString()}</td>
+                    <td>${Portfolio.balance.toLocaleString()}</td>
                     <td className={Portfolio.change < 0 ? 'text-danger' : 'text-success'}>
                       {((Portfolio.change / Portfolio.capitalAmount) * 100).toFixed(2)}%
                     </td>
