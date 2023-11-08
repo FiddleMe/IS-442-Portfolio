@@ -20,6 +20,7 @@ function filterLatestStocks(data) {
         price: stock.price,
         date: stock.date,
         parseDate: parse(stock.date, 'yyyy-MM-dd', new Date()),
+        industrySector: stock.industrySector,
       };
     }
   });
@@ -34,72 +35,8 @@ function transformData(data) {
     price: stock.price,
     date: stock.date,
     parseDate: parse(stock.date, 'yyyy-MM-dd', new Date()),
+    industrySector: stock.industrySector,
   }));
-}
-
-function fillMissingStockData(data) {
-  // Sort the dataset by 'date' and then by 'stockId'
-  data.sort((a, b) => {
-    const dateComparison = new Date(a.date) - new Date(b.date);
-    if (dateComparison === 0) {
-      return a.stockId.localeCompare(b.stockId);
-    }
-    return dateComparison;
-  });
-
-  const filledData = [];
-
-  const stockDataMap = new Map();
-
-  for (const item of data) {
-    if (!stockDataMap.has(item.date)) {
-      stockDataMap.set(item.date, new Map());
-    }
-
-    stockDataMap.get(item.date).set(item.stockId, item);
-  }
-
-  let previousData = null;
-
-  for (const item of data) {
-    if (previousData) {
-      const currentDate = new Date(item.date);
-      const previousDate = new Date(previousData.date);
-
-      // Check if there are missing dates between the current and previous date
-      while (currentDate - previousDate > 24 * 60 * 60 * 1000) {
-        previousDate.setDate(previousDate.getDate() + 1);
-
-        const missingDate = previousDate.toISOString().slice(0, 10);
-
-        // Create new items for all stocks that are missing for the date
-        if (!stockDataMap.has(missingDate)) {
-          stockDataMap.set(missingDate, new Map());
-        }
-
-        for (const [stockId, stockData] of stockDataMap.get(previousData.date)) {
-          if (!stockDataMap.get(missingDate).has(stockId)) {
-            // Create a new item using the previous stock data with the missing date
-            const missingData = {
-              ...stockData,
-              date: missingDate,
-              parseDate: new Date(missingDate).toDateString(),
-            };
-            stockDataMap.get(missingDate).set(stockId, missingData);
-          }
-        }
-      }
-    }
-
-    previousData = item;
-  }
-
-  // Flatten the map to get the filled data
-  for (const stockMap of stockDataMap.values()) {
-    filledData.push(...stockMap.values());
-  }
-
-  return filledData;
 }
 
 function AddStocks({ selectedStocks, setSelectedStocks }) {
@@ -115,9 +52,7 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
     async function fetchStocks() {
       try {
         const data = await getAllStocks();
-        const filledStocks = fillMissingStockData(data);
-        const transformStocks = transformData(filledStocks);
-
+        const transformStocks = transformData(data);
         setTotalStocks(transformStocks);
         const availableDatesSet = new Set(
           transformStocks.map((stock) => stock.parseDate.toISOString())
@@ -129,9 +64,7 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
         const maxDate = availableDates[availableDates.length - 1];
         setMinDate(minDate);
         setMaxDate(maxDate);
-
         const filteredStocks = filterLatestStocks(data);
-        console.log(filteredStocks);
         setStocks(filteredStocks);
         const initialSelectedDates = filteredStocks.map((stock) => stock.parseDate);
         setSelectedDates(initialSelectedDates);
