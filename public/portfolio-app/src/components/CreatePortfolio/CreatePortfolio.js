@@ -11,6 +11,7 @@ import { createPortfolioStocks } from '../../api/PortfolioStocks/createPortfolio
 import { updatePortfolio } from '../../api/Portfolio/updatePortfolio';
 import { postSegment } from '../../api/Segment/postSegment';
 import { postEmail } from '../../api/Email/postEmail';
+import DonutChart from '../HomePage/DonutChart';
 
 function CreatePortfolio() {
   const userDetails =
@@ -29,6 +30,7 @@ function CreatePortfolio() {
   const [description, setDescription] = useState('New Description');
   const [capitalAmount, setCapitalAmount] = useState(0);
   const [selectedStocks, setSelectedStocks] = useState([]);
+  const [sectorData, setSectorData] = useState([]);
 
   useEffect(() => {
     const checkSessionStorage = () => {
@@ -168,6 +170,11 @@ function CreatePortfolio() {
     }
   };
 
+
+  function handleSectorValuesChange(sectorValues) {
+    //from add stocks
+    setSectorData(sectorValues);
+  }
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
       <div className="row">
@@ -219,9 +226,18 @@ function CreatePortfolio() {
                 onChange={handleDescriptionChange} // Handle change using the change handler
               ></textarea>
             </div>
+            {sectorData.length > 0 ? (
+              <DonutChart title={'Industry Distribution'} data={sectorData} />
+            ) : (
+              <p className="fs-5 fw-normal text-dark text-center">Add Stocks to Get Industry Distribution</p> // Replace this with what you want to display when there's no data
+            )}
             <br />
 
-            <AddStocks selectedStocks={selectedStocks} setSelectedStocks={setSelectedStocks} />
+            <AddStocks
+              selectedStocks={selectedStocks}
+              setSelectedStocks={setSelectedStocks}
+              onSectorValuesChange={handleSectorValuesChange}
+            />
             <button className="btn btn-primary my-3" onClick={handleCreatePortfolio}>
               Create Portfolio
             </button>

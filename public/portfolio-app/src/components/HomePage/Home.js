@@ -230,6 +230,7 @@ function Home() {
       name: key,
     }));
   }
+  console.log(data)
 
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
