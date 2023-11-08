@@ -24,7 +24,7 @@ SETUP FRONTEND
 1. `cd public/portfolio-app`
 2. `npm install`
 
-To start up React backend
+To start up React frontend
 1. `cd public/portfolio-app`
 2. `npm start`
 3. go to http://localhost:3000/ on browser
