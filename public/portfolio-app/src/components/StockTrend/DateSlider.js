@@ -11,7 +11,7 @@ export default function DateRangeSlider({ minYear, maxYear, value, onChange }) {
     return (
         <Box >
             <Typography id="input-slider" gutterBottom>
-                Please Select a Date Range
+                Please Select a Year Range
             </Typography>
             <Slider
                 value={value}
