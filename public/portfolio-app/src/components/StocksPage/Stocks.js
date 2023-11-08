@@ -41,11 +41,12 @@ function SearchStock() {
   }, []);
 
 
+  // fetch stock price (DAILY)
   const fetchStockData = async () => {
     if (searchTerm) {
       setLoading(true);
       const apiKey = 'VFVETDZPXW4IOBLD';
-      const apiUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${searchTerm}&interval=5min&apikey=${apiKey}`;
+      const apiUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${searchTerm}&apikey=${apiKey}`;
 
       try {
         const response = await fetch(apiUrl);
@@ -64,6 +65,30 @@ function SearchStock() {
   useEffect(() => {
     fetchStockData();
   }, [searchTerm]);
+
+
+  // fetch stock price in the past year
+  // const [percentageChange, setPercentageChange] = useState(null);
+
+  // const calculatePercentageChange = () => {
+  //   if (stockData && stockData['Time Series (Daily)']) {
+  //     const dailyData = stockData['Time Series (Daily)'];
+  //     const dates = Object.keys(dailyData);
+  //     const latestDate = dates[0];
+  //     const oneYearAgo = dates[251]; // Approximately one year ago
+
+  //     const latestPrice = parseFloat(dailyData[latestDate]['4. close']);
+  //     const oneYearAgoPrice = parseFloat(dailyData[oneYearAgo]['4. close']);
+
+  //     const change = latestPrice - oneYearAgoPrice;
+  //     const percentageChange = (change / oneYearAgoPrice) * 100;
+  //     setPercentageChange(percentageChange.toFixed(2));
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   calculatePercentageChange();
+  // }, [stockData]);
 
 
  
@@ -103,12 +128,16 @@ function SearchStock() {
 
             {loading && <p>Loading...</p>}
 
-            {stockData && stockData['Time Series (5min)'] && (
+            {stockData && stockData['Time Series (Daily)'] && (
               <div>
                 <p>Stock Name: {searchTerm}</p>
-                <p>Stock Price: {parseFloat(stockData['Time Series (5min)'][Object.keys(stockData['Time Series (5min)'])[0]]['1. open']).toFixed(2)}</p>
+                <p>
+                  Stock Price: $
+                  {parseFloat(stockData['Time Series (Daily)'][Object.keys(stockData['Time Series (Daily)'])[0]]['5. adjusted close']).toFixed(2)}
+                </p>
               </div>
             )}
+
           </div>
         </div>
       </div>
