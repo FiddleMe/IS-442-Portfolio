@@ -88,7 +88,7 @@ public class PortfolioSectorService {
 
         BigDecimal sectorPercentage;
         try {
-            sectorPercentage = sectorPrice.divide(totalPrice, 2, RoundingMode.HALF_UP)
+            sectorPercentage = sectorPrice.divide(totalPrice, 4, RoundingMode.HALF_UP)
                 .multiply(new BigDecimal("100"));
         } catch (ArithmeticException e) {
             throw new PortfolioSectorException("Error while calculating sector percentage", e);
