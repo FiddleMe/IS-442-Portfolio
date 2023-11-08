@@ -29,7 +29,7 @@ function StockTrend() {
     const userId = userDetails !== null ? userDetails.userId : '';
 
     const navigate = useNavigate();
-    const currentPage = 'Stocks';
+    const currentPage = 'Stock Trend';
     const [selectedStock, setSelectedStock] = useState('AAPL');
 
     const [stockData, setStockData] = useState([]);
@@ -39,6 +39,19 @@ function StockTrend() {
         console.log('Data from child:', data);
         navigate('/home?selectedPortfolio=' + data);
     };
+    
+    // Prevent user for entering the page with going through login
+    useEffect(() => {
+        const checkSessionStorage = () => {
+          if (sessionStorage.getItem('userData') === null) {
+            navigate('/');
+            return;
+          }
+        };
+    
+        checkSessionStorage();
+      }, []);
+
     const [portfolioIds, setPortfolioIds] = useState([]);
 
     const fetchPortfolioData = async () => {

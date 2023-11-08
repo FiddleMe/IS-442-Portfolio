@@ -74,7 +74,7 @@ function Sidebar(props) {
     { icon: GoStack, title: 'Portfolios', subpages: subPages , path: '/home'},
     { icon: MdCreateNewFolder, title: 'Create Portfolio', subpages: [], path: '/create-portfolio'},
     { icon: GoGraph, title: 'Stocks', subpages: [], path: '/stocks',},
-    { icon: FaRegChartBar, title: 'StockTrend', subpages: [], path: '/stock-trend' }, // New link for StockTrend
+    { icon: FaRegChartBar, title: 'Stock Trend', subpages: [], path: '/stock-trend' }, // New link for StockTrend
     { icon: FaSignOutAlt, title: 'Logout', subpages: [], path: '/login' },
   ];
 

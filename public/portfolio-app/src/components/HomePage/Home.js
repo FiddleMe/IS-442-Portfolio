@@ -101,7 +101,8 @@ function Home() {
   const [currentGeoData, setCurrentGeoData] = useState([]);
   const [currentIndData, setCurrentIndData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  
+// Prevent user for entering the page with going through login
   useEffect(() => {
     const checkSessionStorage = () => {
       if (sessionStorage.getItem('userData') === null) {

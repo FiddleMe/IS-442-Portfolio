@@ -27,6 +27,18 @@ function SearchStock() {
     console.log('Data from child:', data);
     navigate('/home?selectedPortfolio=' + data);
   };
+  
+  // Prevent user for entering the page with going through login
+  useEffect(() => {
+    const checkSessionStorage = () => {
+      if (sessionStorage.getItem('userData') === null) {
+        navigate('/');
+        return;
+      }
+    };
+
+    checkSessionStorage();
+  }, []);
 
 
   const fetchStockData = async () => {
