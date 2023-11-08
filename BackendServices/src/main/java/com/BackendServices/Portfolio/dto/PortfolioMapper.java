@@ -12,7 +12,7 @@ public class PortfolioMapper {
         dto.setDescription(portfolio.getDescription());
         dto.setCapitalAmount(portfolio.getCapitalAmount());
         dto.setUserId(portfolio.getUserId());
-        dto.setWallet(portfolio.getWallet());
+        dto.setBalance(portfolio.getBalance());
         return dto;
     }
   

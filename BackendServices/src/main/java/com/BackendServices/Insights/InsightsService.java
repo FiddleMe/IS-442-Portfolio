@@ -108,7 +108,7 @@ public class InsightsService {
 
         Map<String, BigDecimal> priceDistribution = new HashMap<>();
         PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
-        BigDecimal totalCapital = portfolio.getCapitalAmount();
+        BigDecimal totalCapital = portfolio.getBalance();
 
         for (PortfolioStocks portfolioStock : portfolioStocksList) {
 
@@ -227,7 +227,7 @@ public class InsightsService {
                     BigDecimal lastestPrice = portfolioStocksService.getPurchasePrice(stockId, date);
                     Integer quantity = portfolioStock.getQuantity();                    
                     BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity))
-                            .add(portfolio.getCapitalAmount());
+                            .add(portfolio.getBalance());
                     totalValue = totalValue.add(totalPrice);
                 } catch (Exception e) {
                     // e.printStackTrace();
