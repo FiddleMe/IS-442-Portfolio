@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class PortfolioSectorService {
     private final PortfolioSectorRepository portfolioSectorRepository;
 
+   
     @Autowired
     public PortfolioSectorService(PortfolioSectorRepository portfolioSectorRepository) {
         this.portfolioSectorRepository = portfolioSectorRepository;

@@ -53,7 +53,7 @@ function AddStockPopUp({ portfolio }) {
           }
         }
 
-        if (responseArr.length == transformed.length) {
+        if (responseArr.length === transformed.length) {
           const data = { wallet: totalBalance };
           const updatedPortfolio = await updatePortfolio(portfolio.portfolioId, data);
           if (updatedPortfolio) {

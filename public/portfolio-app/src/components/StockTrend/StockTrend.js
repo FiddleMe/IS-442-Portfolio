@@ -7,6 +7,7 @@ import Header from '../Header';
 import { useNavigate } from 'react-router-dom';
 import StockChart from './StockChart';
 import './StockTrend.css'
+import Spinner from "../Spinner";
 
 const positiveColor = {
     color: 'green',
@@ -207,7 +208,7 @@ function StockTrend() {
                             </div>
                         </div>
                         {loading ? (
-                            <p>Loading...</p>
+                            <Spinner />
                         ) : stockData.length > 0 ? (
                             <div>
                                 <div className='chart-container text-center mx-auto mb-5'>

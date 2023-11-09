@@ -75,7 +75,7 @@ const PortfoliosView = ({ portfolioData, currentPortfolio, handleRowClick }) => 
                   style={{ cursor: 'pointer' }}
                 >
                   <td>{Portfolio.name}</td>
-                  <td>${Portfolio.capitalAmount.toLocaleString()}</td>
+                  <td>${Portfolio.profitInsights.totalPortfolioValue.toFixed(2)}</td>
                   <td
                     className={
                       Portfolio.profitInsights
@@ -102,12 +102,10 @@ const PortfoliosView = ({ portfolioData, currentPortfolio, handleRowClick }) => 
         <div className="bg-white rounded-3 p-3 col-12 col-md-6">
           <span className="fw-bold">{currentPortfolio.name} </span>
           <div>
-            <span className="text-secondary">
-              ${currentPortfolio.capitalAmount.toLocaleString()}
-            </span>
+            <span className="text-secondary">${currentPortfolio.capitalAmount.toFixed(2)}</span>
             <div>
               <h3 className="d-inline fw-bolder">
-                ${currentPortfolio.capitalAmount.toLocaleString()}
+                ${currentPortfolio.profitInsights.totalPortfolioValue.toFixed(2)}
               </h3>
               <div
                 className={`d-inline fw-bolder mx-2 ${
@@ -171,19 +169,19 @@ const PortfoliosView = ({ portfolioData, currentPortfolio, handleRowClick }) => 
                     <td>{stock.qty}</td>
                     <td
                       className={`${
-                        stock.priceDifference.toFixed(2) === 0.0
+                        stock.priceDifference.toFixed(2) === '0.00'
                           ? 'text-normal'
                           : stock.priceDifference.toFixed(2) < 0
                           ? 'text-danger'
                           : 'text-success'
                       }`}
                     >
-                      {stock.priceDifference.toFixed(2) > 0 ? '+ ' : '- '}
+                      {stock.priceDifference.toFixed(2) > 0 ? '+ ' : ' '}
                       {stock.priceDifference.toFixed(2)}
                     </td>
                     <td
                       className={`${
-                        (stock.profitLossPercentage * 100).toFixed(2) === 0.0
+                        (stock.profitLossPercentage * 100).toFixed(2) === '0.00'
                           ? 'text-normal'
                           : (stock.profitLossPercentage * 100).toFixed(2) < 0
                           ? 'text-danger'
