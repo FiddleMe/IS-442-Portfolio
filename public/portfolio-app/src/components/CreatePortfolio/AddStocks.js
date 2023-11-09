@@ -20,6 +20,7 @@ function filterLatestStocks(data) {
         price: stock.price,
         date: stock.date,
         parseDate: parse(stock.date, 'yyyy-MM-dd', new Date()),
+        industrySector: stock.industrySector,
       };
     }
   });
@@ -34,6 +35,7 @@ function transformData(data) {
     price: stock.price,
     date: stock.date,
     parseDate: parse(stock.date, 'yyyy-MM-dd', new Date()),
+    industrySector: stock.industrySector,
   }));
 }
 
@@ -102,7 +104,7 @@ function fillMissingStockData(data) {
   return filledData;
 }
 
-function AddStocks({ selectedStocks, setSelectedStocks }) {
+function AddStocks({ selectedStocks, setSelectedStocks, onSectorValuesChange }) {
   const [minDate, setMinDate] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
   const [totalStock, setTotalStocks] = useState(null);
@@ -131,7 +133,6 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
         setMaxDate(maxDate);
 
         const filteredStocks = filterLatestStocks(data);
-        console.log(filteredStocks);
         setStocks(filteredStocks);
         const initialSelectedDates = filteredStocks.map((stock) => stock.parseDate);
         setSelectedDates(initialSelectedDates);
@@ -177,11 +178,14 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
   };
 
   const handleAddStock = (stock) => {
-    const existingStock = selectedStocks.find((s) => s.name === stock.name);
+    const existingStock = selectedStocks.find(
+      (s) => s.name === stock.name && s.date === stock.date
+    );
+
     if (existingStock) {
-      const newSelectedStocks = [...selectedStocks];
-      const existingStockIndex = newSelectedStocks.indexOf(existingStock);
-      newSelectedStocks[existingStockIndex].quantity += 1;
+      const newSelectedStocks = selectedStocks.map((s) =>
+        s.name === stock.name && s.date === stock.date ? { ...s, quantity: s.quantity + 1 } : s
+      );
       setSelectedStocks(newSelectedStocks);
     } else {
       setSelectedStocks([...selectedStocks, { ...stock, quantity: 1 }]);
@@ -198,10 +202,46 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
     stock.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  function calculateSectorValues(stocks) {
+    const sectorValues = {};
+
+    let totalValue = 0;
+    stocks.forEach((stock) => {
+      totalValue += stock.price * stock.quantity;
+    });
+
+    stocks.forEach((stock) => {
+      const { industrySector, price, quantity } = stock;
+
+      if (!sectorValues[industrySector]) {
+        sectorValues[industrySector] = 0;
+      }
+
+      sectorValues[industrySector] += ((price * quantity) / totalValue) * 100;
+    });
+
+    return Object.keys(sectorValues).map((sector) => ({
+      value: sectorValues[sector],
+      label: sector.charAt(0).toUpperCase() + sector.slice(1).toLowerCase(),
+    }));
+  }
+
+  // Add this in your AddStocks component
+
+  // Calculate sector values
+  useEffect(() => {
+    const sectorValues = calculateSectorValues(selectedStocks);
+
+    // Pass the sector values to the parent component
+    if (onSectorValuesChange) {
+      onSectorValuesChange(sectorValues);
+    }
+  }, [selectedStocks]);
+
   return (
     <div className="">
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-lg-6 col-md-12 col-sm-12">
           <div className="card p-3 h-100">
             <h2>Add Stocks</h2>
             <input
@@ -263,7 +303,7 @@ function AddStocks({ selectedStocks, setSelectedStocks }) {
             </div>
           </div>
         </div>
-        <div className="col-md-6">
+        <div className="col-lg-6 col-md-12 col-sm-12">
           <div className="card p-3 h-100">
             <h2>Cart</h2>
             <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>

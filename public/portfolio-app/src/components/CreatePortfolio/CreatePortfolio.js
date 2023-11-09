@@ -9,6 +9,9 @@ import { createPortfolio } from '../../api/Portfolio/createPortfolioApi';
 import { transformPortfolioStocks } from '../../utils/transformPortfolioStocks';
 import { createPortfolioStocks } from '../../api/PortfolioStocks/createPortfolioStocks';
 import { updatePortfolio } from '../../api/Portfolio/updatePortfolio';
+import { postSegment } from '../../api/Segment/postSegment';
+import { postEmail } from '../../api/Email/postEmail';
+import DonutChart from '../HomePage/DonutChart';
 
 function CreatePortfolio() {
   const userDetails =
@@ -27,6 +30,7 @@ function CreatePortfolio() {
   const [description, setDescription] = useState('New Description');
   const [capitalAmount, setCapitalAmount] = useState(0);
   const [selectedStocks, setSelectedStocks] = useState([]);
+  const [sectorData, setSectorData] = useState([]);
 
   useEffect(() => {
     const checkSessionStorage = () => {
@@ -56,19 +60,12 @@ function CreatePortfolio() {
 
   const handleCreatePortfolio = async () => {
     try {
-      const data = {
-        name: String(portfolioName),
-        description: String(description),
-        capitalAmount: parseFloat(capitalAmount),
-        userId: String(userDetails.userId),
-        wallet: parseFloat(capitalAmount),
-      };
-
       let totalPrice = 0;
       for (let i = 0; i < selectedStocks.length; i++) {
         const qty = selectedStocks[i].quantity;
         const price = selectedStocks[i].price;
         totalPrice += price * qty;
+        console.log('PRICE', totalPrice);
       }
 
       const totalBalance = capitalAmount - totalPrice;
@@ -81,10 +78,17 @@ function CreatePortfolio() {
           footer: '',
         });
       } else {
+        const data = {
+          name: String(portfolioName),
+          description: String(description),
+          capitalAmount: parseFloat(capitalAmount),
+          userId: String(userDetails.userId),
+          balance: totalBalance,
+        };
         const response = await createPortfolio(data);
+        var postedSegment = null;
 
         if (response) {
-          console.log(response);
           Swal.fire({
             icon: 'success',
             title: 'Success!',
@@ -93,41 +97,54 @@ function CreatePortfolio() {
             showConfirmButton: true,
           }).then(async (result) => {
             if (result.isConfirmed) {
-              const transformed = transformPortfolioStocks(selectedStocks, response.portfolioId);
-              const responseArr = [];
-
-              for (let i = 0; i < transformed.length; i++) {
-                const stockResponse = await createPortfolioStocks(transformed[i]);
-                if (stockResponse) {
-                  responseArr.push(stockResponse);
-                }
+              try {
+                postedSegment = postSegment(response.portfolioId, selectedStocks);
+              } catch (error) {
+                console.log(error);
               }
+              if (postedSegment) {
+                const transformed = transformPortfolioStocks(selectedStocks, response.portfolioId);
+                const responseArr = [];
+                for (let i = 0; i < transformed.length; i++) {
+                  const stockResponse = await createPortfolioStocks(transformed[i]);
+                  if (stockResponse) {
+                    responseArr.push(stockResponse);
+                  }
+                }
 
-              if (responseArr.length === transformed.length) {
-                const updateData = { wallet: totalBalance };
-                const updatedPortfolio = await updatePortfolio(response.portfolioId, updateData);
+                if (responseArr.length === transformed.length) {
+                  const updateData = { balance: totalBalance };
+                  const updatedPortfolio = await updatePortfolio(response.portfolioId, updateData);
 
-                if (updatedPortfolio) {
-                  Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Stocks added successfully',
-                    footer: '',
-                    showConfirmButton: true,
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      navigate('/home');
-                    }
-                  });
-                } else {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Failed to add stocks',
-                    footer: 'Try Again!',
-                    showConfirmButton: true,
-                  });
-                  navigate('/home');
+                  if (updatedPortfolio) {
+                    const emailBody = {
+                      recipient: email,
+                      subject: 'Created Portfolio successfully!',
+                      msg: `Dear ${name}, your portfolio of portfolio ID ${response.portfolioId} has been created!`,
+                    };
+                    postEmail(emailBody);
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'Success!',
+                      text: 'Stocks added successfully',
+                      footer: '',
+                      showConfirmButton: true,
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        navigate('/home');
+                      }
+                    });
+                  } else {
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Oops...',
+                      text: 'Failed to add stocks',
+                      footer: 'Try Again!',
+                      showConfirmButton: true,
+                    });
+
+                    navigate('/home');
+                  }
                 }
               }
             }
@@ -153,6 +170,11 @@ function CreatePortfolio() {
     }
   };
 
+
+  function handleSectorValuesChange(sectorValues) {
+    //from add stocks
+    setSectorData(sectorValues);
+  }
   return (
     <div className="container-fluid" style={{ backgroundColor: '#F8F9FD' }}>
       <div className="row">
@@ -204,9 +226,18 @@ function CreatePortfolio() {
                 onChange={handleDescriptionChange} // Handle change using the change handler
               ></textarea>
             </div>
+            {sectorData.length > 0 ? (
+              <DonutChart title={'Industry Distribution'} data={sectorData} />
+            ) : (
+              <p className="fs-5 fw-normal text-dark text-center">Add Stocks to Get Industry Distribution</p> // Replace this with what you want to display when there's no data
+            )}
             <br />
 
-            <AddStocks selectedStocks={selectedStocks} setSelectedStocks={setSelectedStocks} />
+            <AddStocks
+              selectedStocks={selectedStocks}
+              setSelectedStocks={setSelectedStocks}
+              onSectorValuesChange={handleSectorValuesChange}
+            />
             <button className="btn btn-primary my-3" onClick={handleCreatePortfolio}>
               Create Portfolio
             </button>

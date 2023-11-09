@@ -5,10 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.BackendServices.PortfolioSector.exception.PortfolioSectorException;
-
+import com.BackendServices.common.ApiResponse;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.List;
+import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/portfoliosectors")
 public class PortfolioSectorController {
 
@@ -23,19 +26,34 @@ public class PortfolioSectorController {
     public ResponseEntity<?> getAllPortfolioSectors() {
         try {
             List<PortfolioSector> portfolioSectors = portfolioSectorService.getAllPortfolioSectors();
-            return new ResponseEntity<>(portfolioSectors, HttpStatus.OK);
+            if (!portfolioSectors.isEmpty()) {
+                return ResponseEntity
+                        .ok(new ApiResponse(HttpStatus.OK.value(), portfolioSectors, "Portfolio sectors found"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "No portfolio sectors found"));
+            }
         } catch (PortfolioSectorException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, e.getMessage()));
         }
     }
 
     @GetMapping("/{portfolioId}")
     public ResponseEntity<?> getPortfolioSectorsByPortfolioId(@PathVariable String portfolioId) {
         try {
-            List<PortfolioSector> portfolioSectors = portfolioSectorService.getPortfolioSectorsByPortfolioId(portfolioId);
-            return new ResponseEntity<>(portfolioSectors, HttpStatus.OK);
+            List<PortfolioSector> portfolioSectors = portfolioSectorService
+                    .getPortfolioSectorsByPortfolioId(portfolioId);
+            if (!portfolioSectors.isEmpty()) {
+                return ResponseEntity
+                        .ok(new ApiResponse(HttpStatus.OK.value(), portfolioSectors, "Portfolio sectors found"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "No portfolio sectors found"));
+            }
         } catch (PortfolioSectorException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, e.getMessage()));
         }
     }
 
@@ -43,19 +61,35 @@ public class PortfolioSectorController {
     public ResponseEntity<?> getPortfolioSectorById(@PathVariable String portfolioId, @PathVariable String sector) {
         try {
             PortfolioSector portfolioSector = portfolioSectorService.getPortfolioSectorById(portfolioId, sector);
-            return new ResponseEntity<>(portfolioSector, HttpStatus.OK);
+            if (portfolioSector != null) {
+                return ResponseEntity
+                        .ok(new ApiResponse(HttpStatus.OK.value(), portfolioSector, "Portfolio sector found"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "Portfolio sector not found"));
+            }
         } catch (PortfolioSectorException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, e.getMessage()));
         }
     }
 
-    @PostMapping
-    public ResponseEntity<?> createPortfolioSector(@RequestBody PortfolioSector portfolioSector) {
+    @PostMapping("/{portfolioId}")
+    public ResponseEntity<?> createPortfolioSectors(@PathVariable String portfolioId,
+            @RequestBody List<Map<String, Object>> stockRequests) {
         try {
-            PortfolioSector createdPortfolioSector = portfolioSectorService.createPortfolioSector(portfolioSector);
-            return new ResponseEntity<>(createdPortfolioSector, HttpStatus.CREATED);
+            List<PortfolioSector> portfolioSectors = portfolioSectorService.createPortfolioSectors(portfolioId,
+                    stockRequests);
+            if (!portfolioSectors.isEmpty()) {
+                return ResponseEntity.ok(new ApiResponse(HttpStatus.OK.value(), portfolioSectors,
+                        "Portfolio sectors created successfully"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse(HttpStatus.NOT_FOUND.value(), null, "No portfolio sectors created"));
+            }
         } catch (PortfolioSectorException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(HttpStatus.BAD_REQUEST.value(), null, e.getMessage()));
         }
     }
 }

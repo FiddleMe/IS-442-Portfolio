@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import AddStockPopUp from '../AddStock/AddStockPopUp';
 import { useLocation } from 'react-router-dom';
 import PortfoliosView from './PortfoliosView';
-
+import Spinner from "../Spinner";
 const apiUrl = 'http://localhost:8082/api/portfolio';
 
 let data = [
@@ -35,6 +35,12 @@ let geographicalData = [
 ];
 
 function Home() {
+  const [portfolioData, setPortfolioData] = useState(null);
+  const [currentPortfolio, setCurrentPortfolio] = useState(null);
+  const [currentHistData, setCurrentHistData] = useState([]);
+  const [currentGeoData, setCurrentGeoData] = useState([]);
+  const [currentIndData, setCurrentIndData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -95,14 +101,8 @@ function Home() {
       console.error('Error fetching historical data:', error);
     }
   };
-  const [portfolioData, setPortfolioData] = useState(null);
-  const [currentPortfolio, setCurrentPortfolio] = useState(null);
-  const [currentHistData, setCurrentHistData] = useState([]);
-  const [currentGeoData, setCurrentGeoData] = useState([]);
-  const [currentIndData, setCurrentIndData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  
-// Prevent user for entering the page with going through login
+
+  // Prevent user for entering the page with going through login
   useEffect(() => {
     const checkSessionStorage = () => {
       if (sessionStorage.getItem('userData') === null) {
@@ -151,7 +151,7 @@ function Home() {
           updatedPortfolios.push(updatedPortfolio);
 
           if (i === 0) {
-            await setCurrentPortfolio(updatedPortfolio);
+            setCurrentPortfolio(updatedPortfolio);
           }
         }
 
@@ -186,11 +186,16 @@ function Home() {
   }, [loading, portfolioData, location.search]);
 
   useEffect(() => {
-    if (currentPortfolio && currentPortfolio.portfolioId) {
-      fetchHistoricalData();
-      fetchGeoData();
-      fetchIndData();
-    }
+    const fetchData = async () => {
+      if (currentPortfolio) {
+        await fetchGeoData();
+        await fetchIndData();
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        await fetchHistoricalData();
+      }
+    };
+
+    fetchData();
   }, [currentPortfolio]);
 
   const handleDataFromSidebar = (data) => {
@@ -238,53 +243,67 @@ function Home() {
 
         <div className="col-md p-0">
           <Header name={name} email={email} />
-
-          {currentPortfolio !== null && currentPortfolio.stockInsights.length !== 0 ? (
-            <div className="m-2 d-flex flex-wrap gap-4">
-              {currentHistData.length !== 0 &&
-              !isPromise(currentHistData) &&
-              Object.keys(currentHistData).length !== 0 ? (
-                <HistoricalChart
-                  title={'Performance'}
-                  historicalData={transformHistoricalData(currentHistData)}
-                  fetchHistoricalData={fetchHistoricalData}
-                  setCurrentHistData={setCurrentHistData}
-                />
+          {loading ? <Spinner /> : <>
+            <div className="container mt-5">
+              {currentPortfolio !== null && currentPortfolio.stockInsights.length !== 0 ? (
+                <>
+                  <div className="row mt-2 me-3">
+                    <div className="bg-white rounded-3 col-lg-12 col-md-12 col-sm-12 d-flex justify-content-center ms-3 w-100">
+                      {currentHistData.length !== 0 &&
+                        !isPromise(currentHistData) &&
+                        Object.keys(currentHistData).length !== 0 ? (
+                        <HistoricalChart
+                          title={'Performance'}
+                          historicalData={transformHistoricalData(currentHistData)}
+                          fetchHistoricalData={fetchHistoricalData}
+                          setCurrentHistData={setCurrentHistData}
+                        />
+                      ) : (
+                        <HistoricalChart title={'Performance'} historicalData={historicalData} />
+                      )}
+                    </div>
+                  </div>
+                  <div className="row mt-3">
+                    <div className="col-lg-6 col-md-6 col-sm-12">
+                      {currentIndData.length !== 0 && !isPromise(currentIndData) ? (
+                        <DonutChart
+                          title={'Industrial Distribution'}
+                          data={transformIndustrialData(currentIndData)}
+                        />
+                      ) : (
+                        <DonutChart title={'Industrial Distribution'} data={data} />
+                      )}
+                    </div>
+                    <div className="col-lg-6 col-md-6 col-sm-12">
+                      {currentGeoData.length !== 0 && !isPromise(currentGeoData) ? (
+                        <DonutChart
+                          title={'Geographical Distribution'}
+                          data={transformGeographicalData(currentGeoData)}
+                        />
+                      ) : (
+                        <DonutChart title={'Geographical Distribution'} data={geographicalData} />
+                      )}
+                    </div>
+                  </div>
+                </>
               ) : (
-                <HistoricalChart title={'Performance'} historicalData={historicalData} />
-              )}
-
-              {currentIndData.length !== 0 && !isPromise(currentIndData) ? (
-                <DonutChart
-                  title={'Industrial Distrubution'}
-                  data={transformIndustrialData(currentIndData)}
-                />
-              ) : (
-                <DonutChart title={'Industrial Distrubution'} data={data} />
-              )}
-
-              {currentGeoData.length !== 0 && !isPromise(currentGeoData) ? (
-                <DonutChart
-                  title={'Geographical Distrubution'}
-                  data={transformGeographicalData(currentGeoData)}
-                />
-              ) : (
-                <DonutChart title={'Geographical Distrubution'} data={geographicalData} />
+                <div className="col-12 d-flex justify-content-center align-items-center m-3 wrapper">
+                  <div className="border p-3">
+                    <p className="text-center">
+                      No stocks found in this portfolio. Please add stocks.
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
-          ) : (
-            <div className="d-flex justify-content-center align-items-center m-3 wrapper">
-              <div className="border p-3">
-                <p className="text-center">No stocks found in this portfolio. Please add stocks.</p>
-              </div>
-            </div>
-          )}
 
-          <PortfoliosView
-            portfolioData={portfolioData}
-            currentPortfolio={currentPortfolio}
-            handleRowClick={handleRowClick}
-          />
+            <PortfoliosView
+              portfolioData={portfolioData}
+              currentPortfolio={currentPortfolio}
+              handleRowClick={handleRowClick}
+            />
+          </>
+          }
         </div>
       </div>
     </div>

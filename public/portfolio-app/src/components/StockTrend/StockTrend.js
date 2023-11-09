@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
-import Typography from '@mui/material/Typography';
 import DateSlider from './DateSlider'
 import StockDropdown from './StockDropDown'; // Adjust the import path as needed
 import Sidebar from '../Sidebar';
@@ -10,6 +7,7 @@ import Header from '../Header';
 import { useNavigate } from 'react-router-dom';
 import StockChart from './StockChart';
 import './StockTrend.css'
+import Spinner from "../Spinner";
 
 const positiveColor = {
     color: 'green',
@@ -158,7 +156,6 @@ function StockTrend() {
         fetchHistoricalStockData();
     }, [selectedStock, startYear, endYear]);
 
-    const reversedStockData = stockData.slice().reverse();
     const [averagePercentageChange, setAveragePercentageChange] = useState(null);
 
     // Calculate the average percentage change from stockData
@@ -211,26 +208,13 @@ function StockTrend() {
                             </div>
                         </div>
                         {loading ? (
-                            <p>Loading...</p>
+                            <Spinner />
                         ) : stockData.length > 0 ? (
                             <div>
-                                <table className="table text-center mt-3">
-                                    <thead>
-                                        <tr>
-                                            <th>Year</th>
-                                            <th>Percentage Difference</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {stockData.map((item, index) => (
-                                            <tr key={index}>
-                                                <td>{item.year}</td>
-                                                <td style={item.percentageDifference >= 0 ? positiveColor : negativeColor} >{item.percentageDifference}%</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <div>
+                                <div className='chart-container text-center mx-auto mb-5'>
+                                    <StockChart data={stockData} />
+                                </div>
+                                <div className='text-center'>
                                     {averagePercentageChange !== null && thisYearPercentageDifference !== null && (
                                         <p>
                                             The average % change from {startYear} to {endYear} is
@@ -249,12 +233,33 @@ function StockTrend() {
                                             </span>
                                             than the average.
                                         </p>
-
                                     )}
+                                    <p>
+                                    If you had bought {selectedStock} on {startYear}, after {endYear - startYear} years,
+                                    you would have gained
+                                    <span style={{ color: averagePercentageChange >= 0 ? 'green' : 'red' }}>
+                                            {averagePercentageChange >= 0 ? '+' : '-'}
+                                            {Math.abs(averagePercentageChange*(endYear - startYear)).toFixed(2)}%.
+                                    </span>
+                                    </p>
                                 </div>
-                                <div className='chart-container text-center mx-auto mb-5'>
-                                    <StockChart data={stockData} />
-                                </div>
+                                <table className="table text-center mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Year</th>
+                                            <th>Percentage Difference</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {stockData.map((item, index) => (
+                                            <tr key={index}>
+                                                <td>{item.year}</td>
+                                                <td style={item.percentageDifference >= 0 ? positiveColor : negativeColor} >{item.percentageDifference}%</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
                             </div>
                         ) : (
                             <p>No data available for stock trend.</p>

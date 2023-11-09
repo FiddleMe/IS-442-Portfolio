@@ -19,6 +19,7 @@ public class EmailController {
     private EmailService emailService;
 
     @PostMapping("/sendEmail")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?>sendEmail(@RequestBody EmailDTO emailDto){
         try {
             Email email = emailMapper.convertToEntity(emailDto);

@@ -108,7 +108,7 @@ public class InsightsService {
 
         Map<String, BigDecimal> priceDistribution = new HashMap<>();
         PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
-        BigDecimal totalCapital = portfolio.getCapitalAmount();
+        BigDecimal totalCapital = portfolio.getBalance();
 
         for (PortfolioStocks portfolioStock : portfolioStocksList) {
 
@@ -168,6 +168,7 @@ public class InsightsService {
         BigDecimal totalOriginalPortfolioValue = BigDecimal.ZERO;
         BigDecimal totalProfitLoss = BigDecimal.ZERO;
         BigDecimal totalProfitLossPercentage = BigDecimal.ZERO;
+        PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
         portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
         for (PortfolioStocks portfolioStock : portfolioStocksList) {
             int quantity = portfolioStock.getQuantity();
@@ -183,6 +184,8 @@ public class InsightsService {
             BigDecimal portfolioValue = currentPrice.multiply(BigDecimal.valueOf(quantity));
             totalPortfolioValue = totalPortfolioValue.add(portfolioValue);
         }
+        totalPortfolioValue = totalPortfolioValue.add(portfolio.getBalance());
+        totalOriginalPortfolioValue = totalOriginalPortfolioValue.add(portfolio.getBalance());
 
         BigDecimal profitLossPercentage = BigDecimal.ZERO;
         if (!totalProfitLoss.equals(BigDecimal.ZERO)) {
@@ -226,8 +229,8 @@ public class InsightsService {
                     String stockId = portfolioStock.getStockId();                    
                     BigDecimal lastestPrice = portfolioStocksService.getPurchasePrice(stockId, date);
                     Integer quantity = portfolioStock.getQuantity();                    
-                    BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity))
-                            .add(portfolio.getCapitalAmount());
+                    BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity));
+                            
                     totalValue = totalValue.add(totalPrice);
                 } catch (Exception e) {
                     // e.printStackTrace();
@@ -235,6 +238,7 @@ public class InsightsService {
                 }
 
             }
+            totalValue = totalValue.add(portfolio.getBalance());
             System.out.println("date: " + date + "  totalvalue: " + totalValue);
             if (!totalValue.equals(BigDecimal.ZERO)) {
                 historicalReturns.put(date, totalValue.setScale(2, RoundingMode.HALF_UP));
@@ -243,35 +247,35 @@ public class InsightsService {
         return historicalReturns;
     }
 
-    public Map<String, String> getRedistributionData(String portfolioId) throws InsightsException {
-        Map<String, String> redistributionData = new HashMap<>();
+    public Map<String, Map<String, Object>> getRedistributionData(String portfolioId) throws InsightsException {
+        Map<String, Map<String, Object>> redistributionData = new HashMap<>();
         List<PortfolioSector> portfolioSectors = portfolioSectorService.getPortfolioSectorsByPortfolioId(portfolioId);
         Map<String, BigDecimal> currentDistribution = this.getIndustryDistribution(portfolioId);
-       
 
         for (Map.Entry<String, BigDecimal> entry : currentDistribution.entrySet()) {
             String currentSector = entry.getKey();
-            BigDecimal currentValue = entry.getValue().multiply(new BigDecimal("100"));
-            
+            BigDecimal currentValue = entry.getValue().multiply(new BigDecimal("100")).setScale(4, RoundingMode.HALF_UP);
+
             PortfolioSector initial = portfolioSectors.stream()
             .filter(ps -> ps.getSector().equals(currentSector))
             .findFirst()
             .orElse(null);
-            
-            System.out.println(portfolioSectors.get(0).getSector());
-            System.out.println(currentSector);
 
             BigDecimal initialValue = initial.getPercentage();
-            System.out.println(currentValue.toString());
-            System.out.println(initialValue.toString());
+
+            Map<String, Object> sectorData = new HashMap<>();
+            sectorData.put("initial", initialValue);
+            sectorData.put("current", currentValue);
 
             if (currentValue.compareTo(initialValue) > 0) {
-                redistributionData.put(currentSector, "sell");
+                sectorData.put("decision", "sell");
             } else if (currentValue.compareTo(initialValue) < 0) {
-                redistributionData.put(currentSector, "buy");
+                sectorData.put("decision", "buy");
             } else {
-                redistributionData.put(currentSector, "same");
+                sectorData.put("decision", "same");
             }
+
+            redistributionData.put(currentSector, sectorData);
         }
 
         return redistributionData;

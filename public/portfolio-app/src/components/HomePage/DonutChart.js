@@ -3,7 +3,8 @@ import { PieChart } from '@mui/x-charts/PieChart';
 
 function DonutChart({ title, data }) {
   return (
-    <div className="bg-white rounded-3 text-center">
+    <div className="bg-white rounded-3 text-center pt-5 " style={{ maxWidth: '100%', overflowX: 'auto' }}>
+      <div className="d-flex justify-content-center" style={{ minWidth: '300px', width: '100%', overflowX: 'auto' }}>
       <PieChart
         series={[
           {
@@ -26,7 +27,7 @@ function DonutChart({ title, data }) {
             itemGap: 6,
           },
         }}
-      />
+      /></div>
       <span className="fw-bold">{title}</span>
     </div>
   );

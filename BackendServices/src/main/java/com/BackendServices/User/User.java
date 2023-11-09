@@ -1,8 +1,13 @@
 package com.BackendServices.User;
 
+import java.util.List;
+
+import com.BackendServices.Portfolio.Portfolio;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -23,6 +28,18 @@ public class User {
 
     @Column(name = "Last_Name", length = 50, nullable = false)
     private String lastName;
+
+    @OneToMany(mappedBy = "user")
+    private List<Portfolio> portfolios;
+    
+
+    public List<Portfolio> getPortfolios() {
+        return portfolios;
+    }
+
+    public void setPortfolios(List<Portfolio> portfolios) {
+        this.portfolios = portfolios;
+    }
 
 
     // Getters and setters
