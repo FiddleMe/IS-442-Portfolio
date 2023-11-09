@@ -225,18 +225,18 @@ function Stock() {
           <Header name={name} email={email} />
 
           <div className="px-5">
-            <h2>{stockName}</h2>
+            <h2 className='pt-3'>{stockName}</h2>
             <br />
             <br />
 
-            <div className="col-md-6">
+            <div className="col-md-12">
               <div className="form-group">
                 <input
                   type="text"
                   className="form-control rounded-3"
                   id="stockName"
                   placeholder="Enter stock name"
-                  style={{ width: '200%' }}
+                  style={{ width: '100%' }}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />               

@@ -4,10 +4,14 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.BackendServices.PortfolioStock.PortfolioStocks;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -32,6 +36,10 @@ public class Stock {
 
   @Column(name = "IndustrySector")
   private String industrySector;
+
+  @ManyToOne
+  @JoinColumn(name = "StockID", referencedColumnName = "StockID", insertable = false, updatable = false)
+  private PortfolioStocks portfolioStocks;
 
   public static class StockKey implements Serializable {
     private String stockId;

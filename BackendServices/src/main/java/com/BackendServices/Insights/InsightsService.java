@@ -168,6 +168,7 @@ public class InsightsService {
         BigDecimal totalOriginalPortfolioValue = BigDecimal.ZERO;
         BigDecimal totalProfitLoss = BigDecimal.ZERO;
         BigDecimal totalProfitLossPercentage = BigDecimal.ZERO;
+        PortfolioDTO portfolio = portfolioService.getPortfolioById(portfolioId);
         portfolioStocksList = portfolioStocksService.getPortfolioStocksById(portfolioId);
         for (PortfolioStocks portfolioStock : portfolioStocksList) {
             int quantity = portfolioStock.getQuantity();
@@ -183,6 +184,8 @@ public class InsightsService {
             BigDecimal portfolioValue = currentPrice.multiply(BigDecimal.valueOf(quantity));
             totalPortfolioValue = totalPortfolioValue.add(portfolioValue);
         }
+        totalPortfolioValue = totalPortfolioValue.add(portfolio.getBalance());
+        totalOriginalPortfolioValue = totalOriginalPortfolioValue.add(portfolio.getBalance());
 
         BigDecimal profitLossPercentage = BigDecimal.ZERO;
         if (!totalProfitLoss.equals(BigDecimal.ZERO)) {
@@ -226,8 +229,8 @@ public class InsightsService {
                     String stockId = portfolioStock.getStockId();                    
                     BigDecimal lastestPrice = portfolioStocksService.getPurchasePrice(stockId, date);
                     Integer quantity = portfolioStock.getQuantity();                    
-                    BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity))
-                            .add(portfolio.getBalance());
+                    BigDecimal totalPrice = lastestPrice.multiply(BigDecimal.valueOf(quantity));
+                            
                     totalValue = totalValue.add(totalPrice);
                 } catch (Exception e) {
                     // e.printStackTrace();
@@ -235,6 +238,7 @@ public class InsightsService {
                 }
 
             }
+            totalValue = totalValue.add(portfolio.getBalance());
             System.out.println("date: " + date + "  totalvalue: " + totalValue);
             if (!totalValue.equals(BigDecimal.ZERO)) {
                 historicalReturns.put(date, totalValue.setScale(2, RoundingMode.HALF_UP));

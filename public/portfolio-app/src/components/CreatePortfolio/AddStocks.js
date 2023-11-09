@@ -178,11 +178,14 @@ function AddStocks({ selectedStocks, setSelectedStocks, onSectorValuesChange }) 
   };
 
   const handleAddStock = (stock) => {
-    const existingStock = selectedStocks.find((s) => s.name === stock.name);
+    const existingStock = selectedStocks.find(
+      (s) => s.name === stock.name && s.date === stock.date
+    );
+
     if (existingStock) {
-      const newSelectedStocks = [...selectedStocks];
-      const existingStockIndex = newSelectedStocks.indexOf(existingStock);
-      newSelectedStocks[existingStockIndex].quantity += 1;
+      const newSelectedStocks = selectedStocks.map((s) =>
+        s.name === stock.name && s.date === stock.date ? { ...s, quantity: s.quantity + 1 } : s
+      );
       setSelectedStocks(newSelectedStocks);
     } else {
       setSelectedStocks([...selectedStocks, { ...stock, quantity: 1 }]);
@@ -201,30 +204,27 @@ function AddStocks({ selectedStocks, setSelectedStocks, onSectorValuesChange }) 
 
   function calculateSectorValues(stocks) {
     const sectorValues = {};
-  
+
     let totalValue = 0;
     stocks.forEach((stock) => {
       totalValue += stock.price * stock.quantity;
     });
-  
+
     stocks.forEach((stock) => {
       const { industrySector, price, quantity } = stock;
-  
+
       if (!sectorValues[industrySector]) {
         sectorValues[industrySector] = 0;
       }
-  
-      sectorValues[industrySector] += (price * quantity / totalValue) * 100;
+
+      sectorValues[industrySector] += ((price * quantity) / totalValue) * 100;
     });
-  
+
     return Object.keys(sectorValues).map((sector) => ({
       value: sectorValues[sector],
       label: sector.charAt(0).toUpperCase() + sector.slice(1).toLowerCase(),
     }));
   }
-  
-  
-  
 
   // Add this in your AddStocks component
 
