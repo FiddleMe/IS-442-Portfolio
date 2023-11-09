@@ -49,8 +49,7 @@ public class StockCronConfiguration {
     @Scheduled(cron = "0/10 * * * * *")
     public void getStockData() {
         // Define the stock symbols you want to fetch
-        String[] stockSymbols = { "AAPL", "MSFT", "RLX" };
-
+        String[] stockSymbols = { "BABA", "ASML", "MNST", "SHEL"};
         if (runCount < 1) { // Run for 1 time
             for (String symbol : stockSymbols) {
                 String jsonString = stockCronService.getStockDataJson(symbol); // Replace with your method to fetch JSON
@@ -64,9 +63,11 @@ public class StockCronConfiguration {
 
                     stockService.createStocks(filledData);
                     System.out.println("done");
+                   
 
                 }
             }
+            runCount++;
         }
 
         // Process the stock data as needed
@@ -89,7 +90,7 @@ public class StockCronConfiguration {
         // }
         // }
         // }
-        runCount++;
+     
         // for (Map.Entry<String, String> entry : stockDataMap.entrySet()) {
         // String symbol = entry.getKey();
         // String jsonString = entry.getValue();
