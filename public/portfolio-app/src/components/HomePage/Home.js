@@ -46,7 +46,7 @@ function Home() {
 
   const handleRowClick = (portfolio) => {
     setCurrentPortfolio(portfolio);
-    console.log(portfolio);
+    // console.log(portfolio);
     navigate('/home', { replace: true });
   };
   const fetchHistoricalData = async (interval = 'daily') => {
@@ -167,8 +167,8 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    console.log('Portfolio data updated:', portfolioData);
-    console.log('Current portfolio updated:', currentPortfolio);
+    // console.log('Portfolio data updated:', portfolioData);
+    // console.log('Current portfolio updated:', currentPortfolio);
   }, [portfolioData, currentPortfolio]);
 
   useEffect(() => {
@@ -177,10 +177,10 @@ function Home() {
       const searchParams = new URLSearchParams(location.search);
       const selectedPortfolio = searchParams.get('selectedPortfolio');
       if (selectedPortfolio) {
-        console.log(selectedPortfolio);
+        // console.log(selectedPortfolio);
         const portfolio = portfolioData.find((item) => item.name === selectedPortfolio);
-        console.log(portfolio);
-        setCurrentPortfolio(portfolio);
+        // console.log(portfolio);
+        // setCurrentPortfolio(portfolio);
       }
     }
   }, [loading, portfolioData, location.search]);

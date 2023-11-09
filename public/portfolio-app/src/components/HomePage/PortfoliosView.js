@@ -1,8 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { BsPencil, BsPlusLg } from 'react-icons/bs';
 import AddStockPopUp from '../AddStock/AddStockPopUp';
 
 const PortfoliosView = ({ portfolioData, currentPortfolio, handleRowClick }) => {
+  // console.log("from portfolioview", currentPortfolio)
+  const [recommendation, setRecommendation] = useState(null);
+
+  const fetchRecommendation = async () => {
+    if (currentPortfolio) {
+      const response = await fetch(
+        `http://localhost:8082/api/insights/redistribution/${currentPortfolio.portfolioId}`
+      );
+      const data = await response.json();
+      setRecommendation(data.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecommendation();
+  }, [currentPortfolio]);
+
+  const recommendationPopover = (
+    <Popover id="recommendation-popover">
+      <Popover.Header as="h3">Recommendation</Popover.Header>
+      <Popover.Body>
+        {recommendation &&
+          Object.entries(recommendation).map(([sector, data]) => (
+            <div key={sector} className="mb-3">
+              <h5 className="mb-1">{sector.charAt(0).toUpperCase() + sector.slice(1).toLowerCase()}</h5>
+              <p className="mb-1">
+                <strong>Current:</strong> {data.current}%
+              </p>
+              {data.decision === 'same' ? (
+                <p className="mb-1 text-primary">
+                  Your allocation is already optimal. No changes are recommended.
+                </p>
+              ) : (
+                <p className="mb-1">
+                  We recommend you to <span className={data.decision === 'sell' ? 'text-danger' : 'text-success'}>{data.decision.toUpperCase()}</span> stock within {sector.charAt(0).toUpperCase() + sector.slice(1).toLowerCase()} to rebalance it to initial {data.initial}%
+                </p>
+              )}
+            </div>
+          ))}
+      </Popover.Body>
+    </Popover>
+  );
+
   return (
     <div className="m-3 d-flex flex-wrap gap-4 row">
       <div className="bg-white rounded-3 p-3 col-12 col-md-5">
@@ -79,9 +123,11 @@ const PortfoliosView = ({ portfolioData, currentPortfolio, handleRowClick }) => 
                     '%'
                   : 'Loading...'}
               </div>
-              <button className="float-end btn btn-outline-primary buttonFont">
-                <BsPencil className="pb-1 buttonIcon" /> Edit Portfolio
-              </button>
+              <OverlayTrigger trigger="click" placement="bottom" overlay={recommendationPopover}>
+                <button className="float-end btn btn-outline-primary buttonFont">
+                  <BsPencil className="pb-1 buttonIcon" /> Recommendation
+                </button>
+              </OverlayTrigger>
             </div>
           </div>
           <br />
