@@ -46,7 +46,7 @@ function Stock() {
   const fetchStockData = async () => {
     if (searchTerm) {
       setLoading(true);
-      const apiKey = 'VFVETDZPXW4IOBLD';
+      const apiKey = '1IVNJAFKX4WIOZIK';  // api key
       const outputSize = 'full'; // or 'compact'
       const apiUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${searchTerm}&outputsize=${outputSize}&apikey=${apiKey}`;
 
@@ -163,7 +163,7 @@ function Stock() {
   const fetchStockSearchResults = async () => {
     if (searchTerm) {
       setLoadingSearch(true);
-      const apiKey = 'KTFKSXGNFXDBMF6M'; 
+      const apiKey = '1IVNJAFKX4WIOZIK';  // api key
       try {
         const response = await fetch(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchTerm}&apikey=${apiKey}`);
         const data = await response.json();
@@ -266,64 +266,72 @@ function Stock() {
 
             {stockData && stockData['Time Series (Daily)'] && (
               <div>
-                <p><b>Stock:</b> {searchTerm} - {searchResults.length > 0 && searchResults[0]['2. name']}</p>
-                {/* {marketCap !== null && (
-                  <p>
-                    Market Cap <b>:</b> {marketCap}
-                  </p>
-                )} */}
-                <p>
-                <b>Latest Stock Price:</b> $
-                  {parseFloat(stockData['Time Series (Daily)'][Object.keys(stockData['Time Series (Daily)'])[0]]['5. adjusted close']).toFixed(2)}
-                </p>
-                <p><b>Latest Date:</b> {Object.keys(stockData['Time Series (Daily)'])[0]}</p>
+                <form className="stock-info-form">
                 
-                <br />
+                  <p><b>Stock:</b> {searchTerm} - {searchResults.length > 0 && searchResults[0]['2. name']}</p>
 
-                <p>
-                  <b>Percentage Change (1 year):</b> {' '}
-                  {percentageChangeYear !== null ? (
-                    <span className={getColorClass(percentageChangeYear)}>
-                      {percentageChangeYear > 0 ? `+${percentageChangeYear}` : percentageChangeYear}%
-                    </span>
-                  ) : (
-                    'Not enough data for 1 year'
-                  )}
-                </p>
+                  {/* {marketCap !== null && (
+                    <p>
+                      Market Cap <b>:</b> {marketCap}
+                    </p>
+                  )} */}
+                  
+                  <div className="form-group">
+                        <b>Latest Stock Price:</b> $
+                        {parseFloat(stockData['Time Series (Daily)'][Object.keys(stockData['Time Series (Daily)'])[0]]['5. adjusted close']).toFixed(2)}
+                  </div>
 
-                <p>
-                  <b>Percentage Change (30 days):</b> {' '}
-                  {percentageChangeMonth !== null ? (
-                    <span className={getColorClass(percentageChangeMonth)}>
-                      {percentageChangeMonth > 0 ? `+${percentageChangeMonth}` : percentageChangeMonth}%
-                    </span>
-                  ) : (
-                    'Not enough data for 30 days'
-                  )}
-                </p>
+                  <div className="form-group">
+                      <b>Latest Date:</b> {Object.keys(stockData['Time Series (Daily)'])[0]}
+                  </div>
+                  
+                  <br />
 
-                <p>
-                  <b>Percentage Change (7 days):</b> {' '}
-                  {percentageChange7Days !== null ? (
-                    <span className={getColorClass(percentageChange7Days)}>
-                      {percentageChange7Days > 0 ? `+${percentageChange7Days}` : percentageChange7Days}%
-                    </span>
-                  ) : (
-                    'Not enough data for 7 days'
-                  )}
-                </p>
+                  <p>
+                    <b>Percentage Change (1 year):</b> {' '}
+                    {percentageChangeYear !== null ? (
+                      <span className={getColorClass(percentageChangeYear)}>
+                        {percentageChangeYear > 0 ? `+${percentageChangeYear}` : percentageChangeYear}%
+                      </span>
+                    ) : (
+                      'Not enough data for 1 year'
+                    )}
+                  </p>
 
-                <p>
-                  <b>Percentage Change (Today):</b> {' '}
-                  {percentageChangeToday !== null ? (
-                    <span className={getColorClass(percentageChangeToday)}>
-                      {percentageChangeToday > 0 ? `+${percentageChangeToday}` : percentageChangeToday}%
-                    </span>
-                  ) : (
-                    'Not enough data for Today'
-                  )}
-                </p>
+                  <p>
+                    <b>Percentage Change (30 days):</b> {' '}
+                    {percentageChangeMonth !== null ? (
+                      <span className={getColorClass(percentageChangeMonth)}>
+                        {percentageChangeMonth > 0 ? `+${percentageChangeMonth}` : percentageChangeMonth}%
+                      </span>
+                    ) : (
+                      'Not enough data for 30 days'
+                    )}
+                  </p>
 
+                  <p>
+                    <b>Percentage Change (7 days):</b> {' '}
+                    {percentageChange7Days !== null ? (
+                      <span className={getColorClass(percentageChange7Days)}>
+                        {percentageChange7Days > 0 ? `+${percentageChange7Days}` : percentageChange7Days}%
+                      </span>
+                    ) : (
+                      'Not enough data for 7 days'
+                    )}
+                  </p>
+
+                  <p>
+                    <b>Percentage Change (Today):</b> {' '}
+                    {percentageChangeToday !== null ? (
+                      <span className={getColorClass(percentageChangeToday)}>
+                        {percentageChangeToday > 0 ? `+${percentageChangeToday}` : percentageChangeToday}%
+                      </span>
+                    ) : (
+                      'Not enough data for Today'
+                    )}
+                  </p>
+
+                </form>
               </div>
             )}
 
