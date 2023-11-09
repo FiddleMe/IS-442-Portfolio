@@ -46,7 +46,7 @@ public class StockCronConfiguration {
         }
     }
 
-    @Scheduled(cron = "0/10 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void getStockData() {
         // Define the stock symbols you want to fetch
         String[] stockSymbols = { "BABA", "ASML", "MNST", "SHEL"};
